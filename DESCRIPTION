@@ -1,0 +1,15 @@
+Package: ecocx
+Type: Package
+Title: Computational experiments with Ecosim and Ecospace
+Version: 0.0.1
+Authors@R: c(
+    person(
+      "Stock", "Andy",
+      email = "anc@niva.no",
+      role = c("aut", "cre")
+    )
+  )
+Description: An R package to generate and analyze big data about simulated ecosystems by batch-running Ecosim and Ecospace models.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
