@@ -1,0 +1,21 @@
+Documentation for raw Ecosim data:
+
+Obtained Anchovy Bay example model and time series CSV from textbook, as provided per download in the 'Time series fitting' tutorial.
+
+Added mediation function for seals-mackerel-anchovy as described in the textbook's 'Mediation' tutorial.
+
+Added three environmental (foraging) responses to bottom temperature for cod, whiting, and anchovy, as described in the textbook's 'Incorporating environmental forcing' tutorial.
+
+Fit the model (vulnerabilities and primary production anomaly) to model data as in the textbook's 'Time series fitting' tutorial.
+
+Note that this model serves for examples, teaching, experimentation, and testing; it hence includes some aspects that are ecologically unrealistic (e.g., the seals-mackerel-anchovy mediation function from the textbook, an interaction that was "invented""for demonstration purposes ).
+
+The example data include 5 files:
+
+"Anchovy Bay_Ecosim_ex.eiixml": The example model as described above.
+"Anchovy Bay_Ecosim_ex.EwEmdb": The Ecosim model in the EwE software's database format (version 6.7.0, 32 bits).
+"anchovy_bay_ecosim_timeseries.csv": Time series imported into the model.
+"anchovy_bay_ecosim_output_cumulative.csv": Absolute biomass time series produced with a single run of the model.
+"anchovy_bay_ecosim_output_relative_biomass.csv": Relative biomass time series produced with a single run of the model.
+
+The example model and data were obtained from the online textbook in April 2026. The textbook is available at https://pressbooks.bccampus.ca/ewemodel/. The model and data remain the intellectual property of the textbook's authors. We kindly thank Villy Christensen for the permission to include them in the package.
