@@ -9,7 +9,8 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: An R package for generating and analyzing big data about simulated ecosystems by batch-running Ecosim and Ecospace models.
+Description: An R package for computational experiments with simulated ecosystems by batch-running Ecosim and Ecospace models.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Imports: xml2
