@@ -48,14 +48,15 @@ row_to_vector=function(row) {
 #' @NoRd
 table_to_df=function(tab) {
   rows=xml2::xml_find_all(tab,".//Row")   #get all rows
-  col_names=get_colnames(tab)
-  df=as.data.frame(matrix("",nrow=length(rows),ncol=length(col_names)))
-  colnames(df)=col_names
-  for(i in 1:length(rows)) {df[i,]=row_to_vector(rows[i])}
+  if(length(rows)<1) {df=NULL} else {
+    col_names=get_colnames(tab)
+    df=as.data.frame(matrix("",nrow=length(rows),ncol=length(col_names)))
+    colnames(df)=col_names
+    for(i in 1:length(rows)) {df[i,]=row_to_vector(rows[i])} }
   df
 }
 
-#' Extracts the basic estimates table from the exported XML file of an Ecosim or Ecospace model
+#' Reads the basic estimates table from the exported XML file of an Ecosim or Ecospace model
 #' @param xmldoc XML2 document
 #' @returns A data frame containing the basic estimates for the model.
 #' @NoRd
@@ -81,4 +82,140 @@ get_basic_estimates=function(xmldoc)
   d_basic$EE[d_basic$EE<0]=NA
 
   d_basic
+}
+
+#' Reads the diet table from the exported XML file of an Ecosim or Ecospace model
+#' @param xmldoc XML2 document
+#' @param d_basic Data frame with basic estimates generated with get_basic_estimates()
+#' @return Diet matrix as data frame.
+#' @NoRd
+get_diet_matrix=function(xmldoc, d_basic)
+{
+  tab=get_tables_from_name(xmldoc, "EcopathDietComp")[[1]]
+  df_diet=table_to_df(tab)
+
+  #create matrix
+  m=matrix(0,nrow=nrow(d_basic),ncol=nrow(d_basic))
+  colnames(m)=d_basic$GroupID
+  rownames(m)=d_basic$GroupID
+
+  #fill matrix
+  for(i in 1:nrow(df_diet))
+  {
+    pred_ix=which(colnames(m)==df_diet$PredID[i])
+    prey_ix=which(colnames(m)==df_diet$PreyID[i])
+    m[prey_ix,pred_ix]=df_diet$Diet[i]
+  }
+  m=apply(m, 2, as.numeric)     #make numeric
+  #rename with group names
+  colnames(m)=d_basic$GroupName
+  rownames(m)=d_basic$GroupName
+
+  m[,colSums(m)>0]
+}
+
+#' Reads fleet IDs and names from from the exported XML file of an Ecosim or Ecospace model
+#' @param xmldoc XML2 document.
+#' @return Data frame with fleet IDs and names.
+#' @NoRd
+get_fleets=function(xmldoc)
+{
+  tab=get_tables_from_name(xmldoc,"EcopathFleet")[[1]]
+  dh=table_to_df(tab)
+  data.frame("FleetID"=as.numeric(dh$FleetID),
+             "FleetName"=dh$FleetName)
+}
+
+#' Reads landings and discards from from the exported XML file of an Ecosim or Ecospace model
+#' @param xmldoc XML2 document
+#' @param d_fleets Data frame with fleet IDs and names, created with get_fleets().
+#' @param d_basic  Data frame with basic estimates generated with get_basic_estimates(...)
+#' @returns List with two elements (1) a data frame with landings and (2) a data frame with discards.
+#' @NoRd
+get_catches=function(xmldoc, d_fleets, d_basic)
+{
+  tab=get_tables_from_name(xmldoc,"EcopathCatch")[[1]]
+  d=table_to_df(tab)
+  #create matrices for landings and discards
+  m_landings=matrix(0,nrow=nrow(d_basic),ncol=nrow(d_fleets))
+  colnames(m_landings)=d_fleets$FleetID
+  rownames(m_landings)=d_basic$GroupID
+  m_discards=m_landings
+  #fill matrix
+  for(i in 1:nrow(d))
+  {
+    fleet_ix=which(colnames(m_landings)==d$FleetID[i])
+    group_ix=which(rownames(m_landings)==d$GroupID[i])
+    m_discards[group_ix,fleet_ix]=d$Discards[i]
+    m_landings[group_ix,fleet_ix]=d$Landing[i]
+  }
+  m_landings=apply(m_landings, 2, as.numeric)     #make numeric
+  m_discards=apply(m_discards, 2, as.numeric)
+  #rename with group and fleet names
+  colnames(m_landings) <- colnames(m_discards) <- d_fleets$FleetName
+  rownames(m_landings) <- rownames(m_discards) <- d_basic$GroupName
+
+
+  list(landings=m_landings, discards=m_discards)
+}
+
+
+#' Extract information about Ecosim scenarios
+#' @param xmldoc XML2 document
+#' @returns Data frame with scenario, Ecoapth and Ecosim group IDs
+#' @NoRd
+get_ecosim_scenarios=function(xmldoc)
+{
+  tab=get_tables_from_name(xmldoc,"EcosimScenario")[[1]]
+  df=table_to_df(tab)
+  data.frame("ScenarioID"=as.numeric(df$ScenarioID),"ScenarioName"=df$ScenarioName)
+}
+
+#' Extract Ecosim group IDs, which can be different from Ecopath group IDs
+#' @param xmldoc XML2 document
+#' @returns Data frame with scenario IDs, Ecopath group IDs, and Ecosim group IDs
+#' @NoRd
+get_ecosim_groupIDs=function(xmldoc)
+{
+  tab=get_tables_from_name(xmldoc,"EcosimScenarioGroup")[[1]]
+  df=table_to_df(tab)
+  data.frame("EcopathGroupID"=as.numeric(df$EcopathGroupID),"EcosimGroupID"=as.numeric(df$GroupID),"ScenarioID"=as.numeric(df$ScenarioID))
+}
+
+#' Extract Ecosim fleet IDs, which can be different from Ecopath fleet IDs
+#' @param xmldoc XML2 document
+#' @returns Data frame with scenario IDs, Ecopath fleet IDs, and Ecosim fleet IDs
+#' @NoRd
+get_ecosim_fleetIDs=function(xmldoc)
+{
+  tab=get_tables_from_name(xmldoc,"EcosimScenarioFleet")[[1]]
+  df=table_to_df(tab)
+  data.frame("EcopathFleetID"=as.numeric(df$EcopathFleetID),"EcosimFleetID"=as.numeric(df$FleetID),"ScenarioID"=as.numeric(df$ScenarioID))
+}
+
+get_vulnerability_matrix=function(xmldoc,d_basic)
+{
+  tab=get_tables_from_name(xmldoc,"EcosimScenarioForcingMatrix")[[1]]
+  d=table_to_df(tab)
+
+  ids=get_ecosim_groupIDs(xmldoc)
+
+  #create matrix
+  m=matrix(-9999,nrow=nrow(d_basic),ncol=nrow(d_basic))
+  colnames(m)=d_basic$GroupID
+  rownames(m)=d_basic$GroupID
+
+  #fill matrix
+  for(i in 1:nrow(d))
+  {
+    pred_ix=which(colnames(m)==ids$EcopathGroupID[ids$EcosimGroupID==d$PredID[i]])
+    prey_ix=which(colnames(m)==ids$EcopathGroupID[ids$EcosimGroupID==d$PreyID[i]])
+    m[prey_ix,pred_ix]=d$vulnerability[i]
+  }
+  m=apply(m, 2, as.numeric)     #make numeric
+  #rename with group names
+  colnames(m)=d_basic$GroupName
+  rownames(m)=d_basic$GroupName
+  m[m<0]=NA
+  m[,colSums(m,na.rm=T)>0]
 }
