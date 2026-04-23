@@ -1,0 +1,30 @@
+﻿TimeSeriesType,Unit,Abbreviation,Type,PoolCode,PoolCode2,DriverOrReference
+"Biomass, relative",,BiomassRel,0,Group,,Reference
+"Biomass, absolute",t km-2,BiomassAbs,1,Group,,Reference
+"Biomass, forced",t km-2,BiomassForcing,-1,Group,,Driver
+Forcing function,,TimeForcing,2,Function #,,Driver
+Fishing effort,,FishingEffort,3,Fleet,,Driver
+Fishing mortality,year-1,FishingMortality,4,Group,,Driver
+Total mortality,year-1,TotalMortality,5,Group,,Reference
+"Total mortality, constant",year-1,ConstantTotalMortality,-5,Group,,Driver
+Catches,t km-2 year-1,Catches,6,Group,,Reference
+"Catches, forced",t km-2 year-1,CatchesForcing,-6,Group,,Driver
+"Catches, relative",,CatchesRel,61,Group,,Reference
+Average weight,,AverageWeight,7,Multi-stanza group,,Reference
+"Ecotracer, relative concentration 1",,EcotracerConcRel,8,Group,,Reference
+"Ecotracer, absolute concentration",,EcotracerConcAbs,9,Group,,Reference
+"Discard proportion, absolute",,DiscardProportion,10,Fleet,Group,Driver
+"Discard mortality rate, absolute",year-1,DiscardMortality,11,Fleet,Group,Driver
+"Landings, absolute",t km-2 year-1,Landings,12,Fleet,Group,Reference
+"Discards, absolute",t km-2 year-1,Discards,13,Fleet,Group,Reference
+Catchabilities,,Catchabilities,14,Fleet,Group,Driver
+"Off-vessel price, absolute",$/t,OffVesselPrice,15,Fleet,Group,Driver
+"Off-vessel price, relative",,OffVesselPriceRel,-15,Fleet,Group,Driver
+"Effort cost, absolute ",%,EffortCost,16,Fleet,Group,Driver
+Effort cost multiplier,,EffortCostRel,-16,Fleet,Group,Driver
+"Sailing cost, absolute",%,SailCost,17,Fleet,,Driver
+"Sailing cost multiplier, relative",,SailCostRel,-17,Fleet,,Driver
+"Fixed cost, absolute ",%,FixedCost,18,Fleet,,Driver
+Fixed cost multiplier,,FixedCostRel,-18,Fleet,,Driver
+Fishing mortality,,FishingMortalityRef,104,Group,,Reference
+Diet composition,,Diet,,Group (predator),Group (prey),Reference
