@@ -139,3 +139,57 @@ get_forcing_functions=function(xmldoc)
   }
   ts_list
 }
+
+#' Read assignment of environmental responses from XML
+#' @param xmldoc XML2 document
+#' @returns Data frame with shape, forcing function, and group IDs
+#' @noRd
+get_foraging_response_table=function(xmldoc)
+{
+  tab=get_tables_from_name(xmldoc,"EcosimScenarioCapacityDrivers")[[1]]
+  df=table_to_df(tab)
+  colnames(df)[colnames(df)=="GroupID"]="EcosimGroupID"
+  df
+}
+
+
+#' Read environmental response and mediation shapes from XML
+#' @param xmldoc XML2 document
+#' @param ids Character vector with shape IDs, e.g., from get_foraging_response_table to get only environmental response shapes; or NULL, in which case all shapes are returned.
+#' @returns List of objects of class "EcosimShape" containing x and y values, ids, and names.
+#' @noRd
+get_shapes=function(xmldoc,ids=NULL)
+{
+  tab=get_tables_from_name(xmldoc,"EcosimShapeMediation")[[1]]
+  df=table_to_df(tab)
+  shape_list=list()
+  for(i in 1:nrow(df))
+  {
+    if(is.null(ids) | df$ShapeID[i] %in% ids) {
+      shape=list()
+      class(shape)="EcosimShape"
+      shape$id=df$ShapeID[i]
+      shape$name=df$Title[i]
+      shape$xmin=as.numeric(df$XAxisMin[i])
+      shape$xmax=as.numeric(df$XAxisMax[i])
+      shape$y=as.numeric(unlist(strsplit(df$zScale[i],split=" ")))
+      shape$x=seq(from=shape$xmin,to=shape$xmax,length.out=length(shape$y))
+      shape_list[[gsub(" ", "",shape$name)]]<-shape
+    }
+  }
+  shape_list
+}
+
+#' Read mediation table from XML
+#' @param xmldoc XML2 document
+#' @returns Data frame with predator, prey, and mediation shape IDs
+#' @noRd
+get_mediation_table=function(xmldoc)
+{
+  tab=get_tables_from_name(xmldoc,"EcosimScenarioPredPreyShape")[[1]]
+  df=table_to_df(tab)
+  colnames(df)[colnames(df)=="PredID"]="PredEcosimID"
+  colnames(df)[colnames(df)=="PreyID"]="PreyEcosimID"
+  df
+}
+

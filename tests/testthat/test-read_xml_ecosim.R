@@ -46,4 +46,27 @@ test_that("Reading Ecosim forcing functions works", {
   expect_equal(ff$Tbottom$values[316],18.7)
 })
 
+test_that("Reading the foraging env. response table works", {
+  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  ff=get_forcing_functions(m)
+  ecosim_groups=get_ecosim_groupIDs(m)
+  d=get_foraging_response_table(m)
+  expect_all_true(d$DriverID %in% c(ff$PPanomaly$id,ff$Tbottom$id))
+  expect_all_true(d$EcosimGroupID %in% ecosim_groups$EcosimGroupID)
+  expect_equal(as.numeric(d[2,]),c(33,15,34,2,115))
+})
 
+test_that("Reading Ecosim response and mediation shapes works", {
+  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  ids=get_foraging_response_table(m)$ResponseID
+  d=get_shapes(m,ids)
+  expect_length(d$Tempwarm$y,1200)
+  expect_equal(d$Tempcold$y[100],1.640101)
+})
+
+test_that("Reading the mediation table works", {
+  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  d=get_mediation_table(m)
+  expect_equal(dim(d),c(2,5))
+  expect_equal(as.numeric(d[1,]),c(1,16,17,2,18))
+})
