@@ -117,3 +117,25 @@ get_time_series=function(xmldoc, d_basic,d_fleets)
   }
   ts_list
 }
+
+#' Read Ecosim forcing functions from XML.
+#' These are different from the forcing time series read with get_time_)series and typically represent environmental variation like temperature.
+#' @param xmldoc XML2 document.
+#' @returns A list of forcing functions, which are in essence monthly time series, with values and auxiliary information. The forcing functions are of the class 'EcosimForcingF'.
+#' @noRd
+get_forcing_functions=function(xmldoc)
+{
+  tab=get_tables_from_name(xmldoc,"EcosimShapeTime")[[1]]
+  df=table_to_df(tab)
+  ts_list=list()
+  for(i in 1:nrow(df))
+  {
+    ts=list()
+    class(ts)="EcosimForcingF"
+    ts$name=df$Title[i]
+    ts$id=as.numeric(df$ShapeID[i])
+    ts$values=as.numeric(unlist(strsplit(df$zScale[i],split=" ")))
+    ts_list[[gsub(" ", "",ts$name)]]<-ts
+  }
+  ts_list
+}

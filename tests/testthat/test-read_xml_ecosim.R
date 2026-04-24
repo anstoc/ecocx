@@ -36,3 +36,14 @@ test_that("Reading Ecosim time series works", {
   expect_equal(c(ts$drivers[[2]]$time[36],ts$drivers[[2]]$values[30]),c(2005,3.08))
   expect_equal(ts$references$CodB$groupname,"Cod")
 })
+
+test_that("Reading Ecosim forcing functions works", {
+  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  ff=get_forcing_functions(m)
+  expect_equal(ff$PPanomaly$name,"PP anomaly")
+  expect_equal(ff$Tbottom$id,33)
+  expect_length(ff$PPanomaly$values,493)  #number of time steps
+  expect_equal(ff$Tbottom$values[316],18.7)
+})
+
+
