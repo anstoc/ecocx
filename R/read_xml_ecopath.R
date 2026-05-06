@@ -2,7 +2,7 @@
 #' @param in_file Path to .xml file.
 #' @returns XML2 object.
 #' @noRd
-load_model_from_xml=function(in_file)
+read_eiixml=function(in_file)
 {
   xml2::read_xml(in_file)
 }

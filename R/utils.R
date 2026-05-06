@@ -18,3 +18,11 @@ lut_tscode=function(code=NULL)
     return(lut[ix,])
   }
 }
+
+#' Obtain the path of the folder with raw example data
+#' @returns A string with the path.
+#' @export
+get_path_to_exampledata=function()
+{
+  paste0(system.file('extdata', package = 'ecocx'),"/")
+}

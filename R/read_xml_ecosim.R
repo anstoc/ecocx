@@ -114,7 +114,7 @@ get_time_series=function(xmldoc, d_basic,d_fleets)
         ts_list$drivers[[gsub(" ", "",ts$tsname)]]<-ts} else {
           ts_list$references[[gsub(" ", "",ts$tsname)]]<-ts}
     }
-  }
+  } else {ts_list=list()}
   ts_list
 }
 
@@ -193,3 +193,31 @@ get_mediation_table=function(xmldoc)
   df
 }
 
+#' Read fishing effort time series from XML
+#' @param xmldoc XML2 document
+#' @returns List of objects of class 'EcosimEffortTS'. Each object contains an effort time series' values and auxiliary information like name and IDs.
+#' @noRd
+get_fishing_effort=function(xmldoc)
+{
+  tabs=get_tables_from_name(xmldoc,c("EcosimShapeFishRate","EcosimScenarioFleet","EcopathFleet"))
+  df_shapes=table_to_df(tabs$EcosimShapeFishRate)
+  df_fleets=table_to_df(tabs$EcosimScenarioFleet)
+  df_ecopath=table_to_df(tabs$EcopathFleet)
+  effort_list=list()
+  if(!is.null(df_shapes)) {
+    #create object
+    for(i in 1:nrow(df_shapes)) {
+      eff=list()
+      class(eff)="EcosimEffortTS"
+      eff$id=df_shapes$ShapeID[i]
+      eff$name=df_shapes$Title[i]
+      ix=which(df_fleets$FishRateShapeID==eff$id)
+      eff$ecopathfleetid=df_fleets$EcopathFleetID[ix]
+      eff$ecosimfleetid=df_fleets$FleetID[ix]
+      eff$fleetname=df_ecopath$FleetName[df_ecopath$FleetID==eff$ecopathfleetid]
+      eff$values=as.numeric(unlist(strsplit(df_shapes$zScale[i],split=" ")))
+      effort_list[[gsub(" ", "",eff$name)]] <- eff
+    }
+  }
+  effort_list
+}

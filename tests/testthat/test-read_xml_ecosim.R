@@ -1,17 +1,17 @@
 test_that("Reading scenario information works", {
-  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   d_scen=get_ecosim_scenarios(m)
   expect_equal(c(d_scen$ScenarioID[1],d_scen$ScenarioName[1]),c(2,"Scene 1"))
 })
 
 test_that("Reading Ecosim group IDs works", {
-  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   d_ids=get_ecosim_groupIDs(m)
   expect_equal(d_ids$EcopathGroupID[d_ids$ScenarioID==2 & d_ids$EcosimGroupID==15],5)
 })
 
 test_that("Reading the vulnerability matrix from XML works", {
-  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   d_basic=get_basic_estimates(m)
   d_vuln=get_vulnerability_matrix(m, d_basic)
   expect_equal(dim(d_vuln),c(11,9))
@@ -21,13 +21,13 @@ test_that("Reading the vulnerability matrix from XML works", {
 })
 
 test_that("Reading Ecosim fleet IDs works", {
-  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   d_ids=get_ecosim_fleetIDs(m)
   expect_equal(d_ids$EcopathFleetID[d_ids$ScenarioID==2 & d_ids$EcosimFleetID==8],3)
 })
 
 test_that("Reading Ecosim time series works", {
-  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   d_basic=get_basic_estimates(m)
   d_fleets=get_fleets(m)
   ts=get_time_series(m,d_basic,d_fleets)
@@ -38,7 +38,7 @@ test_that("Reading Ecosim time series works", {
 })
 
 test_that("Reading Ecosim forcing functions works", {
-  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   ff=get_forcing_functions(m)
   expect_equal(ff$PPanomaly$name,"PP anomaly")
   expect_equal(ff$Tbottom$id,33)
@@ -47,7 +47,7 @@ test_that("Reading Ecosim forcing functions works", {
 })
 
 test_that("Reading the foraging env. response table works", {
-  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   ff=get_forcing_functions(m)
   ecosim_groups=get_ecosim_groupIDs(m)
   d=get_foraging_response_table(m)
@@ -57,16 +57,25 @@ test_that("Reading the foraging env. response table works", {
 })
 
 test_that("Reading Ecosim response and mediation shapes works", {
-  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   ids=get_foraging_response_table(m)$ResponseID
   d=get_shapes(m,ids)
   expect_length(d$Tempwarm$y,1200)
   expect_equal(d$Tempcold$y[100],1.640101)
 })
 
-test_that("Reading the mediation table works", {
-  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+test_that("Reading the Ecosim mediation table works", {
+  m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   d=get_mediation_table(m)
   expect_equal(dim(d),c(2,5))
   expect_equal(as.numeric(d[1,]),c(1,16,17,2,18))
 })
+test_that("Reading Ecosim effort time series works", {
+  m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  d=get_fishing_effort(m)
+  expect_equal(length(d),5)
+  expect_equal(d[[5]]$fleetname,"Shrimpers")
+  expect_equal(d[[2]]$values[c(24,25)],c(1.050, 1.103))
+})
+
+
