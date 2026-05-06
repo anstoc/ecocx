@@ -1,4 +1,4 @@
-test_that("Loading example model from XML works", {
+test_that("Reading example model from XML works", {
   m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   expect_equal(m$ecopath$basic_estimates$QoB[m$ecopath$basic_estimates$GroupName=="Cod"],2.58)
   expect_equal(m$ecopath$fleets$FleetName[2],"Trawlers")
@@ -7,6 +7,14 @@ test_that("Loading example model from XML works", {
                                           colnames(m$ecopath$catches$landings)=="Seiners"],1.2)
   expect_equal(m$ecopath$catches$discards[rownames(m$ecopath$catches$landings)=="Anchovy",
                                           colnames(m$ecopath$catches$discards)=="Seiners"],0)
-
-  #WEITER:Ecosim
+  expect_equal(as.numeric(m$ecosim$fleetIDs[2,]),c(2,7,2))
+  expect_equal(as.numeric(m$ecosim$groupIDs[5,]),c(5,15,2))
+  expect_length(m$ecosim$scenarios$ScenarioID,1)
+  expect_equal(as.numeric(m$ecosim$foraging_response_table[3,]),c(33,17,24,2,115))
+  expect_equal(as.numeric(m$ecosim$mediation_table[1,]),c(1,16,17,2,18))
+  expect_lt(abs(m$ecosim$vulnerabilities[rownames(m$ecosim$vulnerabilities)=="Anchovy",colnames(m$ecosim$vulnerabilities)=="Cod"]-1.5044353),0.0001)
+  expect_equal(m$ecosim$timeseries$drivers$Trawlers$values[10],1.551)
+  expect_equal(m$ecosim$fishing_effort$Trawlers$values[121],1.629)
+  expect_equal(m$ecosim$shapes$Tempcold$y[1000],7.44605E-05)
+  expect_equal(m$ecosim$forcing_functions$Tbottom$values[122],16.3)
 })
