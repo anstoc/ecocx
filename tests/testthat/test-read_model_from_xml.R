@@ -1,4 +1,4 @@
-test_that("Reading example model from XML works", {
+test_that("Reading example Ecosim model from XML works", {
   m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   expect_equal(m$ecopath$basic_estimates$QoB[m$ecopath$basic_estimates$GroupName=="Cod"],2.58)
   expect_equal(m$ecopath$fleets$FleetName[2],"Trawlers")

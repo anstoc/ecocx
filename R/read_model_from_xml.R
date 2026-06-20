@@ -4,7 +4,8 @@
 #' @returns An object of class 'ecocx_model'. Its elements contain core information about functional groups and their parameters, fisheries, mediation and environmental response functions, and other information. Currently, only
 #' Ecopath and Ecosim (but not Ecospace) information is loaded. Furthermore, the package currently supports only models with one Ecosim scenario.
 #' @examples
-#' m <- ecocx::load_model_from_xml(xmlfile=paste0(ecocx::get_path_to_exampledata(),'anchovy_bay_ecosim_ex.eiixml'))
+#' xmlfile=paste0(ecocx::get_path_to_exampledata(),'anchovy_bay_ecosim_ex.eiixml')
+#' m <- ecocx::load_model_from_xml(xmfile)
 #' m$ecopath$basic_estimates
 #' m$ecosim$shapes$Tempcold$x[1:5]
 #' m$ecosim$shapes$Tempcold$y[1:5]
@@ -40,3 +41,5 @@ load_model_from_xml=function(xmlfile)
 
   m
 }
+
+

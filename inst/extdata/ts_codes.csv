@@ -1,4 +1,4 @@
-﻿TimeSeriesType,Unit,Abbreviation,Type,PoolCode,PoolCode2,DriverOrReference
+TimeSeriesType,Unit,Abbreviation,Type,PoolCode,PoolCode2,DriverOrReference
 "Biomass, relative",,BiomassRel,0,Group,,Reference
 "Biomass, absolute",t km-2,BiomassAbs,1,Group,,Reference
 "Biomass, forced",t km-2,BiomassForcing,-1,Group,,Driver

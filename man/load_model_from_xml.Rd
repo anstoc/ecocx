@@ -17,7 +17,8 @@ Ecopath and Ecosim (but not Ecospace) information is loaded. Furthermore, the pa
 Load an EwE model from an XML file exported with the Ecopath software
 }
 \examples{
-m <- ecocx::load_model_from_xml(xmlfile=paste0(ecocx::get_path_to_exampledata(),'anchovy_bay_ecosim_ex.eiixml'))
+xmlfile=paste0(ecocx::get_path_to_exampledata(),'anchovy_bay_ecosim_ex.eiixml')
+m <- ecocx::load_model_from_xml(xmfile)
 m$ecopath$basic_estimates
 m$ecosim$shapes$Tempcold$x[1:5]
 m$ecosim$shapes$Tempcold$y[1:5]
