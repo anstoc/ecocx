@@ -5,7 +5,7 @@
 #' Ecopath and Ecosim (but not Ecospace) information is loaded. Furthermore, the package currently supports only models with one Ecosim scenario.
 #' @examples
 #' xmlfile=paste0(ecocx::get_path_to_exampledata(),'anchovy_bay_ecosim_ex.eiixml')
-#' m <- ecocx::load_model_from_xml(xmfile)
+#' m <- ecocx::load_model_from_xml(xmlfile)
 #' m$ecopath$basic_estimates
 #' m$ecosim$shapes$Tempcold$x[1:5]
 #' m$ecosim$shapes$Tempcold$y[1:5]
@@ -41,5 +41,6 @@ load_model_from_xml=function(xmlfile)
 
   m
 }
+
 
 

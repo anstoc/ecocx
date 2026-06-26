@@ -12,7 +12,7 @@
 #' @export
 connect_to_ewe=function(path_to_ewe)
 {
-  temp_out_folder=paste0(tempdir(),"/","connect_test",round(100000*runif(1)))
+  temp_out_folder=paste0(tempdir(),"/","connect_test",round(100000*stats::runif(1)))
 
   conf_file=paste0(system.file('extdata', package = 'ecocx'),"/ecocx1_runinfo.json") #internal test data
 
@@ -39,4 +39,5 @@ connect_to_ewe=function(path_to_ewe)
   ewe_link
 
 }
+
 

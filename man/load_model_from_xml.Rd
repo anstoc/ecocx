@@ -18,7 +18,7 @@ Load an EwE model from an XML file exported with the Ecopath software
 }
 \examples{
 xmlfile=paste0(ecocx::get_path_to_exampledata(),'anchovy_bay_ecosim_ex.eiixml')
-m <- ecocx::load_model_from_xml(xmfile)
+m <- ecocx::load_model_from_xml(xmlfile)
 m$ecopath$basic_estimates
 m$ecosim$shapes$Tempcold$x[1:5]
 m$ecosim$shapes$Tempcold$y[1:5]
