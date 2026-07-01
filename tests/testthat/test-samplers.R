@@ -6,6 +6,6 @@ test_that("Random sampler works", {
   expect_length(unique(df_sample$Trawlers),1)
   expect_true(length(unique(df_sample$Baitboats))<=2)
   expect_equal(nrow(df_sample),8)
-  expect_equal(ncol(df_sample),4+nrow(summary(factor_set)))
-  expect_all_true(summary(factor_set)$name %in% colnames(df_sample))
+  expect_equal(ncol(df_sample),4+nrow(summary(factor_list)))
+  expect_all_true(summary(factor_list)$name %in% colnames(df_sample))
 })

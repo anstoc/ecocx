@@ -52,12 +52,12 @@ sampler_random=function(factor_set, size=1)
     #names(new_row)=colnames(df)
     df[i,][["run_id"]]=formatC(i, width = max(4,nchar(as.character(size))), flag = "0")
     df[i,][["sub_id"]]="0000"
-    df[i,][["run_name"]]=paste0("R",new_row[["run_id"]],"_",new_row[["sub_id"]])
+    df[i,][["run_name"]]=paste0("R",df[i,][["run_id"]],"_",df[i,][["sub_id"]])
     df[i,][["comment"]]=paste("Random sample, run",i)
     for(j in 1:nrow(fac_sum))
     {
-      choice=sample_option_from_list(factor_list[[fac_sum$type[j]]][[fac_sum$name[[j]]]])
-      choice_name=names(factor_list[[fac_sum$type[j]]][[fac_sum$name[[j]]]])[choice]
+      choice=sample_option_from_list(factor_set[[fac_sum$type[j]]][[fac_sum$name[[j]]]])
+      choice_name=names(factor_set[[fac_sum$type[j]]][[fac_sum$name[[j]]]])[choice]
       df[i,][[fac_sum$name[j]]]=choice_name
     }
   }
@@ -78,3 +78,5 @@ sampler_random=function(factor_set, size=1)
 # {
 #
 # }
+
+
