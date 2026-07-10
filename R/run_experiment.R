@@ -12,7 +12,7 @@
 #' @param parallel Whether to use in case of parallel processing. If \code{true}, you need the \code{future} and \code{future.apply} package installed and call future::plan yourself.
 #'
 #'
-#' @returns An object containing: (1) a dataframe describing runs and where the outputs are stored, and (2) a list with the calculated outputs for each run.
+#' @returns A data frame with information about the runs, e.g., where outputs are stored.
 #' @export
 run_ecosim_experiment=function(design, xml_model_path, factor_set, ewe_link, out_folder,parallel=F)
 {
@@ -35,6 +35,8 @@ run_ecosim_experiment=function(design, xml_model_path, factor_set, ewe_link, out
   } else {
     stop("Use cores=1 for sequential execution. If cores >1, you need the 'future.apply' and 'future' packages.")
   }
+
+  cx_table
 
 }
 

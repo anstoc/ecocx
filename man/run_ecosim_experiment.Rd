@@ -29,7 +29,7 @@ run_ecosim_experiment(
 \item{output_fun}{A named list of functions to calculate output indicators. Names will be used in the generated output table.}
 }
 \value{
-An object containing: (1) a dataframe describing runs and where the outputs are stored, and (2) a list with the calculated outputs for each run.
+A data frame with information about the runs, e.g., where outputs are stored.
 }
 \description{
 Takes a pre-generated description of the required runs and exceutes them. Stores results on disk in one folder per run, which also contains a generated Run Console .json file and the Run Console log. Finally, calculates outputs using the provided functions,

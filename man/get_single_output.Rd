@@ -2,13 +2,13 @@
 % Please edit documentation in R/extract_results.R
 \name{get_single_output}
 \alias{get_single_output}
-\alias{get_ecosim_output_biomass}
-\alias{get_ecosim_output_catch}
+\alias{get_ecosim_run_biomass}
+\alias{get_ecosim_run_catch}
 \title{Obtain time series of biomasses or catch from a single Ecosim run}
 \usage{
-get_ecosim_output_biomass(folder, model, groups = NA)
+get_ecosim_run_biomass(folder, model, groups = NA)
 
-get_ecosim_output_catch(folder, model, groups = NA)
+get_ecosim_run_catch(folder, model, groups = NA)
 }
 \arguments{
 \item{folder}{Path to folder containing the model outputs. If the outputs are not found, the function searches subfolders and uses the first fitting output file found.}
