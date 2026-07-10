@@ -9,7 +9,7 @@ create_json_configuration(xmlfile, model = NA)
 \arguments{
 \item{xmlfile}{Path to the .eiixml file describing the model}
 
-\item{model}{The model created with \code{create_model_from_xml}. If NA, the modeel is loaded from the provided XML file.}
+\item{model}{The model created with \code{create_model_from_xml}. If NA, the model is loaded from the provided XML file.}
 }
 \value{
 Character vector where each element corresponds to a line in the .json file to be generated.

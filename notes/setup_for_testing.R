@@ -1,4 +1,4 @@
-ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.15/EwERunConsole.exe")
+ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.23/EwERunConsole.exe")
 
 xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
 m=load_model_from_xml(xml_model)
@@ -24,3 +24,7 @@ factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","higher10p",1.1*facto
 factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","lower10p",0.9*factor_set$fishing_effort$Shrimpers$default$values)
 
 design=sampler_random(factor_set,size=50)
+
+out_folder=paste0(tempdir(),"/jsontest")
+
+cx_table=data.frame("run_name"=design$run_name,"model"=xml_model,"folder"=paste0(out_folder,"/",design$run_name),"json"=paste0(paste0(out_folder,"/",design$run_name),"/",design$run_name,".json"))

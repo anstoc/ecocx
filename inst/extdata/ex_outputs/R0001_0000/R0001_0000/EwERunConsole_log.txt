@@ -1,0 +1,72 @@
+==========================================================================
+EwERunConsole version 1.0.23.0
+EwE Core version 6.7.0.19540
+Executed on 7/9/2026 2:52:02 PM
+==========================================================================
+
+==== Confguring environment ====
+Output folder set to 'C:\Users\ANC\AppData\Local\Temp\RtmpYrOf6H\jsontest\R0001_0000\R0001_0000', write with headers True
+Working directory set to 'C:\Users\ANC\AppData\Local\Temp\RtmpYrOf6H\jsontest\R0001_0000'
+Loaded 1 plugin(s):
+- EwEBridgePlugin v1.0.0.0
+OK
+
+==== Ecopath ====
+Loaded EwE model 'Anchovy Bay'
+OK
+
+==== Ecosim ====
+Loaded Ecosim scenario 1: Scene 1
+Start Ecosim run
+Ecosim run years = 41
+Ecosim writing output annual
+0
+! Automation invoke failed: ecosim.ecosim.effort[1].set(System.Object[])
+! Automation invoke failed: ecosim.ecosim.effort[2].set(System.Object[])
+! Automation invoke failed: ecosim.ecosim.effort[3].set(System.Object[])
+! Automation invoke failed: ecosim.ecosim.effort[4].set(System.Object[])
+! Automation invoke failed: ecosim.ecosim.effort[5].set(System.Object[])
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+Ecosim wrote output to C:\Users\ANC\AppData\Local\Temp\RtmpYrOf6H\jsontest\R0001_0000\R0001_0000\ecosim_Scene 1
+End Ecosim run
+OK
+

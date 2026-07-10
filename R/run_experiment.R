@@ -27,9 +27,9 @@ run_ecosim_experiment=function(design, xml_model_path, factor_set, ewe_link, out
 
   #run model
 
-  if(cores==1) {
+  if(!parallel) {
     dummy=lapply(1:nrow(cx_table),FUN=execute_run,cx_table=cx_table,ewe_link=ewe_link)
-  } else if (cores>1 & requireNamespace("future", quietly = TRUE) & requireNamespace("future.apply", quietly = TRUE)) {
+  } else if (requireNamespace("future", quietly = TRUE) & requireNamespace("future.apply", quietly = TRUE)) {
     # future is available, use it
     dummy=future.apply::future_lapply(1:nrow(cx_table),FUN=execute_run,cx_table=cx_table,ewe_link=ewe_link)
   } else {

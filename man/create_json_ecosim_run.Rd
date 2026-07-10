@@ -4,7 +4,7 @@
 \alias{create_json_ecosim_run}
 \title{Create the "EcosimRun" element of the run console .json file}
 \usage{
-create_json_ecosim_run()
+create_json_ecosim_run(x, cx_table, design, factor_set)
 }
 \value{
 Character vector where each element corresponds to a line in the .json file to be generated.
