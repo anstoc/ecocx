@@ -1,13 +1,16 @@
+#TODO Try parallel reading from SSD
+
 #' Obtain time series of biomasses or catch from a single Ecosim run
 #'
 #' @param folder Path to folder containing the model outputs. If the outputs are not found, the function searches subfolders and uses the first fitting output file found.
 #' @param model The model that generated the outputs to be read. Must have been created with \code{create_model_from_xml}.
 #' @param groups Character vector with names of the groups for which biomasses should be extracted. If NA (the default), biomasses for all groups are returned.
+#' @param relative Should returned biomasses or cTCHES be relative to the first timestep?
 #'
 #' @returns Data frame with a timestep column and one column for each group listed in \code{biomass}.
-#' @name get_single_output
+#' @name get_ecosim_run...
 #' @export
-get_ecosim_run_biomass=function(folder, model, groups=NA)
+get_ecosim_run_biomass=function(folder, model, groups=NA, relative=F)
 {
   df=NULL
   files=list.files(folder)
@@ -21,14 +24,14 @@ get_ecosim_run_biomass=function(folder, model, groups=NA)
       if(sum(is.na(groups))==0) {df=df[,colnames(df) %in% c("timestep",groups)]}
     }
 
+    if(relative) {for(i in 2:ncol(df)) {df[,i]=df[,i]/df[1,i]}}
 
     df
 
 }
-
-#' @rdname get_single_output
+#' @rdname get_ecosim_run...
 #' @export
-get_ecosim_run_catch=function(folder, model, groups=NA)
+get_ecosim_run_catch=function(folder, model, groups=NA, relative=F)
 {
   df=NULL
   files=list.files(folder)
@@ -41,6 +44,9 @@ get_ecosim_run_catch=function(folder, model, groups=NA)
       colnames(df)=c("timestep",model$ecopath$basic_estimates$GroupName[model$ecopath$basic_estimates$Sequence])
       if(sum(is.na(groups))==0) {df=df[,colnames(df) %in% c("timestep",groups)]}
     }
+
+  if(relative) {for(i in 2:ncol(df)) {df[,i]=df[,i]/df[1,i]}}
+
   df
 }
 
@@ -48,15 +54,16 @@ get_ecosim_run_catch=function(folder, model, groups=NA)
 #'
 #' @param cx_table Table describing all runs, as returned by \code{run_ecosim_experiment}.
 #' @param model The model that generated the outputs to be read. Must have been created with \code{create_model_from_xml}.
+#' @param relative Should returned biomasses or cTCHES be relative to the first timestep?
 #' @param groups Character vector with names of the groups for which biomasses should be extracted. If NA (the default), biomasses for all groups are returned.
-#' @returns Data frame with run name, time step, and biomasses of the groups.
-#' @name get_ecosim_cx_
+#' @returns Data frame with a run name column, timestep column, and biomasses of the groups.
+#' @name get_ecosim_cx...
 #' @export
-get_ecosim_cx_biomass=function(cx_table,model,groups=NA)
+get_ecosim_cx_biomass=function(cx_table,model,groups=NA, relative=F)
 {
   df_cx=NULL
   for(i in 1:nrow(cx_table)) {
-    df_run=get_ecosim_run_biomass(cx_table$folder[i],model,groups)  #get biomasses for run
+    df_run=get_ecosim_run_biomass(cx_table$folder[i],model,groups,relative)  #get biomasses for run
     if(is.null(df_cx)) {   #create data frame for all runs if not exisiting yet
       df_cx=as.data.frame(matrix(NA,nrow=nrow(cx_table)*nrow(df_run),ncol=1+ncol(df_run)))
       colnames(df_cx)=c("run_name",colnames(df_run))
@@ -67,13 +74,13 @@ get_ecosim_cx_biomass=function(cx_table,model,groups=NA)
   df_cx
 }
 
-#' @rdname get_ecosim_cx_
+#' @rdname get_ecosim_cx...
 #' @export
-get_ecosim_cx_catch=function(cx_table,model,groups=NA)
+get_ecosim_cx_catch=function(cx_table,model,groups=NA,relative=F)
 {
   df_cx=NULL
   for(i in 1:nrow(cx_table)) {
-    df_run=get_ecosim_run_catch(cx_table$folder[i],model,groups)  #get biomasses for run
+    df_run=get_ecosim_run_catch(cx_table$folder[i],model,groups,relative)  #get biomasses for run
     if(is.null(df_cx)) {   #create data frame for all runs if not exisiting yet
       df_cx=as.data.frame(matrix(NA,nrow=nrow(cx_table)*nrow(df_run),ncol=1+ncol(df_run)))
       colnames(df_cx)=c("run_name",colnames(df_run))

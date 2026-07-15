@@ -64,17 +64,52 @@ sampler_random=function(factor_set, size=1)
   df
 }
 
+#' Create a full factorial (cpmoutational) experiment
+#'
+#' Creates a data frame with all factor combinations in a factor set.
+#'
+#' @param factor_set A factor set including all factor levels to combine.
+#'
+#' @returns A data frame with 'size' rows and automatically generated run ID, sub-ID, run_name and comment columns; as well as one column per factor. Each row contains one combination of factors. Together, the data frame covers all possible combinations
+#' @export
+#'
+sampler_full_factorial=function(factor_set)
+{
+  factor_list=list()
+  for(outer in 1:length(factor_set))
+  {
+    for(inner in 1:length(factor_set[[outer]]))
+    {
+      factor_name=names(factor_set[[outer]])[inner]
+      factor_options=names(factor_set[[outer]][[factor_name]])
+      factor_list[[factor_name]]=factor_options
+    }
+  }
+  d_factors=expand.grid(factor_list)
+
+  #make data frame with run ids, names etc., then merge
+  df=data.frame("run_id"=rep("",nrow(d_factors)),"sub_id"=rep("",nrow(d_factors)),"run_name"=rep("",nrow(d_factors)), "comment"=rep("",nrow(d_factors)))
+
+  for(i in 1:nrow(df))
+  {
+    df[i,][["run_id"]]=formatC(i, width = max(4,nchar(as.character(nrow(df)))), flag = "0")
+    df[i,][["sub_id"]]="0000"
+    df[i,][["run_name"]]=paste0("R",df[i,][["run_id"]],"_",df[i,][["sub_id"]])
+    df[i,][["comment"]]=paste("Full factorial experiment, combination",i,"of",nrow(df))
+  }
+
+  df=cbind(df,d_factors)
+
+  df
+
+}
+
 # sampler_morris=function(factor_set)
 # {
 #
 # }
-#
-# sampler_full_factorial=function()
-# {
-#
-# }
-#
-# sampler_variancebased=function()
+
+# sampler_sobol=function()
 # {
 #
 # }

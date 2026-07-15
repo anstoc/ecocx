@@ -14,7 +14,9 @@ write_json_file=function(i,cx_table,design,factor_set)
 {
   file_conn=file(cx_table$json[i])
   on.exit(close(file_conn))
-  writeLines(create_json_vector(i,cx_table,design,factor_set), file_conn)
+  v=create_json_vector(i,cx_table,design,factor_set)
+  v=v[nchar(v)>0]
+  writeLines(v, file_conn)
   return()
 }
 
@@ -105,12 +107,22 @@ create_json_changes_ecosim=function(x,design,factor_set)
     fleet=names(factor_set$fishing_effort)[[i]]
     choice=design[x,][[fleet]]
     ecosim_id=i #TODO reference by name once implemented
-    values=factor_set$fishing_effort[[i]][[choice]]$values+1
+    values=factor_set$fishing_effort[[i]][[choice]]$values
     v_changes[4+i]=paste0('      "ecosim.effort[',ecosim_id,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
     if(i<length(factor_set$fishing_effort)) {v_changes[4+i]=paste0(v_changes[4+i],",")}
   }
-  #TODO add time series etc. when they become available
-  ix=4+length(factor_set$fishing_effort)
+  if(length(factor_set$forcing_functions)>0) {v_changes[4+length(factor_set$fishing_effort)]=paste0(v_changes[4+length(factor_set$fishing_effort)],",")}
+  #add forcing function (driver) modification
+  for(i in 1:length(factor_set$forcing_functions))
+  {
+    func=names(factor_set$forcing)[[i]]
+    choice=design[x,][[func]]
+    ecosim_id=i #TODO reference by name once implemented
+    values=factor_set$forcing_functions[[i]][[choice]]$values
+    v_changes[4+length(factor_set$fishing_effort)+i]=paste0('      "ecosim.forcingfunction[',ecosim_id,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
+    if(i<length(factor_set$forcing_functions)) {v_changes[4+length(factor_set$fishing_effort)+i]=paste0(v_changes[4+length(factor_set$fishing_effort)+i],",")}
+  }
+  ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)
   v_changes[ix+1]='      }'
   v_changes[ix+2]='    }'
   v_changes[ix+3]='  ]'
