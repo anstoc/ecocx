@@ -5,7 +5,7 @@
 #' The factor set contain lists of alternative fishing effort, environmental response shapes, and other potential factors that might vary between model runs.
 #' First, use this function to generate a factor set with one level per factor,then add alternatives with add_ecosim_factor_level().
 #'
-#' @param m An Ecosim model object created with load_model_from_xml().
+#' @param m An Ecosim model object created with \code{load_model_from_xml()}.
 #' @param default_name Name that the default value
 #'
 #' @returns A list of factors like fishing effort and environmental time series with their default values in the model.
@@ -18,7 +18,6 @@
 new_ecosim_factor_set=function(m, default_name="default")
 {
   factor_set=list()
-  class(factor_set)="ecocx_factor_set"
 
   factor_set$tables=list()
 
@@ -28,8 +27,7 @@ new_ecosim_factor_set=function(m, default_name="default")
 
   #mediation table
   factor_set$tables$mediation=list()
-  factor_set$tables$mediation[[default_name]]=m$ecosim$mediation_table
-
+  factor_set$tables$mediation[[default_name]]=m$ecosim$mediation
   #vulnerabilities
   factor_set$tables$vulnerability=list()
   factor_set$tables$vulnerability[[default_name]]=m$ecosim$vulnerabilities
@@ -39,6 +37,7 @@ new_ecosim_factor_set=function(m, default_name="default")
   for(i in 1:length(m$ecosim$fishing_effort)) {
     factor_set$fishing_effort[[names(m$ecosim$fishing_effort)[i]]]=list()
     factor_set$fishing_effort[[names(m$ecosim$fishing_effort)[i]]][[default_name]]=m$ecosim$fishing_effort[[i]]
+    factor_set$fishing_effort[[names(m$ecosim$fishing_effort)[i]]][[default_name]]$factor_value=1
   }
 
   #forcing functions
@@ -46,6 +45,7 @@ new_ecosim_factor_set=function(m, default_name="default")
   for(i in 1:length(m$ecosim$forcing_functions)) {
     factor_set$forcing_functions[[names(m$ecosim$forcing_functions)[i]]]=list()
     factor_set$forcing_functions[[names(m$ecosim$forcing_functions)[i]]][[default_name]]=m$ecosim$forcing_functions[[i]]
+    factor_set$forcing_functions[[names(m$ecosim$forcing_functions)[i]]][[default_name]]$factor_value=1
   }
 
   #shapes
@@ -55,12 +55,12 @@ new_ecosim_factor_set=function(m, default_name="default")
     factor_set$shapes[[names(m$ecosim$shapes)[i]]][[default_name]]=m$ecosim$shapes[[i]]
   }
 
+  class(factor_set)="ecocx_factor_set"
   factor_set
-
 }
 
 
-#' Get length of a forcing function time series
+#' Get length of an effort time series
 #'
 #' @param factor_set A factor set created with new_ecosim_factor_set()
 #' @param fleet_name Name of the fleet
@@ -80,9 +80,10 @@ get_ecosim_effort_length=function(factor_set,fleet_name)
 #' @param fleet_name Name of the fleet
 #' @param option_name Name for the new option
 #' @param effort_values A numeric vector with the new effort values. It must have the same length as the existing effort time series for the fleet.
+#' @param factor_value A single value of the factor used in sensitivity analysis. For example, if this options doubles fishing effort compared to a baseline effort, this parameter should be 2, and for the baseline option, 1. Used in elementary effects method and Sobol indices.
 #' @returns An updated factor set object.
 #' @export
-add_option_ecosim_effort=function(factor_set,fleet_name,option_name,effort_values)
+add_option_ecosim_effort=function(factor_set,fleet_name,option_name,effort_values,factor_value=NA)
 {
   #check if inputs are consistent with model information and effort values are >=0
   if(!(fleet_name %in% names(factor_set$fishing_effort))) {stop(paste("Fleet",fleet_name,"not found in factor_set."))}
@@ -93,6 +94,7 @@ add_option_ecosim_effort=function(factor_set,fleet_name,option_name,effort_value
   #create the new effort option
   new_option=factor_set$fishing_effort[[fleet_name]][[1]]
   new_option$values=effort_values
+  new_option$factor_value=factor_value
   factor_set$fishing_effort[[fleet_name]][[option_name]]=new_option
 
   return(factor_set)
@@ -124,7 +126,6 @@ remove_option_ecosim_effort=function(factor_set,fleet_name,option_name)
 }
 
 ###
-
 #' Get length of a forcing function (time series)
 #'
 #' @param factor_set A factor set created with new_ecosim_factor_set()
@@ -143,9 +144,10 @@ get_ecosim_forcing_length=function(factor_set,forcing_name)
 #' @param forcing_name Name of the forcing function
 #' @param option_name Name of the new option
 #' @param forcing_values Numeric vector with the new values for the forcing function. It must have the same length as the existing effort time series for the fleet.
+#' @param factor_value A single value of the factor used in sensitivity analysis. For example, if this options represents a 2 degree temperetaure change over a baseline option, this parameter should be 2, vs. 0 for the baseline.
 #' @returns An updated factor set object.
 #' @export
-add_option_ecosim_forcing=function(factor_set,forcing_name,option_name,forcing_values)
+add_option_ecosim_forcing=function(factor_set,forcing_name,option_name,forcing_values, factor_value)
 {
   #check if inputs are consistent with model information
   if(!(forcing_name %in% names(factor_set$forcing_functions))) {stop(paste("Forcing function",forcing_name,"not found in factor_set."))}
@@ -168,7 +170,6 @@ add_option_ecosim_forcing=function(factor_set,forcing_name,option_name,forcing_v
 #' @param factor_set A factor set created with new_ecosim_factor_set()
 #' @param forcing_name Name of the forcing function
 #' @param option_name Name of the option to remove
-#'
 #' @returns An updated factor set object.
 #' @export
 remove_option_ecosim_forcing=function(factor_set,forcing_name,option_name)
@@ -315,15 +316,32 @@ summary.ecocx_factor_set=function(object, ...)
   d
 }
 
-
+get_factor_values=function(factor_set)
+{
+  d=data.frame(Type=character(),Name=character(),Level=character(),Value=numeric(),stringsAsFactors=FALSE)
+  for(type in names(factor_set)) {
+    for(name in names(factor_set[[type]])) {
+      for(level in names(factor_set[[type]][[name]]))
+      {
+        if("factor_value" %in% names(factor_set[[type]][[name]][[level]])) {
+          h=factor_set[[type]][[name]][[level]][["factor_value"]]} else {h=NA}
+        new_row=data.frame("type"=type,"name"=name,"level"=level,"factor_value"=h)
+        d=rbind(d,new_row)
+      }
+    }
+  }
+  d
+}
 
 #TODO
 
 #options for foraging response tables
 #options for mediation response tables
 
+###########################
 
-#' Plot function for factor sets
+
+#' Plot function for factor sets - AI fenerated, bad. Need a better one
 #'
 #' @param object The factor set
 #' @param ... Unused

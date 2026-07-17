@@ -1,8 +1,8 @@
 test_that("Creating a factor set from a model works", {
   m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   factor_list=new_ecosim_factor_set(m)
-  expect_equal(factor_list$fishing_effort$Trawlers$default, m$ecosim$fishing_effort$Trawlers)
-  expect_equal(factor_list$forcing_functions$Tbottom$default, m$ecosim$forcing_functions$Tbottom)
+  expect_equal(factor_list$fishing_effort$Trawlers$default$values, m$ecosim$fishing_effort$Trawlers$values)
+  expect_equal(factor_list$forcing_functions$Tbottom$default$values, m$ecosim$forcing_functions$Tbottom$values)
 })
 
 test_that("Obtaining the effort time series length from a factor set works", {

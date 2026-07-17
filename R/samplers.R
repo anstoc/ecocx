@@ -10,23 +10,6 @@ sample_option_from_list=function(factor)
   if(length(factor)<1) {return(NA)} else {return(sample(1:length(factor),size=1))}
 }
 
-# #walk structure and find leaves with their type. This from Claude
-# extract_nodes <- function(x, parent = NA, parent_class = NULL) {
-#   result <- data.frame(child = character(0), parent = character(0), stringsAsFactors = FALSE)
-#   nms <- names(x)
-#   for (i in seq_along(x)) {
-#     child <- x[[i]]
-#     nm <- if (is.null(nms)) NA else nms[i]
-#     is_leaf <- !is.list(child)
-#     has_class <- !is.null(parent_class) && inherits(child, parent_class)
-#     if (is_leaf || has_class) {
-#       result <- rbind(result, data.frame(child = nm, parent = parent, stringsAsFactors = FALSE))
-#     } else if (is.list(child)) {
-#       result <- rbind(result, extract_nodes(child, parent = nm, parent_class = parent_class))
-#     }
-#   }
-#   result
-# }
 
 #' Randomly sample factor levels for standard Monte Carlo runs
 #'
@@ -104,10 +87,12 @@ sampler_full_factorial=function(factor_set)
 
 }
 
-# sampler_morris=function(factor_set)
-# {
-#
-# }
+
+
+sampler_morris=function(factor_set)
+{
+
+}
 
 # sampler_sobol=function()
 # {

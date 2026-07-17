@@ -35,7 +35,7 @@ df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
 y_ff=df_cx[df_cx$timestep==max(df_cx$timestep),]
 df_ff=cbind(design_ff[order(design_ff$run_name),],y_ff[order(y_ff$run_name),])
 
-sensitivity_results=calculate_effects_ff("Mackarel",colnames(design_ff[,-(1:4)]),df_ff)
+sensitivity_results=calculate_effects_ff("Zooplankton",colnames(design_ff[,-(1:4)]),df_ff)
 
 #from Claude:
 effect_matrix <- rbind(

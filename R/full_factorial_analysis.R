@@ -1,5 +1,14 @@
 #contains functions to analyze full factorial experiments
 
+#' Calculate main and total effects from a full factorial experiment
+#'
+#' @param output_name Name of the output column in \code{df_ff}.
+#' @param factor_names Names of the factor columns in \code{df_ff}.
+#' @param df_ff Data frame where rows represent runs in a full factorial experiment and columns represent
+#'
+#' @returns Data frame with main and total effects.
+#' @export
+
 calculate_effects_ff=function(output_name, factor_names, df_ff)
 {
   for (f in factor_names) {df_ff[[f]]=as.factor(df_ff[[f]])}

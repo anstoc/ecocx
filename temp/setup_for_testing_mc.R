@@ -4,11 +4,11 @@ xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_
 m=load_model_from_xml(xml_model)
 factor_set=new_ecosim_factor_set(m)
 
-factor_set=add_option_ecosim_forcing(factor_set,"Tbottom","warmer_2deg",factor_set$forcing_functions$Tbottom$default$values+2)
+factor_set=add_option_ecosim_forcing(factor_set,"Tbottom","warmer_2deg",factor_set$forcing_functions$Tbottom$default$values+2,factor_value=3)
 
 factor_set=add_option_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,get_ecosim_forcing_length(factor_set,"PPanomaly")))
 
-factor_set=add_option_ecosim_effort(factor_set,"Sealers","higher20p",1.2*factor_set$fishing_effort$Sealers$default$values)
+factor_set=add_option_ecosim_effort(factor_set,"Sealers","higher20p",1.2*factor_set$fishing_effort$Sealers$default$values,factor_value=1.2)
 factor_set=add_option_ecosim_effort(factor_set,"Sealers","lower20p",0.8*factor_set$fishing_effort$Sealers$default$values)
 
 factor_set=add_option_ecosim_effort(factor_set,"Trawlers","higher20p",1.2*factor_set$fishing_effort$Trawlers$default$values)

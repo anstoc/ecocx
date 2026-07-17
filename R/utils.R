@@ -26,3 +26,45 @@ get_path_to_exampledata=function()
 {
   paste0(system.file('extdata', package = 'ecocx'),"/")
 }
+
+#' Gradually change values by multiplying with a factor
+#' @param values Numeric vector with the original values.
+#' @param multi Multiplier. For example, 1.2 implies a 20 percent increase and 0.8 a 20 percent decrease.
+#' @param start Index where change starts
+#' @param end Index where change ends
+#' @returns Numeric vector that contains original values before \code{start}, \code{multi} times the original values from \code{end} onwards, and linearly changed values in between.
+#' @export
+#' @examples
+#' v1=c(1,1,1,1,1)
+#' ecocx::change_values_mult(v1,1.5,2,4)
+change_values_mult=function(values,multi,start,end)
+{
+  v_mult=numeric(length(values))
+  steps=end-start+1
+  v_mult[1:(start-1)]=0
+  v_mult[start:end]=(1:(length(start:end)))*(multi-1)/steps
+  v_mult[end:length(v_mult)]=multi-1
+  v_mult=v_mult+1
+  values*v_mult
+}
+
+#' Gradually change values by adding a number
+#' @param values Numeric vector with the original values.
+#' @param summand The number to add.
+#' @param start Index where change starts.
+#' @param end Index where change ends.
+#' @returns Numeric vector that contains original values before \code{start}, the original values plus \code{summand} from \code{end} onwards, and linearly changed values in between.
+#' @export
+#' @examples
+#' v1=c(2,2,2,2,2)
+#' ecocx::change_values_add(v1,1,2,4)
+change_values_add=function(values,summand,start,end)
+{
+  v_add=numeric(length(values))
+  steps=end-start+1
+  v_add[1:(start-1)]=0
+  v_add[start:end]=(1:(length(start:end)))*(summand)/steps
+  v_add[end:length(v_add)]=summand
+  values+v_add
+
+}
