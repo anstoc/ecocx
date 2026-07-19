@@ -78,8 +78,20 @@ test_that("Summary function for a factor set works", {
   factor_list=new_ecosim_factor_set(m)
   factor_list=add_option_ecosim_effort(factor_list,"Baitboats","phase_out",rep(0,get_ecosim_effort_length(factor_list,"Baitboats")))
   h=summary(factor_list)
+
   expect_equal(h$options[h$name=="Tempcold"],1)
   expect_equal(h$options[h$name=="Baitboats"],2)
 })
 
+test_that("Setting and reading scalar values for each factor works", {
+  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  factor_set=new_ecosim_factor_set(m)
+  factor_set=add_option_ecosim_effort(factor_set,"Baitboats","phase_out",rep(0,get_ecosim_effort_length(factor_list,"Baitboats")),factor_value=0.01)
+  h=get_factor_scalar_values(factor_set)
+  expect_equal(h$factor_value[h$level=="phase_out"],0.01)
 
+  h$factor_value=1:nrow(h)
+  factor_set=set_factor_scalar_values(factor_set,h)
+  expect_equal(factor_set$fishing_effort$Baitboats$default$factor_value,7)
+  expect_equal(factor_set$fishing_effort$Baitboats$phase_out$factor_value,8)
+})

@@ -7,7 +7,7 @@
 new_ecosim_factor_set(m, default_name = "default")
 }
 \arguments{
-\item{m}{An Ecosim model object created with load_model_from_xml().}
+\item{m}{An Ecosim model object created with \code{load_model_from_xml()}.}
 
 \item{default_name}{Name that the default value}
 }

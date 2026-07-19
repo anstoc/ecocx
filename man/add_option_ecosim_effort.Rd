@@ -4,7 +4,13 @@
 \alias{add_option_ecosim_effort}
 \title{Add an additional option for the fishing effort time series of a fleet}
 \usage{
-add_option_ecosim_effort(factor_set, fleet_name, option_name, effort_values)
+add_option_ecosim_effort(
+  factor_set,
+  fleet_name,
+  option_name,
+  effort_values,
+  factor_value = NA
+)
 }
 \arguments{
 \item{factor_set}{A factor set created with new_ecosim_factor_set()}
@@ -14,6 +20,8 @@ add_option_ecosim_effort(factor_set, fleet_name, option_name, effort_values)
 \item{option_name}{Name for the new option}
 
 \item{effort_values}{A numeric vector with the new effort values. It must have the same length as the existing effort time series for the fleet.}
+
+\item{factor_value}{A single value of the factor used in sensitivity analysis. For example, if this options doubles fishing effort compared to a baseline effort, this parameter should be 2, and for the baseline option, 1. Used in elementary effects method and Sobol indices.}
 }
 \value{
 An updated factor set object.

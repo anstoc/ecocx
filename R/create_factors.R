@@ -289,23 +289,6 @@ remove_option_ecosim_vulnerability=function(factor_set,option_name)
 #' @exportS3Method base::summary ecocx_factor_set
 summary.ecocx_factor_set=function(object, ...)
 {
-  # d=data.frame(Type=character(),Name=character(),Options=numeric(),stringsAsFactors=FALSE)
-  # for(name in names(object$forcing_functions)) {
-  #   new_row=data.frame(Type="Forcing function",Name=name,Options=length(names(object$forcing_functions[[name]])))
-  #   d=rbind(d,new_row)
-  # }
-  # for(name in names(object$fishing_effort)) {
-  #   new_row=data.frame(Type="Fishing effort",Name=name,Options=length(names(object$fishing_effort[[name]])))
-  #   d=rbind(d,new_row)
-  # }
-  # for(name in names(object$shapes)) {
-  #   new_row=data.frame(Type="Shape",Name=name,Options=length(names(object$shapes[[name]])))
-  #   d=rbind(d,new_row)
-  # }
-  # d=rbind(d,data.frame(Type="Table",Name="Vulnerability table",Options=length(object$vulnerability_tables)))
-  # d=rbind(d,data.frame(Type="Foraging response table",Name="Foraging response table",Options=length(object$foraging_resp_tables)))
-  # d=rbind(d,data.frame(Type="Mediation table",Name="Mediation table",Options=length(object$mediation_tables)))
-
   d=data.frame(Type=character(),Name=character(),Options=numeric(),stringsAsFactors=FALSE)
   for(type in names(object)) {
     for(name in names(object[[type]])) {
@@ -316,7 +299,13 @@ summary.ecocx_factor_set=function(object, ...)
   d
 }
 
-get_factor_values=function(factor_set)
+#' Get scalar factor values from a factor set
+#'
+#'Some sensitivity analysis methods (e.g., elementary effects, Sobol) require or benefit from (e.g., machine learning using ordered instead of categorical factor levels) each factor to have a scalar value representing the magnitude of change between levels.
+#'
+#' @param factor_set A factor set.
+#' @returns Data frame containing all factors and levels with their values.
+get_factor_scalar_values=function(factor_set)
 {
   d=data.frame(Type=character(),Name=character(),Level=character(),Value=numeric(),stringsAsFactors=FALSE)
   for(type in names(factor_set)) {
@@ -333,159 +322,22 @@ get_factor_values=function(factor_set)
   d
 }
 
-#TODO
-
-#options for foraging response tables
-#options for mediation response tables
-
-###########################
-
-
-#' Plot function for factor sets - AI fenerated, bad. Need a better one
+#' Set scalar factor values in a factor set
 #'
-#' @param object The factor set
-#' @param ... Unused
+#'Some sensitivity analysis methods (e.g., elementary effects, Sobol) require or benefit from (e.g., machine learning using ordered instead of categorical factor levels) each factor to have a scalar value representing the magnitude of change between levels.
 #'
-#' Shows one plot for each option in the factor set.
-#'
-#' @returns Nothing.
-#' @exportS3Method base::plot ecocx_factor_set
-plot.ecocx_factor_set <- function(x, ...) {
-
-  col <- "steelblue"
-
-  ## ---- pretty category labels (fallback: prettified name) ---------------
-  pretty_category <- function(key) {
-    lbl <- c(fishing_effort       = "Fishing effort",
-             forcing_functions    = "Forcing function",
-             shapes               = "Shape",
-             vulnerability_tables = "Vulnerability table",
-             mediation_tables     = "Mediation table",
-             foraging_resp_tables = "Foraging response table")
-    if (key %in% names(lbl)) lbl[[key]]
-    else tools::toTitleCase(gsub("_", " ", key))
+#' @param factor_set A factor set.
+#' @param values_table A data frame created with \code{get_factor_scalar_values}. The column factor_value should be set to the new values.
+#' @returns Factor set with the set values.
+set_factor_scalar_values=function(factor_set, values_table)
+{
+  for(i in 1:nrow(values_table))
+  {
+    factor_set[[values_table$type[i]]][[values_table$name[i]]][[values_table$level[[i]]]][["factor_value"]]=values_table$factor_value[i]
   }
-
-  make_title <- function(parent, element, node, sc) {
-    nm  <- names(node); pos <- match(sc, nm)
-    head <- if (is.null(element) || identical(element, parent))
-      parent else paste0(parent, " - ", element)
-    sprintf("%s: %s (%d/%d)", head, sc, pos, length(nm))
-  }
-
-  ## ---- leaf drawing routines, keyed by class ----------------------------
-  draw_timeseries <- function(obj, title) {           # EcosimEffortTS / EcosimForcingF
-    op <- par(mar = c(4, 4, 2.5, 1)); on.exit(par(op))
-    v <- obj$values
-    plot(seq_along(v), v, type = "l", col = col,
-         main = title, xlab = "Time step", ylab = "Value", ...)
-  }
-  draw_shape <- function(obj, title) {                # EcosimShape
-    op <- par(mar = c(4, 4, 2.5, 1)); on.exit(par(op))
-    xv <- if (!is.null(obj$x)) obj$x else seq_along(obj$y)
-    plot(xv, obj$y, type = "l", col = col,
-         main = title, xlab = "x", ylab = "y", ...)
-  }
-  draw_heat <- function(m, title) {                   # numeric matrix
-    nr <- nrow(m); nc <- ncol(m)
-    op <- par(mar = c(7, 7, 3, 2)); on.exit(par(op))
-    image(seq_len(nc), seq_len(nr), t(m[nr:1, , drop = FALSE]),
-          axes = FALSE, xlab = "", ylab = "", main = title,
-          col = hcl.colors(24, "YlOrRd", rev = TRUE))
-    axis(1, at = seq_len(nc), labels = colnames(m), las = 2, cex.axis = 0.7)
-    axis(2, at = seq_len(nr), labels = rev(rownames(m)), las = 2, cex.axis = 0.7)
-    box()
-    for (i in seq_len(nr)) for (j in seq_len(nc)) {
-      v <- m[i, j]
-      if (!is.na(v)) text(j, nr - i + 1, formatC(v, digits = 2, format = "g"), cex = 0.6)
-    }
-  }
-  draw_table <- function(df, title) {                 # data.frame
-    nr <- nrow(df); nc <- ncol(df)
-    op <- par(mar = c(1, 1, 3, 1)); on.exit(par(op))
-    plot(NA, xlim = c(0, nc), ylim = c(0, nr + 1),
-         axes = FALSE, xlab = "", ylab = "", main = title)
-    text(seq_len(nc) - 0.5, nr + 0.5, colnames(df), font = 2, cex = 0.8)
-    for (i in seq_len(nr)) {
-      yr <- nr - i + 0.5
-      for (j in seq_len(nc)) text(j - 0.5, yr, as.character(df[i, j]), cex = 0.75)
-    }
-    abline(h = 0:nr, col = "grey85"); abline(v = 0:nc, col = "grey85")
-    abline(h = nr, col = "grey40")
-  }
-
-  # decide drawing routine for one leaf; returns a function(title) or NULL
-  dispatch_leaf <- function(leaf) {
-    cls <- attr(leaf, "class")
-    if (!is.null(cls)) {
-      if ("EcosimShape" %in% cls)                   return(function(t) draw_shape(leaf, t))
-      if (any(c("EcosimEffortTS", "EcosimForcingF") %in% cls))
-        if (!is.null(leaf$values))                  return(function(t) draw_timeseries(leaf, t))
-    }
-    if (is.matrix(leaf) && is.numeric(leaf))        return(function(t) draw_heat(leaf, t))
-    if (is.data.frame(leaf))                        return(function(t) draw_table(leaf, t))
-    if (is.list(leaf) && !is.null(leaf$values))     return(function(t) draw_timeseries(leaf, t))
-    if (is.list(leaf) && !is.null(leaf$y))          return(function(t) draw_shape(leaf, t))
-    NULL
-  }
-
-  ## ---- walk the tree: category -> element -> scenario -------------------
-  panels <- list()  # each: list(draw = function(title), title = chr)
-
-  for (cat in names(x)) {
-    catnode <- x[[cat]]
-    if (!is.list(catnode)) next
-    catlabel <- pretty_category(cat)
-
-    for (elem in names(catnode)) {
-      node <- catnode[[elem]]
-
-      # Case A: the element node is ITSELF a drawable leaf (the tables:
-      #   vulnerability_tables$default is the matrix; mediation_tables$default
-      #   is the data frame). There is no scenario level beneath it.
-      drawer <- dispatch_leaf(node)
-      if (!is.null(drawer)) {
-        sc    <- elem                       # the element name acts as scenario
-        title <- make_title(catlabel, NULL, catnode, sc)
-        panels[[length(panels) + 1L]] <- list(draw = drawer, title = title)
-        next
-      }
-
-      # Case B: the element node is a container of scenarios (fleets, forcing
-      #   functions, shapes): category -> element -> scenario -> leaf.
-      if (!is.list(node)) next
-
-      element_is_redundant <- identical(elem, cat) ||
-        (length(names(catnode)) == 1L && identical(tolower(elem), "default"))
-
-      for (sc in names(node)) {
-        leaf   <- node[[sc]]
-        drawer <- dispatch_leaf(leaf)
-        if (is.null(drawer)) next
-
-        label <- if (is.list(leaf) && !is.null(leaf$name)) leaf$name else elem
-        if (element_is_redundant) label <- NULL
-
-        title <- make_title(catlabel, label, node, sc)
-        panels[[length(panels) + 1L]] <- list(draw = drawer, title = title)
-      }
-    }
-  }
-
-  n <- length(panels)
-  if (n == 0L) {
-    warning("No plottable components found.")
-    return(invisible(x))
-  }
-
-  ## ---- draw, one panel per leaf, advancing on key stroke ----------------
-  if (interactive() && n > 1L) {
-    oask <- devAskNewPage(TRUE); on.exit(devAskNewPage(oask))
-  }
-
-  for (p in panels) p$draw(p$title)
-
-  invisible(x)
+  factor_set
 }
 
+#TODO
+#other factors/options
 

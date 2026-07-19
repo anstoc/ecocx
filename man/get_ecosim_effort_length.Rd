@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_factors.R
 \name{get_ecosim_effort_length}
 \alias{get_ecosim_effort_length}
-\title{Get length of a forcing function time series}
+\title{Get length of an effort time series}
 \usage{
 get_ecosim_effort_length(factor_set, fleet_name)
 }
@@ -15,5 +15,5 @@ get_ecosim_effort_length(factor_set, fleet_name)
 Length of the time series (i.e., the number of time steps).
 }
 \description{
-Get length of a forcing function time series
+Get length of an effort time series
 }
