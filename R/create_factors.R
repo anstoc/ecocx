@@ -147,7 +147,7 @@ get_ecosim_forcing_length=function(factor_set,forcing_name)
 #' @param factor_value A single value of the factor used in sensitivity analysis. For example, if this options represents a 2 degree temperetaure change over a baseline option, this parameter should be 2, vs. 0 for the baseline.
 #' @returns An updated factor set object.
 #' @export
-add_option_ecosim_forcing=function(factor_set,forcing_name,option_name,forcing_values, factor_value)
+add_option_ecosim_forcing=function(factor_set,forcing_name,option_name,forcing_values, factor_value=NA)
 {
   #check if inputs are consistent with model information
   if(!(forcing_name %in% names(factor_set$forcing_functions))) {stop(paste("Forcing function",forcing_name,"not found in factor_set."))}
@@ -158,6 +158,7 @@ add_option_ecosim_forcing=function(factor_set,forcing_name,option_name,forcing_v
   #create the new forcing option
   new_option=factor_set$forcing_functions[[forcing_name]][[1]]
   new_option$values=forcing_values
+  new_option$factor_value=factor_value
   factor_set$forcing_functions[[forcing_name]][[option_name]]=new_option
 
   return(factor_set)

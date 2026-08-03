@@ -87,7 +87,46 @@ sampler_full_factorial=function(factor_set)
 
 }
 
+#range_table: type,name, start, min, max, p. Include only those factors to set up for EE
+create_ee_levels=function(factor_set,range_table, start_change, end_change)
+{
+  fac_summary=summary(factor_set)
+  if(max(fac_summary$options)>=3) {stop("Initial factor set must not contain factors with more than two levels. Factors with two level will be set to binary choices. Factors with one level will be expanded according to the range table (but factors with one level that are not listed in the range table are omitted).")}
+  #for factors with two levels, set their scalar values to 0 and 1.
+  for(ix in which(fac_summary$options==2))
+  {
+    factor_set[[fac_summary$type[ix]]][[fac_summary$name[ix]]][[1]]$factor_value=0
+    factor_set[[fac_summary$type[ix]]][[fac_summary$name[ix]]][[2]]$factor_value=1
+  }
+  #for factors with an entry in the range table, create p levels between min and max
+  for(i in 1:nrow(range_table))
+  {
+    if(range_table$p[i] %%2 !=0) {stop("p should be even; 4,6,and 8 are common choices.")}
+    if(fac_summary$options[fac_summary$name==range_table$name[i] & fac_summary$type==range_table$type[i]] > 1) {
+      warning("Skipping factors in the range table that already have more than one option.")} else {
+      #create p levels with start point until start_change, the linear change to the required level based on the range table until end_change, then the new (level) value
+      p=range_table$p[i]
+      p_levels=0:(p-1)/(p-1)
+      #create one option for each level
+      for(level in p_levels) {
+        #create values
+        start=range_table$start[i]
+        end=range_table$min[i]+level*(range_table$max[i]-range_table$min[i])
+        level_values=rep(start,length(factor_set[[range_table$type[i]]][[range_table$name[i]]][[1]]$values))
+        level_values=change_values_add(level_values,(end-start),start_change,end_change)
+        if(range_table$type[i]=="fishing_effort") {
+          factor_set=add_option_ecosim_effort(factor_set,range_table$name[i],paste0("ee",level),level_values,level)
+        } else if(range_table$type[i]=="forcing_functions") {
+          factor_set=add_option_ecosim_forcing(factor_set,range_table$name[i],paste0("ee",level),level_values,level)
+        }
+      }
+    }
+    factor_set[[range_table$type[i]]][[range_table$name[i]]][[1]] = NULL
+  }
 
+  factor_set
+
+}
 
 sampler_morris=function(factor_set)
 {

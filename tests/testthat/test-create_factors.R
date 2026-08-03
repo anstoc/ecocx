@@ -86,7 +86,7 @@ test_that("Summary function for a factor set works", {
 test_that("Setting and reading scalar values for each factor works", {
   m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   factor_set=new_ecosim_factor_set(m)
-  factor_set=add_option_ecosim_effort(factor_set,"Baitboats","phase_out",rep(0,get_ecosim_effort_length(factor_list,"Baitboats")),factor_value=0.01)
+  factor_set=add_option_ecosim_effort(factor_set,"Baitboats","phase_out",rep(0,get_ecosim_effort_length(factor_set,"Baitboats")),factor_value=0.01)
   h=get_factor_scalar_values(factor_set)
   expect_equal(h$factor_value[h$level=="phase_out"],0.01)
 
