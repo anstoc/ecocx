@@ -115,9 +115,9 @@ create_ee_levels=function(factor_set,range_table, start_change, end_change)
         level_values=rep(start,length(factor_set[[range_table$type[i]]][[range_table$name[i]]][[1]]$values))
         level_values=change_values_add(level_values,(end-start),start_change,end_change)
         if(range_table$type[i]=="fishing_effort") {
-          factor_set=add_option_ecosim_effort(factor_set,range_table$name[i],paste0("ee",level),level_values,level)
+          factor_set=add_option_ecosim_effort(factor_set,range_table$name[i],paste0("ee",round(level,2)),level_values,level)
         } else if(range_table$type[i]=="forcing_functions") {
-          factor_set=add_option_ecosim_forcing(factor_set,range_table$name[i],paste0("ee",level),level_values,level)
+          factor_set=add_option_ecosim_forcing(factor_set,range_table$name[i],paste0("ee",round(level,2)),level_values,level)
         }
       }
     }
