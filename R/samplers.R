@@ -87,7 +87,34 @@ sampler_full_factorial=function(factor_set)
 
 }
 
-#range_table: type,name, start, min, max, p. Include only those factors to set up for EE
+
+#' Create factor levels for calculating elementary effects
+#'
+#'
+#' @param factor_set A factor set where no factor has more than two levels. Factors with two levels will be treated as binary factors (on/off). Factors with one level that are in the \code{range_table} will have \code{p} levels between their minimum and maximum, as specified in \code{range_table}.
+#' @param range_table A table describing the minimum and maximum and number of levels (p) for binary factors. Each row describes one factor. Must have columns: (1) type, (2) name, (3) start - the value at the start of simulations, (4) min - then minimum value, max - the maximum value, p - the number of levels to create. Include only continuous factors that should be set up for elementary effects calculation. Note that the number of levels \code{p} is typically 4, 6, or 8.
+#' @param start_change Timestep when factor starts to change.
+#' @param end_change Timestep when factor reaches its new level.
+#'
+#' @returns A factor set where (a) two-level factors in the original factor set have level values 0/1 but are otherwise unchanged, and (b) factors with a single level in the original factor set, if listed in the \code{range_table}, have \code{p} levels between their minimum and maximum.
+#' @export
+#'
+#' @examples
+#' xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
+#' m=ecocx::load_model_from_xml(xml_model)
+#' factor_set=new_ecosim_factor_set(m)
+#' factor_set=ecocx::add_option_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,length(factor_set$forcing_functions$PPanomaly$default$values)))
+#' summary(factor_set)
+#' #obtain default scalar values as basis for range table, only modify fishing effort and temperature, keep PPAnomaly as yes/no
+#' range_table=ecocx::get_factor_scalar_values(factor_set)
+#' range_table=range_table[c(4:8,11),]
+#' range_table$start=c(1,1,1,1,1,16.5)
+#' range_table$min=c(0,1,0.8,0.8,0.8,16.5)
+#' range_table$max=c(1,3.6,1.2,1.2,1.2,21.5)
+#' range_table$p=rep(4,nrow(range_table))
+#' range_table
+#' factor_set_ee=ecocx::create_ee_levels(factor_set,range_table,200,350)
+#' summary(factor_set_ee)
 create_ee_levels=function(factor_set,range_table, start_change, end_change)
 {
   fac_summary=summary(factor_set)

@@ -306,6 +306,7 @@ summary.ecocx_factor_set=function(object, ...)
 #'
 #' @param factor_set A factor set.
 #' @returns Data frame containing all factors and levels with their values.
+#' @export
 get_factor_scalar_values=function(factor_set)
 {
   d=data.frame(Type=character(),Name=character(),Level=character(),Value=numeric(),stringsAsFactors=FALSE)
@@ -330,6 +331,7 @@ get_factor_scalar_values=function(factor_set)
 #' @param factor_set A factor set.
 #' @param values_table A data frame created with \code{get_factor_scalar_values}. The column factor_value should be set to the new values.
 #' @returns Factor set with the set values.
+#' @export
 set_factor_scalar_values=function(factor_set, values_table)
 {
   for(i in 1:nrow(values_table))

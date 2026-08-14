@@ -20,7 +20,7 @@ range_table$p=rep(4,nrow(range_table))
 factor_set_ee=create_ee_levels(factor_set,range_table,200,350)
 
 
-#TODO document and test create_ee_levels
+#TODO test create_ee_levels
 #Create EE design
 #Execute EE
 #Calculate elementary effects

@@ -9,7 +9,7 @@ add_option_ecosim_forcing(
   forcing_name,
   option_name,
   forcing_values,
-  factor_value
+  factor_value = NA
 )
 }
 \arguments{
