@@ -25,7 +25,7 @@ test_that("Full factorial sampler works", {
 
 })
 
-test_that("Automated factor creation for elemntary effects method works", {
+test_that("Automated factor creation for elementary effects method works", {
   xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
   m=load_model_from_xml(xml_model)
   factor_set=new_ecosim_factor_set(m)

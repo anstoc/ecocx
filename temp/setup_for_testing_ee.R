@@ -19,10 +19,21 @@ range_table$p=rep(4,nrow(range_table))
 
 factor_set_ee=create_ee_levels(factor_set,range_table,200,350)
 
+#generate design table
+design_ee=sampler_ee(factor_set_ee,20)
 
-#TODO test create_ee_levels
-#Create EE design
-#Execute EE
+#execute design
+out_folder=paste0(tempdir(),"/eetest")
+
+cx_table=run_ecosim_experiment(design_ee,xml_model,factor_set_ee,ewe_link,out_folder,parallel=T)
+
+df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
+
+plot_all_runs(df_cx,alpha=0.02)
+
+#TODO
 #Calculate elementary effects
 #Tutorial
+#Release
+#Porsangerfjord case study
 #Draft paper

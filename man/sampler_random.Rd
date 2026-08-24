@@ -12,7 +12,7 @@ sampler_random(factor_set, size = 1)
 \item{size}{Sample size (the number of Monte Carlo runs)}
 }
 \value{
-A data frame with 'size' rows and automatically generated run ID, sub-ID, run_name and comment columns; as well as one column per factor with a random sample.
+A data frame with automatically generated run ID, sub-ID, run_name and comment columns; as well as one column per factor with a random sample.
 }
 \description{
 Randomly sample factor levels for standard Monte Carlo runs

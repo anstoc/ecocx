@@ -2,7 +2,7 @@
 % Please edit documentation in R/samplers.R
 \name{sampler_full_factorial}
 \alias{sampler_full_factorial}
-\title{Create a full factorial (cpmoutational) experiment}
+\title{Create a full factorial (computational) experiment}
 \usage{
 sampler_full_factorial(factor_set)
 }

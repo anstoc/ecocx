@@ -16,7 +16,7 @@ sample_option_from_list=function(factor)
 #' @param factor_set A factor set including all options to sample from.
 #' @param size Sample size (the number of Monte Carlo runs)
 #'
-#' @returns A data frame with 'size' rows and automatically generated run ID, sub-ID, run_name and comment columns; as well as one column per factor with a random sample.
+#' @returns A data frame with automatically generated run ID, sub-ID, run_name and comment columns; as well as one column per factor with a random sample.
 #' @export
 #'
 sampler_random=function(factor_set, size=1)
@@ -47,7 +47,7 @@ sampler_random=function(factor_set, size=1)
   df
 }
 
-#' Create a full factorial (cpmoutational) experiment
+#' Create a full factorial (computational) experiment
 #'
 #' Creates a data frame with all factor combinations in a factor set.
 #'
@@ -155,10 +155,96 @@ create_ee_levels=function(factor_set,range_table, start_change, end_change)
 
 }
 
-sampler_morris=function(factor_set)
+#' Create a computational experiment for elementary effects calculation (aka the Morris method)
+#'
+#' Creates a data frame with trajectories through factor space for the calculation of elementary effects.
+#'
+#' @param factor_set The factor set. Factors with 1 level are ignored. The other factors must have 2,4,6,8,... levels with equidistant scalar values from 0 to 1 and corresponding changes of their time series/maps. Such a factor set can be created with \code{create_ee_levels} to ensure compliance with the elementary effects method's requirements.
+#' @param r The number of trajectories.
+#'
+#' @returns A data frame with \code{run_id} stating the trajectory, \code{sub_id} stating the model evaluation within each trajectory, \code{run_name} a combination of both, \code{comment} the factor that is changed, and the remaining columns stating the level of each factor in the model run.
+#' @export
+
+sampler_ee=function(factor_set,r)
 {
+  fac_summary=get_factor_scalar_values(factor_set)
+  fac_summary$id=paste0(fac_summary$type,"_",fac_summary$name)
+  h_name=summary(as.factor(fac_summary$name))
+  level_counts=data.frame("id"=names(h_name),"p"=h_name)
+  level_counts=level_counts[level_counts$p>1,]
+  level_counts$delta=level_counts$p/(2*(level_counts$p-1))
+
+  #create design matrix
+  n_runs=r*(nrow(level_counts)+1)
+  df=data.frame("run_id"=rep("",n_runs),"sub_id"=rep("",n_runs),"run_name"=rep("",n_runs), "comment"=rep("",n_runs))
+
+  #loop over all trajectories
+  for(i in 1:r) {
+
+
+    #when building the first trajectory, create a column for each factor
+    factors=rownames(level_counts)
+    if(i==1) {for(fac in factors) {df[[fac]]="not set"}}
+
+    #reorder factors randomly
+    factors=factors[sample(1:nrow(level_counts))]
+
+    #sample starting level for each factor
+    for(fac in factors)
+    {
+      #set factors to random start levels
+      fac_levels=fac_summary$level[fac_summary$name==fac]
+      ix=(i-1)*(nrow(level_counts)+1)+1
+      df[[fac]][ix]=sample(fac_levels,size=1)
+
+      #add run name, run id, etc.
+      digits=max(2,nchar(as.character(r)))
+      df$run_id[ix]=sprintf(paste0("%0",digits,"d"), i)
+      digits_sub=max(2,nchar(as.character(max(summary(as.factor(fac_summary$id)))+1)))
+      df$sub_id[ix]=sprintf(paste0("%0",digits_sub,"d"), 0)
+      df$comment[ix]="start"
+    }
+
+    #change factor
+    for(j in 1:length(factors))
+    {
+      #change the current factor while keeping other factors at their prior level
+      #first: other factors
+      current_row=(i-1)*(nrow(level_counts)+1)+j+1
+      fac_col=which(colnames(df)==factors[j])
+      other_fac_cols=which(colnames(df)!=factors[j] &colnames(df) %in% factors)
+      df[current_row,other_fac_cols]=df[current_row-1,other_fac_cols]
+
+      #then get current and sample new level based on delta
+      current_level=df[current_row-1,fac_col]
+      current_value=fac_summary$factor_value[fac_summary$name==factors[j]&fac_summary$level==current_level]
+      direction=sample(c(-1,1),size=1)
+      new_value=current_value+direction*level_counts$delta[level_counts$id==factors[j]]
+      if(new_value<0 | new_value>1) {new_value=current_value+(-1)*direction*level_counts$delta[level_counts$id==factors[j]]}
+
+      #find corresponding level name
+      fac_levels=fac_summary$level[fac_summary$name==factors[j]]
+      fac_values=fac_summary$factor_value[fac_summary$name==factors[j]]
+      new_level=fac_levels[which.min(abs(fac_values-new_value))]   #allow tolerance in case of rounding issues
+
+      df[current_row,fac_col]=new_level
+
+      #add run_id, sub_id, run_name,comment
+      df$run_id[current_row]=sprintf(paste0("%0",digits,"d"), i)
+      df$sub_id[current_row]=sprintf(paste0("%0",digits_sub,"d"), j)
+      df$comment[current_row]=factors[j]
+    }
+  }
+
+  df$run_name=paste0(df$run_id,"_",df$sub_id)
+
+  df
 
 }
+
+#TODO test sampler_ee
+
+
 
 # sampler_sobol=function()
 # {

@@ -34,6 +34,7 @@ range_table$start=c(1,1,1,1,1,16.5)
 range_table$min=c(0,1,0.8,0.8,0.8,16.5)
 range_table$max=c(1,3.6,1.2,1.2,1.2,21.5)
 range_table$p=rep(4,nrow(range_table))
+range_table
 factor_set_ee=ecocx::create_ee_levels(factor_set,range_table,200,350)
 summary(factor_set_ee)
 }
