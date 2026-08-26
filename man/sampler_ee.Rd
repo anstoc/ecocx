@@ -7,12 +7,12 @@
 sampler_ee(factor_set, r)
 }
 \arguments{
-\item{factor_set}{The factor set. Factors with 1 level are ignored. The other factors must have 2,4,6,8,... levels with equidistant scalar values from 0 to 1 and corresponding changes of their values. Such a factor set can be created with \code{create_ee_levels} to ensure compliance with the elementary effects method's requirements.}
+\item{factor_set}{The factor set. Factors with 1 level are ignored. The other factors must have 2,4,6,8,... levels with equidistant scalar values from 0 to 1 and corresponding changes of their time series/maps. Such a factor set can be created with \code{create_ee_levels} to ensure compliance with the elementary effects method's requirements.}
 
 \item{r}{The number of trajectories.}
 }
 \value{
-A data frame with \code{run_id} stating the trajectory, \code{sub_id} stating the model evaluation within each trajectory, \code{run_name} a combination of both \code{comment} the factor that is changed, and the remaining columns stating the level of each factor in the model run.
+A data frame with \code{run_id} stating the trajectory, \code{sub_id} stating the model evaluation within each trajectory, \code{run_name} a combination of both, \code{comment} the factor that is changed, and the remaining columns stating the level of each factor in the model run.
 }
 \description{
 Creates a data frame with trajectories through factor space for the calculation of elementary effects.

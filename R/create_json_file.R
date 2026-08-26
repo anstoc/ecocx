@@ -123,9 +123,11 @@ create_json_changes_ecosim=function(x,design,factor_set)
     if(i<length(factor_set$forcing_functions)) {v_changes[4+length(factor_set$fishing_effort)+i]=paste0(v_changes[4+length(factor_set$fishing_effort)+i],",")}
   }
   ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)
-  v_changes[ix+1]='      }'
-  v_changes[ix+2]='    }'
-  v_changes[ix+3]='  ]'
+  v_changes[ix]=paste0(v_changes[ix],",")
+  v_changes[ix+1]='      "ecosim.vulnerabilities.load": "C:/Users/ANC/AppData/Local/Temp/RtmpwTDrZk/mctest/data/anchbay.csv"'
+  v_changes[ix+2]='      }'
+  v_changes[ix+3]='    }'
+  v_changes[ix+4]='  ]'
   v_changes
 }
 

@@ -22,6 +22,11 @@ run_ecosim_experiment=function(design, xml_model_path, factor_set, ewe_link, out
   for(i in 1:length(folder_names)) {if(!file.exists(folder_names[i])) {dir.create(folder_names[i])}}
   cx_table=data.frame("run_name"=design$run_name,"model"=xml_model_path,"folder"=paste0(out_folder,"/",design$run_name),"json"=paste0(paste0(out_folder,"/",design$run_name),"/",design$run_name,".json"))
 
+  #create vulnerability matrix CSVs in base folder
+  if(!file.exists(paste0(out_folder,"/data"))) {dir.create(paste0(out_folder,"/data"))}
+  for(v_name in names(factor_set$tables$vulnerability)) {write_vulnerability_csv(factor_set$tables$vulnerability[[v_name]],
+                                                                                   path=paste0(out_folder,"/data/",v_name,".csv")) }
+
   #create .json files
   dummy=lapply(1:nrow(cx_table),FUN=write_json_file, cx_table=cx_table,design=design,factor_set=factor_set)
 

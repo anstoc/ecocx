@@ -242,7 +242,7 @@ sampler_ee=function(factor_set,r)
 
 }
 
-#TODO test sampler_ee
+
 
 
 

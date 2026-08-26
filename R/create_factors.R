@@ -256,6 +256,7 @@ add_option_ecosim_vulnerability=function(factor_set,option_name,v_matrix)
   #check if matrix dimensions are right and if all pred-prey pairs have data or NA like in the original matrix
   if(!identical(dim(v_matrix),dim(factor_set$tables$vulnerability[[1]]))) {stop("The provided vulnerability matrix must have the same dimensions as the matrix in the original models.")}
   if(!identical(is.na(as.numeric(v_matrix)),is.na(as.numeric(factor_set$tables$vulnerability[[1]])))) {stop("The provided vulnerability matrix must have numbers where the original model's matrix has numbers, and NAs where the original model's matrix has NAs.")}
+  if(option_name %in% names(factor_set$tables$vulnerability)) {stop("A vulnerability table with this name already exists.")}
 
   #add to option list
   factor_set$tables$vulnerability[[option_name]]=v_matrix
