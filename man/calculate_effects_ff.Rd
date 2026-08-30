@@ -11,7 +11,7 @@ calculate_effects_ff(output_name, factor_names, df_ff)
 
 \item{factor_names}{Names of the factor columns in \code{df_ff}.}
 
-\item{df_ff}{Data frame where rows represent runs in a full factorial experiment and columns represent}
+\item{df_ff}{Data frame where rows represent runs in a full factorial experiment and columns represent output.}
 }
 \value{
 Data frame with main and total effects.

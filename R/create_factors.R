@@ -144,7 +144,7 @@ get_ecosim_forcing_length=function(factor_set,forcing_name)
 #' @param forcing_name Name of the forcing function
 #' @param option_name Name of the new option
 #' @param forcing_values Numeric vector with the new values for the forcing function. It must have the same length as the existing effort time series for the fleet.
-#' @param factor_value A single value of the factor used in sensitivity analysis. For example, if this options represents a 2 degree temperetaure change over a baseline option, this parameter should be 2, vs. 0 for the baseline.
+#' @param factor_value A single value of the factor used in sensitivity analysis.
 #' @returns An updated factor set object.
 #' @export
 add_option_ecosim_forcing=function(factor_set,forcing_name,option_name,forcing_values, factor_value=NA)
@@ -194,9 +194,10 @@ remove_option_ecosim_forcing=function(factor_set,forcing_name,option_name)
 #' @param option_name Name of the new option
 #' @param shape_x Numeric vector with the new x values for the shape. Must have a length of 1200 (an Ecosim convention).
 #' @param shape_y Numeric vector with the new y values for the shape. Must have a length of 1200 (an Ecosim convention).
+#' @param factor_value A single value of the factor used in sensitivity analysis.
 #' @returns  Updated factor set object.
 #' @export
-add_option_ecosim_shape=function(factor_set,shape_name,option_name,shape_x, shape_y)
+add_option_ecosim_shape=function(factor_set,shape_name,option_name,shape_x, shape_y,factor_value=NA)
 {
   #check if inputs are consistent with model information
   if(!(shape_name %in% names(factor_set$shapes))) {stop(paste("Shape",shape_name,"not found in factor_set."))}
@@ -210,6 +211,7 @@ add_option_ecosim_shape=function(factor_set,shape_name,option_name,shape_x, shap
   new_option$x=shape_x
   new_option$xmin=min(shape_x)
   new_option$xmax=max(shape_x)
+  new_option$factor_value=factor_value
 
   factor_set$shapes[[shape_name]][[option_name]]=new_option
 

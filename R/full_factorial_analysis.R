@@ -4,7 +4,7 @@
 #'
 #' @param output_name Name of the output column in \code{df_ff}.
 #' @param factor_names Names of the factor columns in \code{df_ff}.
-#' @param df_ff Data frame where rows represent runs in a full factorial experiment and columns represent
+#' @param df_ff Data frame where rows represent runs in a full factorial experiment and columns represent output.
 #'
 #' @returns Data frame with main and total effects.
 #' @export

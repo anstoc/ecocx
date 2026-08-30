@@ -4,7 +4,14 @@
 \alias{add_option_ecosim_shape}
 \title{Add an additional option for a (environmental response or mediation) shape}
 \usage{
-add_option_ecosim_shape(factor_set, shape_name, option_name, shape_x, shape_y)
+add_option_ecosim_shape(
+  factor_set,
+  shape_name,
+  option_name,
+  shape_x,
+  shape_y,
+  factor_value = NA
+)
 }
 \arguments{
 \item{factor_set}{A factor set created with new_ecosim_factor_set()}
@@ -16,6 +23,8 @@ add_option_ecosim_shape(factor_set, shape_name, option_name, shape_x, shape_y)
 \item{shape_x}{Numeric vector with the new x values for the shape. Must have a length of 1200 (an Ecosim convention).}
 
 \item{shape_y}{Numeric vector with the new y values for the shape. Must have a length of 1200 (an Ecosim convention).}
+
+\item{factor_value}{A single value of the factor used in sensitivity analysis.}
 }
 \value{
 Updated factor set object.

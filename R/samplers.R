@@ -171,6 +171,7 @@ sampler_ee=function(factor_set,r)
   fac_summary$id=paste0(fac_summary$type,"_",fac_summary$name)
   h_name=summary(as.factor(fac_summary$name))
   level_counts=data.frame("id"=names(h_name),"p"=h_name)
+  level_counts_notchanged=level_counts[level_counts$p==1,]
   level_counts=level_counts[level_counts$p>1,]
   level_counts$delta=level_counts$p/(2*(level_counts$p-1))
 
@@ -180,7 +181,6 @@ sampler_ee=function(factor_set,r)
 
   #loop over all trajectories
   for(i in 1:r) {
-
 
     #when building the first trajectory, create a column for each factor
     factors=rownames(level_counts)
@@ -236,6 +236,14 @@ sampler_ee=function(factor_set,r)
     }
   }
 
+  #add factors that were not changed: fishing effort, forcing functions, vulnerability
+  for(i in 1:nrow(level_counts_notchanged))
+  {
+    factor_name=rownames(level_counts_notchanged)[i]
+    df[[factor_name]]=fac_summary$level[fac_summary$name==factor_name]
+  }
+
+  #add run name
   df$run_name=paste0(df$run_id,"_",df$sub_id)
 
   df

@@ -21,7 +21,7 @@ add_option_ecosim_forcing(
 
 \item{forcing_values}{Numeric vector with the new values for the forcing function. It must have the same length as the existing effort time series for the fleet.}
 
-\item{factor_value}{A single value of the factor used in sensitivity analysis. For example, if this options represents a 2 degree temperetaure change over a baseline option, this parameter should be 2, vs. 0 for the baseline.}
+\item{factor_value}{A single value of the factor used in sensitivity analysis.}
 }
 \value{
 An updated factor set object.

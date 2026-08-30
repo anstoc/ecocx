@@ -70,19 +70,54 @@ change_values_add=function(values,summand,start,end)
 }
 
 #' Write a vulnerability table to disk for loading in the .json file.
-#' @param table The vulneability table.
+#' @param m The EwE model.
+#' @param table The vulnerability table.
 #' @param path Where should it be saved?
 #' @returns Nothing.
-write_vulnerability_csv=function(table,path)
+write_vulnerability_csv=function(m,table,path)
 {
   file_conn=file(path)
   on.exit(close(file_conn))
   v=character(nrow(table)+1)
-  v[1]=paste0(",\"Prey \\ predator\",", noquote(paste0(1:nrow(table),collapse=',')))
+  v[1]=paste0(",\"Prey \\ predator\",", noquote(paste0(get_seq_ids(m,colnames(table)),collapse=',')))
   for(i in 1:nrow(table)) {
     table[i,is.na(table[i,])]=""
     v[i+1]=paste0(i,",",rownames(table)[i],",",noquote(paste0(table[i,],collapse=',')))
   }
   writeLines(v, file_conn)
   return()
+}
+
+#' Get Ecopath group IDs from names
+#'
+#' @param m The model.
+#' @param names Group names.
+#'
+#' @returns A numeric (integer) vector with group IDs corresponding to the names.
+#' @export
+get_ecopath_ids=function(m,names)
+{
+  m$ecopath$basic_estimates$GroupID[m$ecopath$basic_estimates$GroupName %in% names]
+}
+
+#' Get Ecosim group IDs from names
+#' @param m The model.
+#' @param names Group names.
+#'
+#' @returns A numeric (integer) vector with group IDs corresponding to the names.
+get_ecosim_ids=function(m,names)
+{
+  m$ecosim$groupIDs$EcosimGroupID[m$ecosim$groupIDs$EcopathGroupID %in% get_ecopath_ids(m,names)]
+}
+
+#' Get Ecopath sequential IDs from names
+#'
+#' @param m The model.
+#' @param names Group names.
+#'
+#' @returns A numeric (integer) vector with sequential IDs corresponding to the names.
+#' @export
+get_seq_ids=function(m,names)
+{
+  m$ecopath$basic_estimates$Sequence[m$ecopath$basic_estimates$GroupName %in% names]
 }
