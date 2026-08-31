@@ -29,8 +29,14 @@ It contains functions to:
 
 For example, EcoCX might be used to quantify the effects of different
 nature conservation actions (e.g., creating spatial no-fishing zones
+<<<<<<< HEAD
 versus a generic reduction in fishing effort), or to quantify how much
 fishing and climate change interact in a simulated food web.
+=======
+versus a generic reduction in fishing effort), or to quantify
+interactions how fishing and climate change interact in a simulated food
+web.
+>>>>>>> c8d3e3cf139882edf723cfe09b9f527a12c4cfdc
 
 Supported experimental designs include:
 
@@ -42,12 +48,22 @@ Supported experimental designs include:
   more model outputs into direct and interaction effects of each input
 
 At present, EcoCX allows changing fishing effort time series and
+<<<<<<< HEAD
 environmental drivers in Ecosim. Outputs that can be read or
 species/group biomasses and fishery landings. Functions to change other
 inputs like mediation functions and Ecospace input maps are in the test
 phase and are scheduled for release in the autumn 2026. Additional
 experimental designs are planned for 2027. Meanwhile, users are free to
 create their own experimental designs, output indicators, etc.
+=======
+environmental drivers in Ecosim. Functions to change other inputs like
+mediation functions and Ecospace input maps are in the test phase and
+are scheduled for release in the autumn 2026. Additional experimental
+designs including variance-based sensitivity analyses (Sobol indices)
+and stratified sampling approaches (like Latin Hypercube Sampling) are
+planned for 2027. Meanwhile, users are free to create their own
+experimental designs.
+>>>>>>> c8d3e3cf139882edf723cfe09b9f527a12c4cfdc
 
 Because the EwE Run Console - in essence, a command line interface to
 EwE - is not yet published, you’ll need to request an executable from
@@ -130,6 +146,43 @@ summary(factor_set)
 #create experimental design: random Monte Carlo with 10 runs
 set.seed(125)
 design_mc=sampler_random(factor_set,size=10)
+<<<<<<< HEAD
+=======
+design_mc
+#>    run_id sub_id   run_name               comment foraging_resp mediation
+#> 1    0001   0000 R0001_0000  Random sample, run 1       default   default
+#> 2    0002   0000 R0002_0000  Random sample, run 2       default   default
+#> 3    0003   0000 R0003_0000  Random sample, run 3       default   default
+#> 4    0004   0000 R0004_0000  Random sample, run 4       default   default
+#> 5    0005   0000 R0005_0000  Random sample, run 5       default   default
+#> 6    0006   0000 R0006_0000  Random sample, run 6       default   default
+#> 7    0007   0000 R0007_0000  Random sample, run 7       default   default
+#> 8    0008   0000 R0008_0000  Random sample, run 8       default   default
+#> 9    0009   0000 R0009_0000  Random sample, run 9       default   default
+#> 10   0010   0000 R0010_0000 Random sample, run 10       default   default
+#>    vulnerability   Sealers  Trawlers   Seiners Baitboats Shrimpers PPanomaly
+#> 1        default  lower20p   default   default  lower20p higher20p   default
+#> 2        default  lower20p higher20p   default  lower20p   default   default
+#> 3        default   default  lower20p   default  lower20p higher20p   default
+#> 4        default   default   default higher20p   default   default   default
+#> 5        default higher20p   default  lower20p   default   default   default
+#> 6        default  lower20p  lower20p  lower20p  lower20p   default   default
+#> 7        default   default   default   default higher20p higher20p   default
+#> 8        default  lower20p  lower20p higher20p higher20p higher20p   default
+#> 9        default higher20p   default higher20p higher20p   default   default
+#> 10       default  lower20p higher20p higher20p higher20p higher20p   default
+#>    Tbottom Seal-Mackerel-Anchovy Tempcold Tempwarm Twhiting
+#> 1  default               default  default  default  default
+#> 2  default               default  default  default  default
+#> 3  default               default  default  default  default
+#> 4  default               default  default  default  default
+#> 5  default               default  default  default  default
+#> 6  default               default  default  default  default
+#> 7  default               default  default  default  default
+#> 8  default               default  default  default  default
+#> 9  default               default  default  default  default
+#> 10 default               default  default  default  default
+>>>>>>> c8d3e3cf139882edf723cfe09b9f527a12c4cfdc
 
 #connect to EwE Run Console. Note that at present, you'll need to obtain the executable via a request to the Ecopath International Initiative.
 ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.32/EwERunConsole.exe")
