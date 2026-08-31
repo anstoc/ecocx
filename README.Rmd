@@ -22,14 +22,14 @@ knitr::opts_chunk$set(
 ![](./man//figures/logo_niva.png){width=30%}![](./man//figures/logo_eii.png){width=30%} ![](./man//figures/logo_rcn.png){width=30%}
 
 
-EcoCX enables computational experiments with Ecopath with Ecosim and Ecospace (EwE) models. 
+EcoCX is an R package enabling computational experiments with Ecopath with Ecosim and Ecospace (EwE) models. Its development is supported by a FRIPRO grant from the Research Council of Norway (project CLIMAX, 2025-2028).
 
-It contains functions to:
+EcoCX contains functions to:
 
 * read an EwE model
 * create alternative inputs for, e.g., fishing effort time series and environmental drivers like projected ocean warming
 * design computational experiments, i.e., repeated model runs that systematically change the inputs to learn about their effects and interactions
-* execute the computational experiments by invoking the new (not yet published!) EwE Run Console
+* execute the computational experiments by invoking the EwE Run Console (https://github.com/Official-EwE/Eii.Ecopath.Runner)
 * summarize, visualize, and analyze the outputs of the model runs 
 
 For example, EcoCX might be used to quantify the effects of different nature conservation actions (e.g., creating spatial no-fishing zones versus a generic reduction in fishing effort), or to quantify how much fishing and climate change interact in a simulated food web.
@@ -42,7 +42,6 @@ Supported experimental designs include:
 
 At present, EcoCX allows changing fishing effort time series and environmental drivers in Ecosim. Supported model outputs are species/group biomasses and fishery landings, but users can add own functions to calculate ecological indicators based on them. Functions to change other inputs like mediation functions and Ecospace input maps are in the test phase and are scheduled for release in late 2026. Additional experimental designs are planned for 2027. Meanwhile, users are free to create their own experimental designs, output indicators, etc.
 
-Because the EwE Run Console - in essence, a command line interface to EwE - is not yet published, you'll need to request an executable from the Ecopath International Initiative (www.ecopathinternational.org) to actually run the computational experiments.   
 
 ## Installation
 
@@ -52,9 +51,11 @@ You can install the development version of EcoCX like so:
 remotes::install_github("anstoc/ecocx")
 ```
 
+EcoCX builds on the EwE Run Console - in essence, a command line interface for running EwE models. To execute Ecosim and Ecospace models, you need to install the run console separately. It is available here: https://github.com/Official-EwE/Eii.Ecopath.Runner.
+
 ## Example
 
-This is a basic example running Monte Carlo simulations modifying fishing effort in an example model:
+This is a basic example running Monte Carlo simulations modifying fishing effort in an example model. The built-in example model comes from the free EwE textbook, which we highly recommend (get yours at https://pressbooks.bccampus.ca/ewemodel/).
 
 ```{r example, out.width="50%"}
 library(ecocx)
@@ -62,10 +63,8 @@ library(ecocx)
 xml_model=paste0(get_path_to_exampledata(),"anchovy_bay_ecosim_ex.eiixml")
 m=load_model_from_xml(xml_model)
 
-#see the functional groups and fleets
+##see the functional groups and their input parameters
 m$ecopath$basic_estimates
-
-m$ecopath$fleets
 
 ##create a set of factors (inputs that change in each model run): +/- 20% effort for the model's five fishing fleets 
 factor_set=new_ecosim_factor_set(m)
@@ -83,27 +82,25 @@ factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","lower20p",0.8*factor
 
 summary(factor_set)
 
-#create experimental design: random Monte Carlo with 10 runs
+##create experimental design: random Monte Carlo with 50 runs
 set.seed(125)
-design_mc=sampler_random(factor_set,size=10)
+design_mc=sampler_random(factor_set,size=50)
 
-design_mc
+##connect to EwE Run Console (must be downloaded separately from https://github.com/Official-EwE/Eii.Ecopath.Runner). Replace path to the downloaded executable with your own.
+ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.32/EwERunConsole.exe")
 
-#connect to EwE Run Console. Note that at present, you'll need to obtain the executable via a request to the Ecopath International Initiative.
-ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.32/EwERunConsole.exe")
-
-#optional: use future.apply library for parallel processing
+##optional: use futures for parallel processing
 library(future.apply)
 plan(multisession)
 
-#run the model repeatedly according to the design!
+##execute the model repeatedly according to the design!
 cx_table=run_ecosim_experiment(design_mc,xml_model,factor_set,ewe_link,paste0(tempdir(),"/mctest"),parallel=T)
 
-#obtain biomasses
+##obtain biomasses
 df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
 
-#plot the 10 runs. Colors are species groups.
-plot_all_runs(df_cx,alpha=0.2)
+##plot the 50 runs. One line for each run and species group, and colors are species groups.
+plot_all_runs(df_cx,alpha=0.1)
 ```
 
 

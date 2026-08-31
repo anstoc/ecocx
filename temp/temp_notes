@@ -21,9 +21,4 @@ The example data include 5 files:
 The example model and data were obtained from the online textbook in April 2026. The textbook is available at https://pressbooks.bccampus.ca/ewemodel/. The model and data remain the intellectual property of the textbook's authors. We kindly thank Villy Christensen for the permission to include them in the package.
 
 
-Objectives before summer:
 
-(add Ecosim factors)
-(run brute-force MC simulations)
-(run EE method)
-(run full factorial experiment)

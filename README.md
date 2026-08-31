@@ -12,10 +12,12 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 <img src="./man//figures/logo_niva.png" style="width:30.0%" /><img src="./man//figures/logo_eii.png" style="width:30.0%" />
 <img src="./man//figures/logo_rcn.png" style="width:30.0%" />
 
-EcoCX enables computational experiments with Ecopath with Ecosim and
-Ecospace (EwE) models.
+EcoCX is an R package enabling computational experiments with Ecopath
+with Ecosim and Ecospace (EwE) models. Its development is supported by a
+FRIPRO grant from the Research Council of Norway (project CLIMAX,
+2025-2028).
 
-It contains functions to:
+EcoCX contains functions to:
 
 - read an EwE model
 - create alternative inputs for, e.g., fishing effort time series and
@@ -23,8 +25,8 @@ It contains functions to:
 - design computational experiments, i.e., repeated model runs that
   systematically change the inputs to learn about their effects and
   interactions
-- execute the computational experiments by invoking the new (not yet
-  published!) EwE Run Console
+- execute the computational experiments by invoking the EwE Run Console
+  (<https://github.com/Official-EwE/Eii.Ecopath.Runner>)
 - summarize, visualize, and analyze the outputs of the model runs
 
 For example, EcoCX might be used to quantify the effects of different
@@ -50,11 +52,6 @@ in the test phase and are scheduled for release in late 2026. Additional
 experimental designs are planned for 2027. Meanwhile, users are free to
 create their own experimental designs, output indicators, etc.
 
-Because the EwE Run Console - in essence, a command line interface to
-EwE - is not yet published, you’ll need to request an executable from
-the Ecopath International Initiative (www.ecopathinternational.org) to
-actually run the computational experiments.
-
 ## Installation
 
 You can install the development version of EcoCX like so:
@@ -63,10 +60,17 @@ You can install the development version of EcoCX like so:
 remotes::install_github("anstoc/ecocx")
 ```
 
+EcoCX builds on the EwE Run Console - in essence, a command line
+interface for running EwE models. To execute Ecosim and Ecospace models,
+you need to install the run console separately. It is available here:
+<https://github.com/Official-EwE/Eii.Ecopath.Runner>.
+
 ## Example
 
 This is a basic example running Monte Carlo simulations modifying
-fishing effort in an example model:
+fishing effort in an example model. The built-in example model comes
+from the free EwE textbook, which we highly recommend (get yours at
+<https://pressbooks.bccampus.ca/ewemodel/>).
 
 ``` r
 library(ecocx)
@@ -74,7 +78,7 @@ library(ecocx)
 xml_model=paste0(get_path_to_exampledata(),"anchovy_bay_ecosim_ex.eiixml")
 m=load_model_from_xml(xml_model)
 
-#see the functional groups and fleets
+##see the functional groups and their input parameters
 m$ecopath$basic_estimates
 #>    GroupID Sequence     GroupName Biomass         PoB   QoB  EE
 #> 2        2        1        Whales  0.0800   0.0500000  9.00  NA
@@ -88,14 +92,6 @@ m$ecopath$basic_estimates
 #> 10      10        9   Zooplankton 14.8000  35.0000000    NA  NA
 #> 11      11       10 Phytoplankton 18.0000 120.0000000    NA  NA
 #> 1        1       11      Detritus 10.0000          NA    NA 0.0
-
-m$ecopath$fleets
-#>   FleetID  FleetName
-#> 1       1    Sealers
-#> 2       2   Trawlers
-#> 3       3    Seiners
-#> 4       4 Bait boats
-#> 5       5  Shrimpers
 
 ##create a set of factors (inputs that change in each model run): +/- 20% effort for the model's five fishing fleets 
 factor_set=new_ecosim_factor_set(m)
@@ -128,61 +124,26 @@ summary(factor_set)
 #> 13            shapes              Tempwarm       1
 #> 14            shapes              Twhiting       1
 
-#create experimental design: random Monte Carlo with 10 runs
+##create experimental design: random Monte Carlo with 50 runs
 set.seed(125)
-design_mc=sampler_random(factor_set,size=10)
+design_mc=sampler_random(factor_set,size=50)
 
-design_mc
-#>    run_id sub_id   run_name               comment foraging_resp mediation
-#> 1    0001   0000 R0001_0000  Random sample, run 1       default   default
-#> 2    0002   0000 R0002_0000  Random sample, run 2       default   default
-#> 3    0003   0000 R0003_0000  Random sample, run 3       default   default
-#> 4    0004   0000 R0004_0000  Random sample, run 4       default   default
-#> 5    0005   0000 R0005_0000  Random sample, run 5       default   default
-#> 6    0006   0000 R0006_0000  Random sample, run 6       default   default
-#> 7    0007   0000 R0007_0000  Random sample, run 7       default   default
-#> 8    0008   0000 R0008_0000  Random sample, run 8       default   default
-#> 9    0009   0000 R0009_0000  Random sample, run 9       default   default
-#> 10   0010   0000 R0010_0000 Random sample, run 10       default   default
-#>    vulnerability   Sealers  Trawlers   Seiners Baitboats Shrimpers PPanomaly
-#> 1        default  lower20p   default   default  lower20p higher20p   default
-#> 2        default  lower20p higher20p   default  lower20p   default   default
-#> 3        default   default  lower20p   default  lower20p higher20p   default
-#> 4        default   default   default higher20p   default   default   default
-#> 5        default higher20p   default  lower20p   default   default   default
-#> 6        default  lower20p  lower20p  lower20p  lower20p   default   default
-#> 7        default   default   default   default higher20p higher20p   default
-#> 8        default  lower20p  lower20p higher20p higher20p higher20p   default
-#> 9        default higher20p   default higher20p higher20p   default   default
-#> 10       default  lower20p higher20p higher20p higher20p higher20p   default
-#>    Tbottom Seal-Mackerel-Anchovy Tempcold Tempwarm Twhiting
-#> 1  default               default  default  default  default
-#> 2  default               default  default  default  default
-#> 3  default               default  default  default  default
-#> 4  default               default  default  default  default
-#> 5  default               default  default  default  default
-#> 6  default               default  default  default  default
-#> 7  default               default  default  default  default
-#> 8  default               default  default  default  default
-#> 9  default               default  default  default  default
-#> 10 default               default  default  default  default
+##connect to EwE Run Console (must be downloaded separately from https://github.com/Official-EwE/Eii.Ecopath.Runner). Replace path to the downloaded executable with your own.
+ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.32/EwERunConsole.exe")
 
-#connect to EwE Run Console. Note that at present, you'll need to obtain the executable via a request to the Ecopath International Initiative.
-ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.32/EwERunConsole.exe")
-
-#optional: use future.apply library for parallel processing
+##optional: use futures for parallel processing
 library(future.apply)
 #> Loading required package: future
 plan(multisession)
 
-#run the model repeatedly according to the design!
+##execute the model repeatedly according to the design!
 cx_table=run_ecosim_experiment(design_mc,xml_model,factor_set,ewe_link,paste0(tempdir(),"/mctest"),parallel=T)
 
-#obtain biomasses
+##obtain biomasses
 df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
 
-#plot the 10 runs. Colors are species groups.
-plot_all_runs(df_cx,alpha=0.2)
+##plot the 50 runs. One line for each run and species group, and colors are species groups.
+plot_all_runs(df_cx,alpha=0.1)
 ```
 
 <img src="man/figures/README-example-1.png" alt="" width="50%" />
