@@ -32,11 +32,9 @@ It contains functions to:
 * execute the computational experiments by invoking the new (not yet published!) EwE Run Console
 * summarize, visualize, and analyze the outputs of the model runs 
 
-<<<<<<< HEAD
 For example, EcoCX might be used to quantify the effects of different nature conservation actions (e.g., creating spatial no-fishing zones versus a generic reduction in fishing effort), or to quantify how much fishing and climate change interact in a simulated food web.
-=======
+
 For example, EcoCX might be used to quantify the effects of different nature conservation actions (e.g., creating spatial no-fishing zones versus a generic reduction in fishing effort), or to quantify interactions how fishing and climate change interact in a simulated food web.
->>>>>>> c8d3e3cf139882edf723cfe09b9f527a12c4cfdc
 
 Supported experimental designs include:
 
@@ -44,11 +42,9 @@ Supported experimental designs include:
 * Elementary effects, aka the Morris method, for identifying the inputs that have the largest effect on selected outputs with few model runs
 * Full factorial experiments, for decomposing the variance of one or more model outputs into direct and interaction effects of each input 
 
-<<<<<<< HEAD
 At present, EcoCX allows changing fishing effort time series and environmental drivers in Ecosim. Outputs that can be read or species/group biomasses and fishery landings. Functions to change other inputs like mediation functions and Ecospace input maps are in the test phase and are scheduled for release in the autumn 2026. Additional experimental designs are planned for 2027. Meanwhile, users are free to create their own experimental designs, output indicators, etc.
-=======
+
 At present, EcoCX allows changing fishing effort time series and environmental drivers in Ecosim. Functions to change other inputs like mediation functions and Ecospace input maps are in the test phase and are scheduled for release in the autumn 2026. Additional experimental designs including variance-based sensitivity analyses (Sobol indices) and stratified sampling approaches (like Latin Hypercube Sampling) are planned for 2027. Meanwhile, users are free to create their own experimental designs.
->>>>>>> c8d3e3cf139882edf723cfe09b9f527a12c4cfdc
 
 Because the EwE Run Console - in essence, a command line interface to EwE - is not yet published, you'll need to request an executable from the Ecopath International Initiative (www.ecopathinternational.org) to actually run the computational experiments.   
 
@@ -94,10 +90,8 @@ summary(factor_set)
 #create experimental design: random Monte Carlo with 10 runs
 set.seed(125)
 design_mc=sampler_random(factor_set,size=10)
-<<<<<<< HEAD
-=======
+
 design_mc
->>>>>>> c8d3e3cf139882edf723cfe09b9f527a12c4cfdc
 
 #connect to EwE Run Console. Note that at present, you'll need to obtain the executable via a request to the Ecopath International Initiative.
 ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.32/EwERunConsole.exe")
