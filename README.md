@@ -66,7 +66,7 @@ remotes::install_github("anstoc/ecocx")
 ## Example
 
 This is a basic example running Monte Carlo simulations modifying
-fishing effort and temperature in an example model:
+fishing effort in an example model:
 
 ``` r
 library(ecocx)
