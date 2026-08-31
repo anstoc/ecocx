@@ -32,12 +32,6 @@ nature conservation actions (e.g., creating spatial no-fishing zones
 versus a generic reduction in fishing effort), or to quantify how much
 fishing and climate change interact in a simulated food web.
 
-For example, EcoCX might be used to quantify the effects of different
-nature conservation actions (e.g., creating spatial no-fishing zones
-versus a generic reduction in fishing effort), or to quantify
-interactions how fishing and climate change interact in a simulated food
-web.
-
 Supported experimental designs include:
 
 - Random Monte Carlo. For batch-running EwE models, e.g., to generate
@@ -48,21 +42,13 @@ Supported experimental designs include:
   more model outputs into direct and interaction effects of each input
 
 At present, EcoCX allows changing fishing effort time series and
-environmental drivers in Ecosim. Outputs that can be read or
-species/group biomasses and fishery landings. Functions to change other
-inputs like mediation functions and Ecospace input maps are in the test
-phase and are scheduled for release in the autumn 2026. Additional
+environmental drivers in Ecosim. Supported model outputs are
+species/group biomasses and fishery landings, but users can add own
+functions to calculate ecological indicators based on them. Functions to
+change other inputs like mediation functions and Ecospace input maps are
+in the test phase and are scheduled for release in late 2026. Additional
 experimental designs are planned for 2027. Meanwhile, users are free to
 create their own experimental designs, output indicators, etc.
-
-At present, EcoCX allows changing fishing effort time series and
-environmental drivers in Ecosim. Functions to change other inputs like
-mediation functions and Ecospace input maps are in the test phase and
-are scheduled for release in the autumn 2026. Additional experimental
-designs including variance-based sensitivity analyses (Sobol indices)
-and stratified sampling approaches (like Latin Hypercube Sampling) are
-planned for 2027. Meanwhile, users are free to create their own
-experimental designs.
 
 Because the EwE Run Console - in essence, a command line interface to
 EwE - is not yet published, you’ll need to request an executable from
