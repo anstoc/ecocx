@@ -1,4 +1,4 @@
-ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.32/EwERunConsole.exe")
+ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.35/EwERunConsole.exe")
 
 xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
 m=load_model_from_xml(xml_model)
@@ -23,11 +23,17 @@ factor_set=new_ecosim_factor_set(m)
 # factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","higher20p",1.2*factor_set$fishing_effort$Shrimpers$default$values)
 # factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","lower20p",0.8*factor_set$fishing_effort$Shrimpers$default$values)
 
-#v_matrix=factor_set$tables$vulnerability$default
-#v_matrix=matrix(2,ncol=ncol(v_matrix),nrow=nrow(v_matrix))+0*factor_set$tables$vulnerability$default
-#factor_set=add_option_ecosim_vulnerability(factor_set,"two",v_matrix)
+# v_matrix=factor_set$tables$vulnerability$default
+# v_matrix=matrix(2,ncol=ncol(v_matrix),nrow=nrow(v_matrix))+0*factor_set$tables$vulnerability$default
+# factor_set=add_option_ecosim_vulnerability(factor_set,"two",v_matrix)
 
-factor_set=add_option_ecosim_shape(factor_set,"Seal-Mackerel-Anchovy","off",m$ecosim$shapes$`Seal-Mackerel-Anchovy`$x,rep(1,1200))
+#factor_set=add_option_ecosim_shape(factor_set,"Seal-Mackerel-Anchovy","off",m$ecosim$shapes$`Seal-Mackerel-Anchovy`$x,rep(1,1200))
+
+#switch mediation on or off
+#factor_set=add_option_ecosim_shape(factor_set,"Seal-Mackerel-Anchovy","no_mediation",
+#                        m$ecosim$shapes$`Seal-Mackerel-Anchovy`$x,rep(1,1200))
+
+factor_set=add_option_ecosim_shape(factor_set,"Tempcold","off",factor_set$shapes$Tempcold$default$x,rep(1,1200))
 
 design=sampler_random(factor_set,size=10)
 

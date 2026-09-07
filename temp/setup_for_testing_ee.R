@@ -27,7 +27,7 @@ out_folder=paste0(tempdir(),"/eetest")
 
 library(future.apply)
 plan(multisession)
-cx_table=run_ecosim_experiment(design_ee,xml_model,factor_set_ee,ewe_link,out_folder,parallel=T)
+cx_table=run_ecosim_experiment(design_mc,xml_model,factor_set,ewe_link,out_folder,parallel=T)
 
 df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
 plot_all_runs(df_cx,alpha=0.1)
@@ -46,6 +46,11 @@ for(i in 1:ncol(results_ee$mustar_matrix))
     lines(results_ee$mustar_matrix[,i],col=i)
   }
 }
+
+
+
+#full factorial
+
 
 #TODO
 #Release
