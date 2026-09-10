@@ -1,5 +1,5 @@
 ---
-title: "Tutorial: EcoCX and Ecosim"
+title: "Tutorial: Typical workflow for computational experiments with Ecosim models"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{ecosim_tutorial}
@@ -9,11 +9,19 @@ vignette: >
 
 EcoCX is an R package for computational experiments with Ecopath with Ecosim and Ecospace (EwE) models. In essence, it runs an Ecosim or Ecospace model repeatedly with systematic changes to inputs to quantify the effects of these inputs. This approach allows, e.g., uncertainty and sensitivity analyses or identifying the most important drivers of simulated ecosystem changes.
 
-This tutorial shows a typical workflow for sensitivity analyses with an Ecosim model.
+This tutorial shows a typical workflow for sensitivity analyses with an Ecosim model:
+
+- Open and explore a model, typically built with the EwE software's graphical user interface (henceforth, the EwE GUI).
+- Define which inputs' effects on the outputs you want to explore. These inputs are called factors. Currently, factors can only take discrete levels; direct support for sampling factors from continuous distributions will eventually be implemented. 
+- Define alternative levels for these inputs - for example, an increase and a decrease of a fleet's fishing effort compared to the baseline, or temperature time series according to different climate scenarios.
+- Create an experimental design - here, that means a plan to run the model repeatedly with random or systematic changes to the inputs, using the levels above. 
+- Run the Ecosim model repeatedly; each run's inputs are different, according to the design.
+- Read and analyze selected model outputs. 
+
+Note that several of these steps depend on the question you're trying to answer: the choice of factors and their levels, the experiment design, and which outputs to analyze and how.  
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
   comment = "#>"
 )
 ```
@@ -22,31 +30,81 @@ knitr::opts_chunk$set(
 
 To install and load the development version of EcoCX:
 
-``` r
+``` {r, eval=FALSE}
 remotes::install_github("anstoc/ecocx")
+```
+``` {r, results='hide', error=FALSE, warning=FALSE, message=FALSE}
 library(ecocx)
 ```
 
-In addition, you need the EwE Run Console, a command line interface to EwE. It is also available on Github. Each release of EcoCX is tested against a specific release of the run console. To obtain a link to the recommended version:
+In addition, you need the EwE Run Console, a command line interface to EwE. It is available on Github. Each release of EcoCX is tested against a specific release of the run console. To obtain a link to this recommended version:
 
-``` r
-ecocx::get_run_console_link()
+``` {r}
+get_run_console_link()
 ```
 
 You can use a newer version if available, but be aware that we cannot guarantee compatibility.
 
 ## The example model
 
-EcoCX reads Ecosim and Ecospace models in XML format, which can be exported via the graphical user interface of the Ecopath software. Here, we use an an example Ecosim model included  with EcoCX. It is borrowed from the free EwE textbook (https://pressbooks.bccampus.ca/ewemodel/). You can access the example model like so:
+EcoCX reads Ecosim and Ecospace models in XML format, which can be exported via the EwE GUI. Here, we use an an example Ecosim model of Anchovy Bay included  with EcoCX. It is borrowed from the free EwE textbook (https://pressbooks.bccampus.ca/ewemodel/). The textbook is an excellent resource if you're unfamiliar with EwE modeling; this tutorial assumes at least superficial familiarity with how Ecosim works. 
 
-``` r
+You can access the example model like so:
+
+``` {r load_xml_model}
+xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
 ```
 
-In addition, you need the EwE Run Console, a command line interface to EwE. It is also available on Github. Each release of EcoCX is tested against a specific release of the run console. You can see the recommended version as follows: 
+When working with your own model, you can export it as an .eiixml from the EwE GUI.
 
-## Setting up computational experiments
+We now load the model and explore its contents, like the functional groups, fleets, and time series of environmental drivers. First, however, a caveat: the model was built for teaching purposes and some of its components, like a mediation function linking seals, mackerel, and anchovy, are unrealistic. 
 
-## Running the experiments and analyzing the outputs
+``` {r}
+m=load_model_from_xml(xml_model)
+#show the model's functional groups
+m$ecopath$basic_estimates$GroupName
+#show the model's fleet names
+m$ecopath$fleets$FleetName
+#show Ecosim fishing effort time series for Trawlers
+plot(m$ecosim$fishing_effort$Trawlers$values, type="l", main="Trawlers", ylab="Effort multiplier", xlab="Time step")
+#show Ecosim fishing effort time series for Sealers
+plot(m$ecosim$fishing_effort$Sealers$values, type="l", main="Sealers", ylab="Effort multiplier", xlab="Time step")
+#show Ecosim temperature time series
+plot(m$ecosim$forcing_functions$Tbottom$values, type="l", main="Bottom temperature", ylab="Temperature [°C]", xlab="Time step")
+#show Ecosim primary production anomaly
+plot(m$ecosim$forcing_functions$PPanomaly$values, type="l", main="Prim. prod. anomaly", ylab="Production multiplier", xlab="Time step")
+```
+
+The model runs for 41 years (with 12 months each, so 492 time steps). Trawling effort more than triples over this period, sealing is phased out, and the annual mean bottom temperature increases from around 17°C to about 19°C. Furthermore, the model includes a primary production anomaly estimated to make it fit historical data better. Note that all of these are inputs to the model; we need some further setup before running it.
+
+## Defining factors and levels
+
+The model inputs whose effects we investigate are called factors. As we have seen above, in the Anchovy Bay model, there are drastic changes to sealing and trawl fisheries over time, major warming, and a large primary production anomaly. We will explore how much they together affect functional group biomasses, and then attribute these changes exactly to the four factors.
+
+For this, we need to define plausible alternative levels for each factors - e.g., whether an intervention like phasing out sealing is implemented at all, or how much temperatures rise based on uncertainty about the future climate. Be aware that those levels affect each factor's influence; a 0.1°C change in temperature will have a smaller effect than a 10°C change. 
+
+The first step is creating a 'factor set' - a collection of alternative levels for each factor. At present, EcoCX only supports discrete factor levels.
+
+## Choosing an experimental design
+
+## Running the experiments, sequentially or in parallel
+
+## What's actually happening in the background?
+
+## Reading and analyzing the outputs
+
+## Factor screening with the elementary effects method
+
+## Full factorial experiments
+
+## Entry points for adding your own methods
+
+EcoCX is designed to allow users to add their own methods. Typical entry points include:
+
+- The experimental design. You can write a method creating a design table and then use EcoCX to execute the model runs.
+- Harvesting model outputs. EcoCX has built-in functions to obtain Ecosim biomasses and fishery catches, but you're free to explore the generated model outputs and write functions that read others or calculate new ecological indicators from them. Those can then be fed into the design-specific analysis functions.
+- These analysis functions are another entry point. For example, you could use EcoCX' simple Monte Carlo sampler to run a model with many factors 100,000 times (if you have the computing power), then use machine learning methods of your choice to extract information from the gigantic pile of data this creates.
+
 
 
 
