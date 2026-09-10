@@ -1,7 +1,7 @@
 Package: ecocx
 Type: Package
 Title: Computational experiments with Ecosim and Ecospace
-Version: 0.0.1
+Version: 0.8.0
 Authors@R: c(
     person(
       "Stock", "Andy",
@@ -15,8 +15,11 @@ Encoding: UTF-8
 LazyData: true
 Imports: xml2
 Suggests: 
-  testthat,
-  future,
-  future.apply
+    testthat,
+    future,
+    future.apply,
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.0.0
+VignetteBuilder: knitr

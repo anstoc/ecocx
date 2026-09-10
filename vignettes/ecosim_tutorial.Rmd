@@ -1,0 +1,82 @@
+---
+title: "Tutorial: EcoCX and Ecosim"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ecosim_tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+EcoCX is an R package for computational experiments with Ecopath with Ecosim and Ecospace (EwE) models. In essence, it runs an Ecosim or Ecospace model repeatedly with systematic changes to inputs to quantify the effects of these inputs. This approach allows, e.g., uncertainty and sensitivity analyses or identifying the most important drivers of simulated ecosystem changes.
+
+This tutorial shows a typical workflow for sensitivity analyses with an Ecosim model.
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Getting EcoCX
+
+To install and load the development version of EcoCX:
+
+``` r
+remotes::install_github("anstoc/ecocx")
+library(ecocx)
+```
+
+In addition, you need the EwE Run Console, a command line interface to EwE. It is also available on Github. Each release of EcoCX is tested against a specific release of the run console. To obtain a link to the recommended version:
+
+``` r
+ecocx::get_run_console_link()
+```
+
+You can use a newer version if available, but be aware that we cannot guarantee compatibility.
+
+## The example model
+
+EcoCX reads Ecosim and Ecospace models in XML format, which can be exported via the graphical user interface of the Ecopath software. Here, we use an an example Ecosim model included  with EcoCX. It is borrowed from the free EwE textbook (https://pressbooks.bccampus.ca/ewemodel/). You can access the example model like so:
+
+``` r
+```
+
+In addition, you need the EwE Run Console, a command line interface to EwE. It is also available on Github. Each release of EcoCX is tested against a specific release of the run console. You can see the recommended version as follows: 
+
+## Setting up computational experiments
+
+## Running the experiments and analyzing the outputs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -65,6 +65,14 @@ interface for running EwE models. To execute Ecosim and Ecospace models,
 you need to install the run console separately. It is available here:
 <https://github.com/Official-EwE/Eii.Ecopath.Runner>.
 
+Each version of EcoCX is tested against a specific release of the EwE
+Run Console. To find out which:
+
+``` r
+ecocx::get_run_console_link()
+#> [1] "https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.35"
+```
+
 ## Example
 
 This is a basic example running Monte Carlo simulations modifying

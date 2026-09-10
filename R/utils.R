@@ -121,3 +121,14 @@ get_seq_ids=function(m,names)
 {
   m$ecopath$basic_estimates$Sequence[m$ecopath$basic_estimates$GroupName %in% names]
 }
+
+#' Obtain a link for downloading the EwE Run Console
+#'
+#' Each version of EcoCX is tested against a specific release of the EwE Run Console. This function returns a link to that release.
+#'
+#' @returns Link to a release of the Run Console that the package was tested with.
+#' @export
+get_run_console_link=function()
+{
+  return("https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.35")
+}

@@ -53,6 +53,12 @@ remotes::install_github("anstoc/ecocx")
 
 EcoCX builds on the EwE Run Console - in essence, a command line interface for running EwE models. To execute Ecosim and Ecospace models, you need to install the run console separately. It is available here: https://github.com/Official-EwE/Eii.Ecopath.Runner.
 
+Each version of EcoCX is tested against a specific release of the EwE Run Console. To find out which:
+
+``` {r get_link}
+ecocx::get_run_console_link()
+```
+
 ## Example
 
 This is a basic example running Monte Carlo simulations modifying fishing effort in an example model. The built-in example model comes from the free EwE textbook, which we highly recommend (get yours at https://pressbooks.bccampus.ca/ewemodel/).
