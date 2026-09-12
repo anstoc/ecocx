@@ -83,7 +83,7 @@ The model inputs whose effects we investigate are called factors. As we have see
 
 For this, we need to define plausible alternative levels for each factors - e.g., whether an intervention like phasing out sealing is implemented at all, or how much temperatures rise based on uncertainty about the future climate. Be aware that those levels affect each factor's influence; a 0.1°C change in temperature will have a smaller effect than a 10°C change. 
 
-The first step is creating a 'factor set' - a collection of alternative levels for each factor. At present, EcoCX only supports discrete factor levels.
+The first step is creating a 'factor set' - a collection of alternative levels for each factor. At present, EcoCX only supports discrete factor levels. To create a factor set from a model:
 
 ## Choosing an experimental design
 
@@ -99,9 +99,9 @@ The first step is creating a 'factor set' - a collection of alternative levels f
 
 ## Entry points for adding your own methods
 
-EcoCX is designed to allow users to add their own methods. Typical entry points include:
+EcoCX is designed to allow users to add their own methods. Typical entry points to insert your own functions include:
 
-- The experimental design. You can write a method creating a design table and then use EcoCX to execute the model runs.
+- The experimental design. You can write a function returning a design table like the built-infunctions and then use EcoCX to execute the model runs it describes.
 - Harvesting model outputs. EcoCX has built-in functions to obtain Ecosim biomasses and fishery catches, but you're free to explore the generated model outputs and write functions that read others or calculate new ecological indicators from them. Those can then be fed into the design-specific analysis functions.
 - These analysis functions are another entry point. For example, you could use EcoCX' simple Monte Carlo sampler to run a model with many factors 100,000 times (if you have the computing power), then use machine learning methods of your choice to extract information from the gigantic pile of data this creates.
 

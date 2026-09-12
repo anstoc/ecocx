@@ -2566,4 +2566,271 @@
   Date="5:28:04 PM Monday, September 7, 2026">
   <Message>Model closed</Message>
 </Log_Message>
+<Session_Started
+  Date="9:35:16 AM Friday, September 11, 2026">
+  <Model>anchovy_bay_ecosim_ex</Model>
+  <LogFile>C:\Users\ANC\OneDrive - NIVA\Projects\2025\2025CLIMAX\WP1\RPackage\ecocx\inst\extdata\anchovy_bay_ecosim_ex_log.xml</LogFile>
+  <Is64BitExe>True</Is64BitExe>
+  <CultureOS>English (United States)</CultureOS>
+  <CultureUI>English (United States)</CultureUI>
+  <DecimalSeparator>.</DecimalSeparator>
+</Session_Started>
+<Information_Message
+  Date="9:35:16 AM Friday, September 11, 2026">
+  <Message>Ecopath model 'C:\Users\ANC\OneDrive - NIVA\Projects\2025\2025CLIMAX\WP1\RPackage\ecocx\inst\extdata\anchovy_bay_ecosim_ex.EwEmdb' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="9:35:52 AM Friday, September 11, 2026">
+  <Message>Ecopath run completed.</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="9:35:52 AM Friday, September 11, 2026">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="9:35:52 AM Friday, September 11, 2026">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="9:35:52 AM Friday, September 11, 2026">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Information_Message
+  Date="9:35:52 AM Friday, September 11, 2026">
+  <Message>Ecosim scenario 'Scene 1' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecosim</Message_Source>
+  <Message_DataType>EcoSimScenario</Message_DataType>
+</Information_Message>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Log_Message
+  Date="9:36:17 AM Friday, September 11, 2026">
+  <Message>Create DB: selected ACCDB format</Message>
+</Log_Message>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Question_Message
+  Date="10:06:40 AM Friday, September 11, 2026">
+  <Message>Unsaved changes in Ecosim will be lost if you proceed. Do you wish to save these changes?</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>Core</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+  <Message_Reply>YES</Message_Reply>
+  <Message_Suppressable>False</Message_Suppressable>
+  <Message_Suppressed>False</Message_Suppressed>
+</Question_Message>
+<Question_Message
+  Date="10:13:48 AM Friday, September 11, 2026">
+  <Message>Unsaved changes in Ecosim will be lost if you proceed. Do you wish to save these changes?</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>Core</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+  <Message_Reply>YES</Message_Reply>
+  <Message_Suppressable>False</Message_Suppressable>
+  <Message_Suppressed>False</Message_Suppressed>
+</Question_Message>
+<Log_Message
+  Date="10:13:49 AM Friday, September 11, 2026">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:13:49 AM Friday, September 11, 2026">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:13:49 AM Friday, September 11, 2026">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:13:49 AM Friday, September 11, 2026">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:13:49 AM Friday, September 11, 2026">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:13:49 AM Friday, September 11, 2026">
+  <Message>Model closed</Message>
+</Log_Message>
+<Session_Started
+  Date="10:13:50 AM Friday, September 11, 2026">
+  <Model>anchovy_bay_ecosim_ex</Model>
+  <LogFile>C:\Users\ANC\OneDrive - NIVA\Projects\2025\2025CLIMAX\WP1\RPackage\ecocx\inst\extdata\anchovy_bay_ecosim_ex_log.xml</LogFile>
+  <Is64BitExe>True</Is64BitExe>
+  <CultureOS>English (United States)</CultureOS>
+  <CultureUI>English (United States)</CultureUI>
+  <DecimalSeparator>.</DecimalSeparator>
+</Session_Started>
+<Information_Message
+  Date="10:13:50 AM Friday, September 11, 2026">
+  <Message>Ecopath model 'C:\Users\ANC\OneDrive - NIVA\Projects\2025\2025CLIMAX\WP1\RPackage\ecocx\inst\extdata\anchovy_bay_ecosim_ex.EwEmdb' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Information_Message
+  Date="10:13:54 AM Friday, September 11, 2026">
+  <Message>Ecopath run completed.</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="10:13:54 AM Friday, September 11, 2026">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:13:54 AM Friday, September 11, 2026">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:13:55 AM Friday, September 11, 2026">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Information_Message
+  Date="10:13:55 AM Friday, September 11, 2026">
+  <Message>Ecosim scenario 'Scene 1' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecosim</Message_Source>
+  <Message_DataType>EcoSimScenario</Message_DataType>
+</Information_Message>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Session_Started
+  Date="10:22:36 AM Friday, September 11, 2026">
+  <Model>anchovy_bay_ecosim_ex</Model>
+  <LogFile>C:\Users\ANC\OneDrive - NIVA\Projects\2025\2025CLIMAX\WP1\RPackage\ecocx\inst\extdata\anchovy_bay_ecosim_ex_log.xml</LogFile>
+  <Is64BitExe>True</Is64BitExe>
+  <CultureOS>English (United States)</CultureOS>
+  <CultureUI>English (United States)</CultureUI>
+  <DecimalSeparator>.</DecimalSeparator>
+</Session_Started>
+<Information_Message
+  Date="10:22:36 AM Friday, September 11, 2026">
+  <Message>Ecopath model 'C:\Users\ANC\OneDrive - NIVA\Projects\2025\2025CLIMAX\WP1\RPackage\ecocx\inst\extdata\anchovy_bay_ecosim_ex.EwEmdb' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="10:33:58 AM Friday, September 11, 2026">
+  <Message>Create DB: selected ACCDB format</Message>
+</Log_Message>
+<Information_Message
+  Date="10:34:05 AM Friday, September 11, 2026">
+  <Message>Ecopath run completed.</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>Ecopath</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="10:34:05 AM Friday, September 11, 2026">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:34:05 AM Friday, September 11, 2026">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:34:05 AM Friday, September 11, 2026">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Information_Message
+  Date="10:34:05 AM Friday, September 11, 2026">
+  <Message>Ecosim scenario 'Scene 1' loaded.</Message>
+  <Message_Type>DataAddedOrRemoved</Message_Type>
+  <Message_Source>Ecosim</Message_Source>
+  <Message_DataType>EcoSimScenario</Message_DataType>
+</Information_Message>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Question_Message
+  Date="10:40:48 AM Friday, September 11, 2026">
+  <Message>Unsaved changes in Ecosim will be lost if you proceed. Do you wish to save these changes?</Message>
+  <Message_Type>Any</Message_Type>
+  <Message_Source>Core</Message_Source>
+  <Message_DataType>NotSet</Message_DataType>
+  <Message_Reply>YES</Message_Reply>
+  <Message_Suppressable>False</Message_Suppressable>
+  <Message_Suppressed>False</Message_Suppressed>
+</Question_Message>
+<Log_Message
+  Date="10:40:49 AM Friday, September 11, 2026">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:40:49 AM Friday, September 11, 2026">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:40:49 AM Friday, September 11, 2026">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:40:49 AM Friday, September 11, 2026">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:40:49 AM Friday, September 11, 2026">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="10:40:50 AM Friday, September 11, 2026">
+  <Message>Model closed</Message>
+</Log_Message>
+<Entry>
+  <Formcannotberesolved>frmEwE6 cmdNavigate OnInvoke</Formcannotberesolved>
+</Entry>
+<Information_Message
+  Date="10:53:14 AM Friday, September 11, 2026">
+  <Message>Ecosim scenario 'Scene 1' has been saved.</Message>
+  <Message_Type>DataModified</Message_Type>
+  <Message_Source>Ecosim</Message_Source>
+  <Message_DataType>EcoSimScenario</Message_DataType>
+</Information_Message>
+<Log_Message
+  Date="9:02:53 AM Saturday, September 12, 2026">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="9:02:53 AM Saturday, September 12, 2026">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="9:02:53 AM Saturday, September 12, 2026">
+  <Message>Ecospace scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="9:02:53 AM Saturday, September 12, 2026">
+  <Message>Ecotracer scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="9:02:53 AM Saturday, September 12, 2026">
+  <Message>Ecosim scenario closed</Message>
+</Log_Message>
+<Log_Message
+  Date="9:02:53 AM Saturday, September 12, 2026">
+  <Message>Model closed</Message>
+</Log_Message>
 </doc>

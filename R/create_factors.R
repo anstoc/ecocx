@@ -74,54 +74,54 @@ get_ecosim_effort_length=function(factor_set,fleet_name)
 
 
 
-#' Add an additional option for the fishing effort time series of a fleet
+#' Add an additional level for the fishing effort time series of a fleet
 #'
 #' @param factor_set A factor set created with new_ecosim_factor_set()
 #' @param fleet_name Name of the fleet
-#' @param option_name Name for the new option
+#' @param level_name Name for the new level
 #' @param effort_values A numeric vector with the new effort values. It must have the same length as the existing effort time series for the fleet.
-#' @param factor_value A single value of the factor used in sensitivity analysis. For example, if this options doubles fishing effort compared to a baseline effort, this parameter should be 2, and for the baseline option, 1. Used in elementary effects method and Sobol indices.
+#' @param factor_value A single value of the factor used in sensitivity analysis. For example, if this doubles fishing effort compared to a baseline effort, this parameter should be 2, and for the baseline level, 1. Used in elementary effects method and Sobol indices.
 #' @returns An updated factor set object.
 #' @export
-add_option_ecosim_effort=function(factor_set,fleet_name,option_name,effort_values,factor_value=NA)
+add_level_ecosim_effort=function(factor_set,fleet_name,level_name,effort_values,factor_value=NA)
 {
   #check if inputs are consistent with model information and effort values are >=0
   if(!(fleet_name %in% names(factor_set$fishing_effort))) {stop(paste("Fleet",fleet_name,"not found in factor_set."))}
-  if(option_name %in% names(factor_set$fishing_effort[[fleet_name]])) {stop("A factor level with this name already exists. To avoid accidental overwriting, remove it with remove_option_ecosim_effort(), then try again")}
+  if(level_name %in% names(factor_set$fishing_effort[[fleet_name]])) {stop("A factor level with this name already exists. To avoid accidental overwriting, remove it with remove_level_ecosim_effort(), then try again")}
   if(!(is.numeric(effort_values) & length(effort_values)==get_ecosim_effort_length(factor_set,fleet_name))) {stop("The parameter effort_values must be a numeric vector of the same length as the effort time series in the original model")}
   if(is.na(sum(effort_values)) | length(which(effort_values<0)>0)) {stop("The parameter effort_values must not contain NAs or negative numbers.")}
 
-  #create the new effort option
-  new_option=factor_set$fishing_effort[[fleet_name]][[1]]
-  new_option$values=effort_values
-  new_option$factor_value=factor_value
-  factor_set$fishing_effort[[fleet_name]][[option_name]]=new_option
+  #create the new effort level
+  new_level=factor_set$fishing_effort[[fleet_name]][[1]]
+  new_level$values=effort_values
+  new_level$factor_value=factor_value
+  factor_set$fishing_effort[[fleet_name]][[level_name]]=new_level
 
   return(factor_set)
 }
 
 
 
-#' Remove an option for the effort time series of a fleet.
+#' Remove a level for the effort time series of a fleet.
 #'
-#'At least one option must remain at all times. To replace the last option, add a new option first, then remove the olds one.
+#'At least one level must remain at all times. To replace the last level, add a new level first, then remove the old one.
 #'
 #' @param factor_set A factor set created with new_ecosim_factor_set()
 #' @param fleet_name Name of the fleet
-#' @param option_name Name of the option to remove
+#' @param level_name Name of the level to remove
 #'
 #' @returns An updated factor set object.
 #' @export
 
-remove_option_ecosim_effort=function(factor_set,fleet_name,option_name)
+remove_level_ecosim_effort=function(factor_set,fleet_name,level_name)
 {
-  #check if inputs are consistent with model information and not removing the last option for the effort
+  #check if inputs are consistent with model information and not removing the last level for the effort
   if(!(fleet_name %in% names(factor_set$fishing_effort))) {stop(paste("Fleet",fleet_name,"not found in factor_set."))}
-  if(!(option_name %in% names(factor_set$fishing_effort[[fleet_name]]))) {stop("No option with this name.")}
-  if(length(factor_set$fishing_effort[[fleet_name]])==1) {stop("Cannot delete the last remaining options for this factor. Please add new options before deleting this one.")}
+  if(!(level_name %in% names(factor_set$fishing_effort[[fleet_name]]))) {stop("No level with this name.")}
+  if(length(factor_set$fishing_effort[[fleet_name]])==1) {stop("Cannot delete the last remaining level for this factor. Please add new levels before deleting this one.")}
 
   #remove from list
-  factor_set$fishing_effort[[fleet_name]][[option_name]] <- NULL
+  factor_set$fishing_effort[[fleet_name]][[level_name]] <- NULL
   return(factor_set)
 }
 
@@ -138,82 +138,82 @@ get_ecosim_forcing_length=function(factor_set,forcing_name)
   length(factor_set$forcing_functions[[forcing_name]][[1]]$values)
 }
 
-#' Add an additional option for a forcing function time series
+#' Add an additional level for a forcing function time series
 #'
 #' @param factor_set A factor set created with new_ecosim_factor_set()
 #' @param forcing_name Name of the forcing function
-#' @param option_name Name of the new option
+#' @param level_name Name of the new level
 #' @param forcing_values Numeric vector with the new values for the forcing function. It must have the same length as the existing effort time series for the fleet.
 #' @param factor_value A single value of the factor used in sensitivity analysis.
 #' @returns An updated factor set object.
 #' @export
-add_option_ecosim_forcing=function(factor_set,forcing_name,option_name,forcing_values, factor_value=NA)
+add_level_ecosim_forcing=function(factor_set,forcing_name,level_name,forcing_values, factor_value=NA)
 {
   #check if inputs are consistent with model information
   if(!(forcing_name %in% names(factor_set$forcing_functions))) {stop(paste("Forcing function",forcing_name,"not found in factor_set."))}
-  if(option_name %in% names(factor_set$forcing_functions[[forcing_name]])) {stop("A factor level with this name already exists. To avoid accidental overwriting, remove it with remove_option_ecosim_forcing(), then try again.")}
+  if(level_name %in% names(factor_set$forcing_functions[[forcing_name]])) {stop("A factor level with this name already exists. To avoid accidental overwriting, remove it with remove_level_ecosim_forcing(), then try again.")}
   if(!(is.numeric(forcing_values) & length(forcing_values)==get_ecosim_forcing_length(factor_set,forcing_name))) {stop("The parameter forcing_values must be a numeric vector of the same length as the forcing time series in the original model.")}
   if(is.na(sum(forcing_values))) {stop("The parameter forcing_values must not contain NAs.")}
 
-  #create the new forcing option
-  new_option=factor_set$forcing_functions[[forcing_name]][[1]]
-  new_option$values=forcing_values
-  new_option$factor_value=factor_value
-  factor_set$forcing_functions[[forcing_name]][[option_name]]=new_option
+  #create the new forcing level
+  new_level=factor_set$forcing_functions[[forcing_name]][[1]]
+  new_level$values=forcing_values
+  new_level$factor_value=factor_value
+  factor_set$forcing_functions[[forcing_name]][[level_name]]=new_level
 
   return(factor_set)
 }
 
-#' Remove an option for a forcing time series.
+#' Remove a level for a forcing time series.
 #'
-#'At least one option must remain at all times. To replace the last option, add a new option first, then remove the old one.
+#'At least one level must remain at all times. To replace the last level, add a new level first, then remove the old one.
 #'
 #' @param factor_set A factor set created with new_ecosim_factor_set()
 #' @param forcing_name Name of the forcing function
-#' @param option_name Name of the option to remove
+#' @param level_name Name of the level to remove
 #' @returns An updated factor set object.
 #' @export
-remove_option_ecosim_forcing=function(factor_set,forcing_name,option_name)
+remove_level_ecosim_forcing=function(factor_set,forcing_name,level_name)
 {
-  #check if inputs are consistent with model information and not removing the last option for the effort
+  #check if inputs are consistent with model information and not removing the last level for the effort
   if(!(forcing_name %in% names(factor_set$forcing_functions))) {stop(paste("Forcing function",fleet_name,"not found in factor_set."))}
-  if(!(option_name %in% names(factor_set$forcing_functions[[forcing_name]]))) {stop("No option with this name.")}
-  if(length(factor_set$forcing_functions[[forcing_name]])==1) {stop("Cannot delete the last remaining options for this factor. Please add new options before deleting this one.")}
+  if(!(level_name %in% names(factor_set$forcing_functions[[forcing_name]]))) {stop("No level with this name.")}
+  if(length(factor_set$forcing_functions[[forcing_name]])==1) {stop("Cannot delete the last remaining level for this factor. Please add at least one new level before deleting this one.")}
 
   #remove from list
-  factor_set$forcing_functions[[forcing_name]][[option_name]] <- NULL
+  factor_set$forcing_functions[[forcing_name]][[level_name]] <- NULL
   return(factor_set)
 }
 
 ##
 
-#' Add an additional option for a (environmental response or mediation) shape
+#' Add an additional level for a (environmental response or mediation) shape
 #'
 #' @param factor_set A factor set created with new_ecosim_factor_set()
 #' @param shape_name Name of the shape
-#' @param option_name Name of the new option
+#' @param level_name Name of the new level
 #' @param shape_x Numeric vector with the new x values for the shape. Must have a length of 1200 (an Ecosim convention).
 #' @param shape_y Numeric vector with the new y values for the shape. Must have a length of 1200 (an Ecosim convention).
 #' @param factor_value A single value of the factor used in sensitivity analysis.
 #' @returns  Updated factor set object.
 #' @export
-add_option_ecosim_shape=function(factor_set,shape_name,option_name,shape_x, shape_y,factor_value=NA)
+add_level_ecosim_shape=function(factor_set,shape_name,level_name,shape_x, shape_y,factor_value=NA)
 {
   #check if inputs are consistent with model information
   if(!(shape_name %in% names(factor_set$shapes))) {stop(paste("Shape",shape_name,"not found in factor_set."))}
-  if(option_name %in% names(factor_set$shapes[[shape_name]])) {stop("A factor level with this name already exists. To avoid accidental overwriting, remove it with remove_option_ecosim_shape(), then try again.")}
+  if(level_name %in% names(factor_set$shapes[[shape_name]])) {stop("A factor level with this name already exists. To avoid accidental overwriting, remove it with remove_level_ecosim_shape(), then try again.")}
   if(!(is.numeric(shape_x) & is.numeric(shape_y) & length(shape_x)==1200 & length(shape_y)==1200)) {stop("The x and y values must be a numeric vector with length 1200 (an Ecosim legacy).")}
   if(is.na(sum(shape_x) | is.na(sum(shape_y)))) {stop("The x and y values must not contain NAs.")}
 
-  #create the new shape option
-  new_option=factor_set$shapes[[shape_name]][[1]]
-  new_option$y=shape_y
-  new_option$x=shape_x
-  new_option$xmin=min(shape_x)
-  new_option$xmax=max(shape_x)
-  new_option$factor_value=factor_value
+  #create the new shape level
+  new_level=factor_set$shapes[[shape_name]][[1]]
+  new_level$y=shape_y
+  new_level$x=shape_x
+  new_level$xmin=min(shape_x)
+  new_level$xmax=max(shape_x)
+  new_level$factor_value=factor_value
 
-  factor_set$shapes[[shape_name]][[option_name]]=new_option
+  factor_set$shapes[[shape_name]][[level_name]]=new_level
 
   return(factor_set)
 }
@@ -221,25 +221,25 @@ add_option_ecosim_shape=function(factor_set,shape_name,option_name,shape_x, shap
 
 
 
-#' Remove an option for a shape.
+#' Remove an level for a shape.
 #'
-#'At least one option must remain at all times. To replace the last option, add a new option first, then remove the old one.
+#'At least one level must remain at all times. To replace the last level, add a new level first, then remove the old one.
 #'
 #' @param factor_set A factor set, e.g.,created with new_ecosim_factor_set()
 #' @param shape_name Name of the shape
-#' @param option_name Name of the option to remove
+#' @param level_name Name of the level to remove
 #'
 #' @returns An updated factor set object.
 #' @export
-remove_option_ecosim_shape=function(factor_set,shape_name,option_name)
+remove_level_ecosim_shape=function(factor_set,shape_name,level_name)
 {
-  #check if inputs are consistent with model information and not removing the last option for the effort
+  #check if inputs are consistent with model information and not removing the last level for the effort
   if(!(shape_name %in% names(factor_set$shapes))) {stop(paste("Shape",shape_name,"not found in factor_set."))}
-  if(!(option_name %in% names(factor_set$shapes[[shape_name]]))) {stop("No option with this name.")}
-  if(length(factor_set$shapes[[shape_name]])==1) {stop("Cannot delete the last remaining options for this factor. Please add new options before deleting this one.")}
+  if(!(level_name %in% names(factor_set$shapes[[shape_name]]))) {stop("No level with this name.")}
+  if(length(factor_set$shapes[[shape_name]])==1) {stop("Cannot delete the last remaining levels for this factor. Please add new levels before deleting this one.")}
 
   #remove from list
-  factor_set$shapes[[shape_name]][[option_name]] <- NULL
+  factor_set$shapes[[shape_name]][[level_name]] <- NULL
   return(factor_set)
 }
 
@@ -248,38 +248,38 @@ remove_option_ecosim_shape=function(factor_set,shape_name,option_name)
 #' Add an alternative vulnerability matrix.
 #'
 #' @param factor_set A factor set, e.g., created with new_ecosim_factor_set().
-#' @param option_name Name of the new option.
+#' @param level_name Name of the new level.
 #' @param v_matrix New vulnerability matrix. It must have the same dimensions as the original model's vulnerability matrix, contain numbers where the original model's matrix contains numbers, and NAs where the original model's matrix contains NAs.
 #'
-#' @returns An updated factor set including the new option.
+#' @returns An updated factor set including the new level.
 #' @export
-add_option_ecosim_vulnerability=function(factor_set,option_name,v_matrix)
+add_level_ecosim_vulnerability=function(factor_set,level_name,v_matrix)
 {
   #check if matrix dimensions are right and if all pred-prey pairs have data or NA like in the original matrix
   if(!identical(dim(v_matrix),dim(factor_set$tables$vulnerability[[1]]))) {stop("The provided vulnerability matrix must have the same dimensions as the matrix in the original models.")}
   if(!identical(is.na(as.numeric(v_matrix)),is.na(as.numeric(factor_set$tables$vulnerability[[1]])))) {stop("The provided vulnerability matrix must have numbers where the original model's matrix has numbers, and NAs where the original model's matrix has NAs.")}
-  if(option_name %in% names(factor_set$tables$vulnerability)) {stop("A vulnerability table with this name already exists.")}
+  if(level_name %in% names(factor_set$tables$vulnerability)) {stop("A vulnerability table with this name already exists.")}
 
-  #add to option list
-  factor_set$tables$vulnerability[[option_name]]=v_matrix
+  #add to level list
+  factor_set$tables$vulnerability[[level_name]]=v_matrix
   factor_set
 
 }
 
-#' Remove an option for the vulnerability table.
+#' Remove an level for the vulnerability table.
 #'
-#'At least one option must remain at all times. To replace the last option, add a new option first, then remove the old one.
+#'At least one level must remain at all times. To replace the last level, add a new level first, then remove the old one.
 #'
 #' @param factor_set A factor set, e.g.,created with new_ecosim_factor_set().
-#' @param option_name Name of the option to remove.
+#' @param level_name Name of the level to remove.
 #'
 #' @returns An updated factor set object.
 #' @export
-remove_option_ecosim_vulnerability=function(factor_set,option_name)
+remove_level_ecosim_vulnerability=function(factor_set,level_name)
 {
-  if(length(factor_set$tables$vulnerability)==1) {stop("Cannot remove the last option for the vulnerability matrix. If you wish to replace it, add the replacement first, then remove the old option.")}
-  if(!(option_name %in% names(factor_set$tables$vulnerability))) {stop("No option with this name in the factor set.")}
-  factor_set$tables$vulnerability[[option_name]]=NULL
+  if(length(factor_set$tables$vulnerability)==1) {stop("Cannot remove the last level for the vulnerability matrix. If you wish to replace it, add the replacement first, then remove the old level.")}
+  if(!(level_name %in% names(factor_set$tables$vulnerability))) {stop("No level with this name in the factor set.")}
+  factor_set$tables$vulnerability[[level_name]]=NULL
   factor_set
 }
 
@@ -289,14 +289,14 @@ remove_option_ecosim_vulnerability=function(factor_set,option_name)
 #' @param object The factor set
 #' @param ... Unused
 #'
-#' @returns A data frame with the number of options per factor.
+#' @returns A data frame with the number of levels per factor.
 #' @exportS3Method base::summary ecocx_factor_set
 summary.ecocx_factor_set=function(object, ...)
 {
-  d=data.frame(Type=character(),Name=character(),Options=numeric(),stringsAsFactors=FALSE)
+  d=data.frame(Type=character(),Name=character(),levels=numeric(),stringsAsFactors=FALSE)
   for(type in names(object)) {
     for(name in names(object[[type]])) {
-      new_row=data.frame("type"=type,"name"=name,"options"=length(object[[type]][[name]]))
+      new_row=data.frame("type"=type,"name"=name,"levels"=length(object[[type]][[name]]))
       d=rbind(d,new_row)
     }
   }
@@ -345,5 +345,5 @@ set_factor_scalar_values=function(factor_set, values_table)
 }
 
 #TODO
-#other factors/options
+#other factors/levels
 

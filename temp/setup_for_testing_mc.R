@@ -34,17 +34,19 @@ factor_set=new_ecosim_factor_set(m)
 #                        m$ecosim$shapes$`Seal-Mackerel-Anchovy`$x,rep(1,1200))
 
 factor_set=add_option_ecosim_shape(factor_set,"Tempcold","off",factor_set$shapes$Tempcold$default$x,rep(1,1200))
+#factor_set=add_option_ecosim_shape(factor_set,"Tempwarm","off",factor_set$shapes$Tempwarm$default$x,rep(1,1200))
+factor_set=add_option_ecosim_shape(factor_set,"Twhiting","off",factor_set$shapes$Twhiting$default$x,rep(1,1200))
 
-design=sampler_random(factor_set,size=10)
+design=sampler_random(factor_set,size=20)
 
-out_folder=paste0(tempdir(),"/mctest")
+out_folder=paste0(tempdir(),"/mctest6")
 
 
 cx_table=run_ecosim_experiment(design,xml_model,factor_set,ewe_link,out_folder,parallel=T)
 
 df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
 
-plot_all_runs(df_cx,alpha=0.4)
+plot_all_runs(df_cx,alpha=1,output=c("Whiting"))
 
 out_folder=paste0(tempdir(),"/fftest")
 design_ff=sampler_full_factorial(factor_set)
@@ -53,4 +55,4 @@ plan(multisession)
 cx_table=run_ecosim_experiment(design_ff,xml_model,factor_set,ewe_link,out_folder,parallel=T)
 df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
 
-plot_all_runs(df_cx,alpha=0.2)
+plot_all_runs(df_cx,alpha=0.01)

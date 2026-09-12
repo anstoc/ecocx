@@ -1,7 +1,7 @@
 Package: ecocx
 Type: Package
 Title: Computational experiments with Ecosim and Ecospace
-Version: 0.8.0
+Version: 0.8.01
 Authors@R: c(
     person(
       "Stock", "Andy",

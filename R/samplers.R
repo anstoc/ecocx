@@ -2,10 +2,10 @@
 
 #' Sample one entry from a list, returning the index
 #'
-#' @param factor An ecocx factor (not necessarily a factor in the R sense) from with one or more options.
+#' @param factor An ecocx factor (not necessarily a factor in the R sense) from with one or more levels.
 #'
-#' @returns Index of the option.
-sample_option_from_list=function(factor)
+#' @returns Index of the level.
+sample_level_from_list=function(factor)
 {
   if(length(factor)<1) {return(NA)} else {return(sample(1:length(factor),size=1))}
 }
@@ -13,7 +13,7 @@ sample_option_from_list=function(factor)
 
 #' Randomly sample factor levels for standard Monte Carlo runs
 #'
-#' @param factor_set A factor set including all options to sample from.
+#' @param factor_set A factor set including all levels to sample from.
 #' @param size Sample size (the number of Monte Carlo runs)
 #'
 #' @returns A data frame with automatically generated run ID, sub-ID, run_name and comment columns; as well as one column per factor with a random sample.
@@ -39,7 +39,7 @@ sampler_random=function(factor_set, size=1)
     df[i,][["comment"]]=paste("Random sample, run",i)
     for(j in 1:nrow(fac_sum))
     {
-      choice=sample_option_from_list(factor_set[[fac_sum$type[j]]][[fac_sum$name[[j]]]])
+      choice=sample_level_from_list(factor_set[[fac_sum$type[j]]][[fac_sum$name[[j]]]])
       choice_name=names(factor_set[[fac_sum$type[j]]][[fac_sum$name[[j]]]])[choice]
       df[i,][[fac_sum$name[j]]]=choice_name
     }
@@ -64,8 +64,8 @@ sampler_full_factorial=function(factor_set)
     for(inner in 1:length(factor_set[[outer]]))
     {
       factor_name=names(factor_set[[outer]])[inner]
-      factor_options=names(factor_set[[outer]][[factor_name]])
-      factor_list[[factor_name]]=factor_options
+      factor_levels=names(factor_set[[outer]][[factor_name]])
+      factor_list[[factor_name]]=factor_levels
     }
   }
   d_factors=expand.grid(factor_list)
@@ -103,7 +103,7 @@ sampler_full_factorial=function(factor_set)
 #' xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
 #' m=ecocx::load_model_from_xml(xml_model)
 #' factor_set=new_ecosim_factor_set(m)
-#' factor_set=ecocx::add_option_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,length(factor_set$forcing_functions$PPanomaly$default$values)))
+#' factor_set=ecocx::add_level_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,length(factor_set$forcing_functions$PPanomaly$default$values)))
 #' summary(factor_set)
 #' #obtain default scalar values as basis for range table, only modify fishing effort and temperature, keep PPAnomaly as yes/no
 #' range_table=ecocx::get_factor_scalar_values(factor_set)
@@ -118,9 +118,9 @@ sampler_full_factorial=function(factor_set)
 create_ee_levels=function(factor_set,range_table, start_change, end_change)
 {
   fac_summary=summary(factor_set)
-  if(max(fac_summary$options)>=3) {stop("Initial factor set must not contain factors with more than two levels. Factors with two level will be set to binary choices. Factors with one level will be expanded according to the range table (but factors with one level that are not listed in the range table are omitted).")}
+  if(max(fac_summary$levels)>=3) {stop("Initial factor set must not contain factors with more than two levels. Factors with two level will be set to binary choices. Factors with one level will be expanded according to the range table (but factors with one level that are not listed in the range table are omitted).")}
   #for factors with two levels, set their scalar values to 0 and 1.
-  for(ix in which(fac_summary$options==2))
+  for(ix in which(fac_summary$levels==2))
   {
     factor_set[[fac_summary$type[ix]]][[fac_summary$name[ix]]][[1]]$factor_value=0
     factor_set[[fac_summary$type[ix]]][[fac_summary$name[ix]]][[2]]$factor_value=1
@@ -129,12 +129,12 @@ create_ee_levels=function(factor_set,range_table, start_change, end_change)
   for(i in 1:nrow(range_table))
   {
     if(range_table$p[i] %%2 !=0) {stop("p should be even; 4,6,and 8 are common choices.")}
-    if(fac_summary$options[fac_summary$name==range_table$name[i] & fac_summary$type==range_table$type[i]] > 1) {
-      warning("Skipping factors in the range table that already have more than one option.")} else {
+    if(fac_summary$levels[fac_summary$name==range_table$name[i] & fac_summary$type==range_table$type[i]] > 1) {
+      warning("Skipping factors in the range table that already have more than one level.")} else {
       #create p levels with start point until start_change, the linear change to the required level based on the range table until end_change, then the new (level) value
       p=range_table$p[i]
       p_levels=0:(p-1)/(p-1)
-      #create one option for each level
+      #create one entry for each level
       for(level in p_levels) {
         #create values
         start=range_table$start[i]
@@ -142,9 +142,9 @@ create_ee_levels=function(factor_set,range_table, start_change, end_change)
         level_values=rep(start,length(factor_set[[range_table$type[i]]][[range_table$name[i]]][[1]]$values))
         level_values=change_values_add(level_values,(end-start),start_change,end_change)
         if(range_table$type[i]=="fishing_effort") {
-          factor_set=add_option_ecosim_effort(factor_set,range_table$name[i],paste0("ee",round(level,2)),level_values,level)
+          factor_set=add_level_ecosim_effort(factor_set,range_table$name[i],paste0("ee",round(level,2)),level_values,level)
         } else if(range_table$type[i]=="forcing_functions") {
-          factor_set=add_option_ecosim_forcing(factor_set,range_table$name[i],paste0("ee",round(level,2)),level_values,level)
+          factor_set=add_level_ecosim_forcing(factor_set,range_table$name[i],paste0("ee",round(level,2)),level_values,level)
         }
       }
     }

@@ -12,7 +12,7 @@
 \item{...}{Unused}
 }
 \value{
-A data frame with the number of options per factor.
+A data frame with the number of levels per factor.
 }
 \description{
 Summary function for factor sets
