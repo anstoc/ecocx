@@ -7,7 +7,7 @@
 sampler_random(factor_set, size = 1)
 }
 \arguments{
-\item{factor_set}{A factor set including all options to sample from.}
+\item{factor_set}{A factor set including all levels to sample from.}
 
 \item{size}{Sample size (the number of Monte Carlo runs)}
 }

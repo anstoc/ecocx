@@ -132,3 +132,10 @@ get_run_console_link=function()
 {
   return("https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.35")
 }
+
+get_factor_by_name=function(factor_set,name)
+{
+  h=get_factor_scalar_values(factor_set)
+  ix=which(name == h$name)[1]
+  factor_set[[h$type[ix]]][[h$name[[ix]]]]
+}

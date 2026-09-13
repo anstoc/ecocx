@@ -25,7 +25,7 @@ Create factor levels for calculating elementary effects
 xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
 m=ecocx::load_model_from_xml(xml_model)
 factor_set=new_ecosim_factor_set(m)
-factor_set=ecocx::add_option_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,length(factor_set$forcing_functions$PPanomaly$default$values)))
+factor_set=ecocx::add_level_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,length(factor_set$forcing_functions$PPanomaly$default$values)))
 summary(factor_set)
 #obtain default scalar values as basis for range table, only modify fishing effort and temperature, keep PPAnomaly as yes/no
 range_table=ecocx::get_factor_scalar_values(factor_set)

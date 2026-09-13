@@ -9,13 +9,13 @@ summary(factor_set)
 factor_set=add_option_ecosim_forcing(factor_set,"Tbottom","warmer_1deg",ecocx::change_values_add(factor_set$forcing_functions$Tbottom$default$values,1,150,350))
 factor_set=add_option_ecosim_forcing(factor_set,"Tbottom","colder_1deg",ecocx::change_values_add(factor_set$forcing_functions$Tbottom$default$values,-1,150,350))
 plot(factor_set$forcing_functions$Tbottom$default$values,type="l", ylim=c(15,21))
-lines(factor_set$forcing_functions$Tbottom$warmer_1deg$values,col="red")
+lines(factor_set$forcing_functions$Tbottom$warmer_1deg$values,col="orange")
 lines(factor_set$forcing_functions$Tbottom$colder_1deg$values,col="blue")
 
 #Switch primary production anomaly on or off
 factor_set=add_option_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,get_ecosim_forcing_length(factor_set,"PPanomaly")))
 plot(factor_set$forcing_functions$PPanomaly$default$values,type="l")
-lines(factor_set$forcing_functions$PPanomaly$none$values,col="red")
+lines(factor_set$forcing_functions$PPanomaly$none$values,col="orange")
 
 #Fishing fleets
 #Sealers

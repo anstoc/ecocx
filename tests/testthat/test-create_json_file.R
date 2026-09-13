@@ -7,7 +7,7 @@ test_that("Creating change vector for .json file works", {
 
   v_json=create_json_changes_ecosim(1,design,factor_set)
 
-  expect_length(v_json,21)
+  expect_length(v_json,19)
   expect_true(startsWith(trimws(v_json[5]),"\"ecosim.effort[1].set\": [ 1"))
 
 })
@@ -23,7 +23,7 @@ test_that("Creating Ecosim run vector for .json file works", {
   v_json=create_json_ecosim_run(1,cx_table, design,factor_set)
 
 
-  expect_length(v_json,25)
+  expect_length(v_json,23)
   expect_true(endsWith(v_json[length(v_json)],"}"))
   expect_true(startsWith(trimws(v_json[10]),"\"ecosim.effort[3].set\": [ 1"))
 

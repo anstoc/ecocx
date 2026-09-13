@@ -21,13 +21,13 @@ new_ecosim_factor_set=function(m, default_name="default")
 
   factor_set$tables=list()
 
-  #foraging response table
-  factor_set$tables$foraging_resp=list()
-  factor_set$tables$foraging_resp[[default_name]]=m$ecosim$foraging_response_table
+  # foraging response table - do not include currently
+  # factor_set$tables$foraging_resp=list()
+  # factor_set$tables$foraging_resp[[default_name]]=m$ecosim$foraging_response_table
 
-  #mediation table
-  factor_set$tables$mediation=list()
-  factor_set$tables$mediation[[default_name]]=m$ecosim$mediation
+  #mediation table - do not include currently
+  # factor_set$tables$mediation=list()
+  # factor_set$tables$mediation[[default_name]]=m$ecosim$mediation
   #vulnerabilities
   factor_set$tables$vulnerability=list()
   factor_set$tables$vulnerability[[default_name]]=m$ecosim$vulnerabilities

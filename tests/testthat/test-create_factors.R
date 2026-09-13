@@ -92,6 +92,6 @@ test_that("Setting and reading scalar values for each factor works", {
 
   h$factor_value=1:nrow(h)
   factor_set=set_factor_scalar_values(factor_set,h)
-  expect_equal(factor_set$fishing_effort$Baitboats$default$factor_value,7)
-  expect_equal(factor_set$fishing_effort$Baitboats$phase_out$factor_value,8)
+  expect_equal(factor_set$fishing_effort$Baitboats$default$factor_value,5)
+  expect_equal(factor_set$fishing_effort$Baitboats$phase_out$factor_value,6)
 })

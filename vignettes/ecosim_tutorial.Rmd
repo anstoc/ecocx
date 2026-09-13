@@ -40,7 +40,7 @@ library(ecocx)
 In addition, you need the EwE Run Console, a command line interface to EwE. It is available on Github. Each release of EcoCX is tested against a specific release of the run console. To obtain a link to this recommended version:
 
 ``` {r}
-get_run_console_link()
+ewe_link=get_run_console_link()
 ```
 
 You can use a newer version if available, but be aware that we cannot guarantee compatibility.
@@ -79,11 +79,54 @@ The model runs for 41 years (with 12 months each, so 492 time steps). Trawling e
 
 ## Defining factors and levels
 
-The model inputs whose effects we investigate are called factors. As we have seen above, in the Anchovy Bay model, there are drastic changes to sealing and trawl fisheries over time, major warming, and a large primary production anomaly. We will explore how much they together affect functional group biomasses, and then attribute these changes exactly to the four factors.
+The model inputs whose effects we investigate are called factors. As we have seen above, in the Anchovy Bay model, there are drastic changes to sealing and trawl fisheries over time, major warming, and a large primary production anomaly. For the sake of this example, let's say there are also discussions about increasing or decreasing the fishing effort for Shrimpers by 50%. We will explore how much these five factors together affect functional group biomasses, and then attribute these changes exactly to the factors.
 
-For this, we need to define plausible alternative levels for each factors - e.g., whether an intervention like phasing out sealing is implemented at all, or how much temperatures rise based on uncertainty about the future climate. Be aware that those levels affect each factor's influence; a 0.1°C change in temperature will have a smaller effect than a 10°C change. 
+For this, we need to define plausible alternative levels for each factors - e.g., whether an intervention like phasing out sealing is implemented at all, or how much temperatures rise based on uncertainty about the future climate. Be aware that those levels affect each factor's effect size; a 0.1°C change in temperature will have a smaller effect than a 10°C change. 
 
 The first step is creating a 'factor set' - a collection of alternative levels for each factor. At present, EcoCX only supports discrete factor levels. To create a factor set from a model:
+
+``` {r}
+factor_set=new_ecosim_factor_set(m)
+summary(factor_set)
+```
+
+The summary above lists all the factors that you might consider changing: The vulnerability table, fishing effort for the five fleets, the two environmental driver time series (in EwE, those are called 'forcing functions'), and the shapes of a mediation function and two environmental response functions. For each factor, one level is defined. We will add additional levels to ask: What if we don't phase out sealing? What if we keep trawling at its current level? What if there was no climate anomaly? And what if there were two degrees less or more of warming?  
+
+EcoCX provides functions to add and visualize additional levels for these four factors. 
+
+``` {r}
+#Temperature add +/- 2 degrees, linearly changing
+factor_set=add_level_ecosim_forcing(factor_set,"Tbottom","warmer_2deg",
+      change_values_add(factor_set$forcing_functions$Tbottom$default$values,2,150,350))
+factor_set=add_level_ecosim_forcing(factor_set,"Tbottom","colder_2deg",
+      change_values_add(factor_set$forcing_functions$Tbottom$default$values,-2,150,350))
+plot_ecosim_factor_levels(factor_set,"Tbottom")
+
+#Primary production anomaly: switch on or off
+factor_set=add_level_ecosim_forcing(factor_set,"PPanomaly","none",
+      rep(1,get_ecosim_forcing_length(factor_set,"PPanomaly")))
+plot_ecosim_factor_levels(factor_set,"PPanomaly")
+
+#Sealers: keep as current
+factor_set=add_level_ecosim_effort(factor_set,"Sealers","keep",
+      rep(1,length(factor_set$fishing_effort$Sealers$default$values)))
+plot_ecosim_factor_levels(factor_set,"Sealers")      
+
+#Trawlers: keep the current effort instead of phasing out
+factor_set=add_level_ecosim_effort(factor_set,"Trawlers","keep",
+      rep(1,length(factor_set$fishing_effort$Sealers$default$values)))
+plot_ecosim_factor_levels(factor_set,"Trawlers") 
+
+#Shrimpers: consider changing the current effort +/- 50%
+factor_set=add_level_ecosim_effort(factor_set,"Shrimpers","plus50p",
+      change_values_mult(factor_set$fishing_effort$Shrimpers$default$values,1.5,150,350))
+factor_set=add_level_ecosim_effort(factor_set,"Shrimpers","minus50p",
+      change_values_mult(factor_set$fishing_effort$Shrimpers$default$values,0.5,150,350))
+plot_ecosim_factor_levels(factor_set,"Shrimpers") 
+
+summary(factor_set)
+
+```
 
 ## Choosing an experimental design
 

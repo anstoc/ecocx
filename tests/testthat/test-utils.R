@@ -22,3 +22,11 @@ test_that("Gradually increasing (or decreasing) a vector over time by a multipli
   expect_all_true(v1[6:10]==v3[6:10]/1.5)
   expect_true(v3[4]==v1[4]+0.5/2*v1[4])
 })
+
+test_that("Getting a factor from a factor set by name works", {
+  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
+  factor_set=new_ecosim_factor_set(m)
+  fac=get_factor_by_name(factor_set,"Trawlers")
+  expect_equal(fac$default$fleetname,"Trawlers")
+  expect_equal(fac$default$values[200],2.183)
+})

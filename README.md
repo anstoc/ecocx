@@ -104,33 +104,31 @@ m$ecopath$basic_estimates
 ##create a set of factors (inputs that change in each model run): +/- 20% effort for the model's five fishing fleets 
 factor_set=new_ecosim_factor_set(m)
 
-factor_set=add_option_ecosim_effort(factor_set,"Sealers","higher20p",1.2*factor_set$fishing_effort$Sealers$default$values,factor_value=1.2)
-factor_set=add_option_ecosim_effort(factor_set,"Sealers","lower20p",0.8*factor_set$fishing_effort$Sealers$default$values)
-factor_set=add_option_ecosim_effort(factor_set,"Trawlers","higher20p",1.2*factor_set$fishing_effort$Trawlers$default$values)
-factor_set=add_option_ecosim_effort(factor_set,"Trawlers","lower20p",0.8*factor_set$fishing_effort$Trawlers$default$values)
-factor_set=add_option_ecosim_effort(factor_set,"Seiners","higher20p",1.2*factor_set$fishing_effort$Seiners$default$values)
-factor_set=add_option_ecosim_effort(factor_set,"Seiners","lower20p",0.8*factor_set$fishing_effort$Seiners$default$values)
-factor_set=add_option_ecosim_effort(factor_set,"Baitboats","higher20p",1.2*factor_set$fishing_effort$Baitboats$default$values)
-factor_set=add_option_ecosim_effort(factor_set,"Baitboats","lower20p",0.8*factor_set$fishing_effort$Baitboats$default$values)
-factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","higher20p",1.2*factor_set$fishing_effort$Shrimpers$default$values)
-factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","lower20p",0.8*factor_set$fishing_effort$Shrimpers$default$values)
+factor_set=add_level_ecosim_effort(factor_set,"Sealers","higher20p",1.2*factor_set$fishing_effort$Sealers$default$values,factor_value=1.2)
+factor_set=add_level_ecosim_effort(factor_set,"Sealers","lower20p",0.8*factor_set$fishing_effort$Sealers$default$values)
+factor_set=add_level_ecosim_effort(factor_set,"Trawlers","higher20p",1.2*factor_set$fishing_effort$Trawlers$default$values)
+factor_set=add_level_ecosim_effort(factor_set,"Trawlers","lower20p",0.8*factor_set$fishing_effort$Trawlers$default$values)
+factor_set=add_level_ecosim_effort(factor_set,"Seiners","higher20p",1.2*factor_set$fishing_effort$Seiners$default$values)
+factor_set=add_level_ecosim_effort(factor_set,"Seiners","lower20p",0.8*factor_set$fishing_effort$Seiners$default$values)
+factor_set=add_level_ecosim_effort(factor_set,"Baitboats","higher20p",1.2*factor_set$fishing_effort$Baitboats$default$values)
+factor_set=add_level_ecosim_effort(factor_set,"Baitboats","lower20p",0.8*factor_set$fishing_effort$Baitboats$default$values)
+factor_set=add_level_ecosim_effort(factor_set,"Shrimpers","higher20p",1.2*factor_set$fishing_effort$Shrimpers$default$values)
+factor_set=add_level_ecosim_effort(factor_set,"Shrimpers","lower20p",0.8*factor_set$fishing_effort$Shrimpers$default$values)
 
 summary(factor_set)
-#>                 type                  name options
-#> 1             tables         foraging_resp       1
-#> 2             tables             mediation       1
-#> 3             tables         vulnerability       1
-#> 4     fishing_effort               Sealers       3
-#> 5     fishing_effort              Trawlers       3
-#> 6     fishing_effort               Seiners       3
-#> 7     fishing_effort             Baitboats       3
-#> 8     fishing_effort             Shrimpers       3
-#> 9  forcing_functions             PPanomaly       1
-#> 10 forcing_functions               Tbottom       1
-#> 11            shapes Seal-Mackerel-Anchovy       1
-#> 12            shapes              Tempcold       1
-#> 13            shapes              Tempwarm       1
-#> 14            shapes              Twhiting       1
+#>                 type                  name levels
+#> 1             tables         vulnerability      1
+#> 2     fishing_effort               Sealers      3
+#> 3     fishing_effort              Trawlers      3
+#> 4     fishing_effort               Seiners      3
+#> 5     fishing_effort             Baitboats      3
+#> 6     fishing_effort             Shrimpers      3
+#> 7  forcing_functions             PPanomaly      1
+#> 8  forcing_functions               Tbottom      1
+#> 9             shapes Seal-Mackerel-Anchovy      1
+#> 10            shapes              Tempcold      1
+#> 11            shapes              Tempwarm      1
+#> 12            shapes              Twhiting      1
 
 ##create experimental design: random Monte Carlo with 50 runs
 set.seed(125)
@@ -139,7 +137,7 @@ design_mc=sampler_random(factor_set,size=50)
 ##connect to EwE Run Console (must be downloaded separately from https://github.com/Official-EwE/Eii.Ecopath.Runner). Replace path to the downloaded executable with your own.
 ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.32/EwERunConsole.exe")
 
-##optional: use futures for parallel processing
+##levelal: use futures for parallel processing
 library(future.apply)
 #> Loading required package: future
 plan(multisession)
