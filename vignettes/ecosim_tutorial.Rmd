@@ -134,15 +134,16 @@ Now that we have created plausible alternative levels for each factor of interes
 
 ## Random Monte Carlo
 
-The code below creates a random Monte Carlo design with 20 model runs. In each run, each factor takes on one of the levels defined above with equal probability.
+The code below creates a random Monte Carlo design with 10 model runs. In each run, each factor takes on one of the levels defined above with equal probability.
 
 ``` {r}
 out_folder=paste0(tempdir(),"/mctest")
-design_mc=sampler_random(factor_set, 20)
+set.seed(101)
+design_mc=sampler_random(factor_set, 10)
 head(design_mc)
 ```
 
-The function `sampler_random` returns a data frame with one run for each planned model run. It contains the following columns:
+The function `sampler_random` returns a data frame with one row for each planned model run. It contains the following columns:
 
 - `run_id`: An ID for the run. For the Monte Carlo design, each run has a unique ID.
 - `sub_id`: A sub-id used in the elementary effects method (see below). Not used in the MC design.
@@ -185,9 +186,38 @@ The returned data frame `cx_table_mc` contains for each run:
 - path to the folder where the run's outputs are stored
 - path to the JSON file describing the run (this is used by the Run Console - see next section) 
 
-## What's happening in the background?
 
 ## Reading and analyzing the outputs
+
+## What's happening in the background?
+
+The EwE Run Console takes four inputs: (1) A model in EIIXML format; (2) a JSON file describing changes to be made to the model before running it - e.g., replacing initial fishing effort time series with new values; and (3) a set of options, e.g., whether annual or monthly outputs should be written to disk; (4) the path to the directory where the run's outyputs should be written. 
+
+When calling `run_ecosim_experiment`, it first creates a folder structure for storing the outputs. One folder is created for each model run, named with the corresponding `run_name`. There is also a folder containing input data passed on to the Run Console. 
+
+``` {r}
+list.dirs(out_folder)
+```
+
+In the folder for each run, `run_ecosim_experiment` writes a JSON file that sets all factors to the required level:
+``` {r}
+list.files(paste0(out_folder,"/R0001_0000"))
+```
+
+The JSON file looks like this (printing only the beginning):
+
+``` {r}
+cat(readLines(paste0(out_folder,"/R0001_0000/R0001_0000.json"),18), sep = '\n')
+```
+
+With this JSON file and the model provided in EIIXML format, `run_ecosim_experiment` the calls the EwE Run Console from the command line. The Run Console makes the described changes to the model, executes it, and writes a log file and the model outputs to disk.
+
+``` {r}
+list.files(paste0(out_folder,"/R0001_0000//R0001_0000"))
+list.files(paste0(out_folder,"/R0001_0000//R0001_0000/ecosim_Scene 1"))
+```
+
+The data frame returned by `run_ecosim_experiment` (here, `cx_table_mc`) points to the JSON and EIIXML files and to the output folder for each run. As you can see, the Run Console creates many .csv files with various outputs. EcoCX contains functions to read some of them (biomasses, catches) and link them back to the inputs. You're welcome to add your own functions reading other outputs! 
 
 ## Full factorial experiments
 
@@ -195,10 +225,10 @@ The returned data frame `cx_table_mc` contains for each run:
 
 ## Entry points for adding your own methods
 
-EcoCX is designed to allow users to add their own methods. Typical entry points to insert your own functions include:
+EcoCX is designed to allow users to add their own methods. Typical entry points to insert own functions include:
 
 - The experimental design. You can write a function returning a design table like the built-in functions and then use EcoCX to execute the model runs it describes.
 - Harvesting model outputs. EcoCX has built-in functions to obtain Ecosim biomasses and fishery catches, but you're free to explore the generated model outputs and write functions that read others or calculate new ecological indicators from them. Those can then be fed into the design-specific analysis functions.
-- Analyzing . For example, you could use EcoCX' simple Monte Carlo sampler to run a model with many factors 100,000 times (if you have the computing power and storage space for outputs), then use machine learning methods of your choice to extract information from the gigantic pile of data you just created.
+- Analyzing model outputs. Depending on the question you're trying to answer, you can use EcoCX to run your model many times and obtain the outputs for each run, then use your own methods to analyze the big pile of data you just created.
 
 
