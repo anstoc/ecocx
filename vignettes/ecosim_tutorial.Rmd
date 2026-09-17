@@ -187,8 +187,6 @@ The returned data frame `cx_table_mc` contains for each run:
 - path to the JSON file describing the run (this is used by the Run Console - see next section) 
 
 
-## Reading and analyzing the outputs
-
 ## What's happening in the background?
 
 The EwE Run Console takes four inputs: (1) A model in EIIXML format; (2) a JSON file describing changes to be made to the model before running it - e.g., replacing initial fishing effort time series with new values; and (3) a set of options, e.g., whether annual or monthly outputs should be written to disk; (4) the path to the directory where the run's outyputs should be written. 
@@ -210,7 +208,7 @@ The JSON file looks like this (printing only the beginning):
 cat(readLines(paste0(out_folder,"/R0001_0000/R0001_0000.json"),18), sep = '\n')
 ```
 
-With this JSON file and the model provided in EIIXML format, `run_ecosim_experiment` the calls the EwE Run Console from the command line. The Run Console makes the described changes to the model, executes it, and writes a log file and the model outputs to disk.
+With this JSON file and the model provided in EIIXML format, `run_ecosim_experiment`  calls the EwE Run Console from the command line. The Run Console makes the described changes to the model, executes it, and writes a log file and the model outputs to disk.
 
 ``` {r}
 list.files(paste0(out_folder,"/R0001_0000//R0001_0000"))
@@ -218,6 +216,27 @@ list.files(paste0(out_folder,"/R0001_0000//R0001_0000/ecosim_Scene 1"))
 ```
 
 The data frame returned by `run_ecosim_experiment` (here, `cx_table_mc`) points to the JSON and EIIXML files and to the output folder for each run. As you can see, the Run Console creates many .csv files with various outputs. EcoCX contains functions to read some of them (biomasses, catches) and link them back to the inputs. You're welcome to add your own functions reading other outputs! 
+
+## Reading and analyzing the outputs
+
+As just described, calling `run_ecosim_experiment` causes EwE to write various outputs for each run. You can easily read biomasses and catches with built-in functions:
+
+``` {r}
+#Read (relative) Biomasses
+biomass_mc=get_ecosim_cx_biomass(cx_table_mc, m,relative=T)
+head(biomass_mc)
+#Read (relative) catches
+catch_mc=get_ecosim_cx_catch(cx_table_mc, m,relative=T)
+head(catch_mc)
+```
+
+To plot the outputs of all runs:
+
+``` {r}
+plot_all_runs(biomass_mc,timesteps=seq(3,max(biomass_mc$timestep),by=12))
+```
+
+Note that this function can be slow for many runs, so use it only to explore small output data sets.
 
 ## Full factorial experiments
 
