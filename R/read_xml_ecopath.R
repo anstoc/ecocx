@@ -39,6 +39,19 @@ get_colnames=function(tab) {
 #' @noRd
 row_to_vector=function(row) {
   str_row=xml2::xml_text(row)
+  #replace commas within quotation marks with blank spaces
+  v1=unlist(strsplit(str_row,split=""))
+  in_quote=FALSE
+  for(i in 1:length(v1))
+  {
+    if(v1[i]=="\"") {
+      in_quote=!in_quote
+    } else if(v1[i]=="," & in_quote) {
+      v1[i]=" "
+    }
+  }
+  str_row=paste(v1,collapse="")
+  #now split based on commas
   v=unlist(strsplit(str_row, split=',',fixed=T))
   sep_count=sum(unlist(strsplit(str_row,"",fixed=T))==",")  #count commas, then add an empty string at end which is omitted by strsplit if needed
   if(length(v)==sep_count) {v=c(v,"")}
