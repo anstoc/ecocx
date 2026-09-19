@@ -116,3 +116,18 @@ plot_all_runs=function(df_cx,run_names=NA,timesteps=NA, outputs=NA)
   NULL
 }
 
+
+#' Plot an Ecospace map
+#'
+#' @param map EcospaceMap object.
+#'
+#' @returns Nothing.
+#' @export
+plot_ecospace_map=function(map)
+{
+  if(class(map)!="EcospaceMap") stop("Please provide a map object.")
+  if(0==sum(!is.na(as.numeric(map$values)))) {
+    warning("Map contains only NA values. Cannot plot.")
+  } else {
+    image(t(map$values[nrow(map$values):1,]))}
+}
