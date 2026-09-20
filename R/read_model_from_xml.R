@@ -10,7 +10,7 @@
 #' m$ecosim$shapes$Tempcold$x[1:5]
 #' m$ecosim$shapes$Tempcold$y[1:5]
 #' @export
-load_model_from_xml=function(xmlfile)
+load_model_from_xml=function(xmlfile, ecosim_scenario=NA, ecospace_scenario=NA)
 {
   xmldoc=read_eiixml(xmlfile)
 
@@ -29,6 +29,9 @@ load_model_from_xml=function(xmlfile)
   m$ecosim$fleetIDs=get_ecosim_fleetIDs(xmldoc)
   m$ecosim$groupIDs=get_ecosim_groupIDs(xmldoc)
   m$ecosim$scenarios=get_ecosim_scenarios(xmldoc)
+
+  if(nrow(m$ecosim$scenarios)>1) {stop("Reading models with multiple Ecsoim scenarios is currently not supported. Please provide a copy of your model with only one scenario.")}
+
   m$ecosim$vulnerabilities=get_vulnerability_matrix(xmldoc,m$ecopath$basic_estimates)
   m$ecosim$timeseries=get_time_series(xmldoc,m$ecopath$basic_estimates ,m$ecopath$fleets)
   m$ecosim$fishing_effort=get_fishing_effort(xmldoc)
@@ -50,11 +53,30 @@ load_model_from_xml=function(xmlfile)
           seq_envres=seq_envres+1
       } else {
           m$ecosim$shapes[[i]]$type="unknown"
-
-        }
+          }
   }
 
-  if(nrow(m$ecosim$scenarios)>1) {stop("Reading models with multiple Ecsoim scenarios is currently not supported. Please provide a copy of your model with only one scenario.")}
+  #load Ecospace base maps
+
+  m$ecospace=list()
+  m$ecospace$scenarios=get_ecospace_scenarios(xmldoc)
+  #handle multiple scenarios
+  if(nrow(m$ecospace$scenarios)>0) {
+    if(nrow(m$ecospace$scenarios)>1 & is.na(ecospace_scenario)) {
+      stop(paste("Parameter 'ecospace_scenario' is required for models with multiple scenarios. Options:",
+                 paste(m$ecospace$scenarios$ScenarioName,collapse="; ")))
+    } else if(is.na(ecospace_scenario) & nrow(m$ecospace$scenarios)==1) {
+      ecospace_scenario=m$ecospace$scenarios$ScenarioName[1]
+    } else if(!(ecospace_scenario %in% m$ecospace$scenarios$ScenarioName)) {
+      stop(paste("Scenario not found. Options:",
+                 paste(m$ecospace$scenarios$ScenarioName,collapse="; ")))}
+    #scenario name is valid --> load maps
+    m$ecospace$basemap=get_ecospace_basemap(xmldoc,ecospace_scenario)
+    m$ecospace$depthmap=get_ecospace_depthmap(xmldoc,ecospace_scenario)
+    m$ecospace$envmaps=get_ecospace_envmaps(xmldoc,ecospace_scenario)
+    m$ecospace$habmaps=get_ecospace_habmaps(xmldoc,ecospace_scenario)
+    m$ecospace$mpamaps=get_ecospace_mpamaps(xmldoc,ecospace_scenario)
+  }
 
   m
 }

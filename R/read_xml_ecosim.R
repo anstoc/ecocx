@@ -148,7 +148,7 @@ get_foraging_response_table=function(xmldoc)
 {
   tab=get_tables_from_name(xmldoc,"EcosimScenarioCapacityDrivers")[[1]]
   df=table_to_df(tab)
-  colnames(df)[colnames(df)=="GroupID"]="EcosimGroupID"
+  if(!is.null(df)) {colnames(df)[colnames(df)=="GroupID"]="EcosimGroupID"}
   df
 }
 

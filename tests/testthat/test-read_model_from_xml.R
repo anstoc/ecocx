@@ -18,3 +18,15 @@ test_that("Reading example Ecosim model from XML works", {
   expect_equal(m$ecosim$shapes$Tempcold$y[1000],7.44605E-05)
   expect_equal(m$ecosim$forcing_functions$Tbottom$values[122],16.3)
 })
+
+test_that("Reading example Ecospace model from XML works", {
+  m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecospace_ex.eiixml"),ecospace_scenario="BayOfAnchovies")
+  expect_length(m$ecospace$mpamaps,2)
+  expect_equal(dim(m$ecospace$mpamaps[[2]]$values),c(20,20))
+  expect_length(m$ecospace$habmaps,5)
+  expect_equal(dim(m$ecospace$habmaps[[3]]$values),c(20,20))
+  expect_length(m$ecospace$envmaps,2)
+  expect_equal(dim(m$ecospace$envmaps[[1]]$values),c(20,20))
+  expect_equal(dim(m$ecospace$depthmap$values),c(20,20))
+  expect_equal(sum(!is.na(m$ecospace$basemap$values)),313)
+})
