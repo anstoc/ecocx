@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_xml_ecospace.R
 \name{get_ecospace_envmaps}
 \alias{get_ecospace_envmaps}
-\title{#' Load static environmental driver maps from EIIXML}
+\title{#' Load static environmental maps from EIIXML}
 \usage{
 get_ecospace_envmaps(xmldoc, scenario_name)
 }
@@ -12,8 +12,8 @@ get_ecospace_envmaps(xmldoc, scenario_name)
 \item{scenario_name}{Name of the scenario.}
 }
 \value{
-List of \code{EcospaceMap} objects, each containing data about one environmental driver.
+List of \code{EcospaceMap} objects, each containing one environmental map.
 }
 \description{
-#' Load static environmental driver maps from EIIXML
+#' Load static environmental maps from EIIXML
 }

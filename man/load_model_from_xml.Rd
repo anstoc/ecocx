@@ -4,7 +4,7 @@
 \alias{load_model_from_xml}
 \title{Load an EwE model from an XML file exported with the Ecopath software}
 \usage{
-load_model_from_xml(xmlfile)
+load_model_from_xml(xmlfile, ecosim_scenario = NA, ecospace_scenario = NA)
 }
 \arguments{
 \item{xmlfile}{Path to .xml file.}

@@ -4,12 +4,14 @@
 \alias{extract_map_data}
 \title{Parse map data string from Ecospace EIIXML}
 \usage{
-extract_map_data(mapdata, basemap)
+extract_map_data(mapdata, basemap, mpa = F)
 }
 \arguments{
 \item{mapdata}{String with map data from EIICML. May be plain or compressed.}
 
 \item{basemap}{The basemap (0 in water cells/the study area, NA elsewhere).}
+
+\item{mpa}{Boolean: is this an MPA map? EwE stores MPA maps are stored in a different format.}
 }
 \value{
 Matrix with the map data.

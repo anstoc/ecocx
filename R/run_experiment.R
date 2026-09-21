@@ -14,7 +14,7 @@
 #'
 #' @returns A data frame with information about the runs, e.g., where outputs are stored.
 #' @export
-run_ecosim_experiment=function(design, xml_model_path, factor_set, ewe_link, out_folder,parallel=F)
+run_ecosim_experiment=function(design, xml_model_path, factor_set, model, ewe_link, out_folder,parallel=F)
 {
   #set up experiment data, matrix, and folder structure
   folder_names=paste0(out_folder,"/",design$run_name)
@@ -28,11 +28,11 @@ run_ecosim_experiment=function(design, xml_model_path, factor_set, ewe_link, out
                                                                                    path=paste0(out_folder,"/data/",v_name,".csv")) }
 
   #replace option for vulnerability with path to CSV
-  design$vulnerability=as.character(design$vulnerability)
+  #design$vulnerability=as.character(design$vulnerability)
   for(i in 1:nrow(design)) {design$vulnerability[i]=paste0(out_folder,"/data/",design$vulnerability[i],".csv")}
 
   #create .json files
-  dummy=lapply(1:nrow(cx_table),FUN=write_json_file, cx_table=cx_table,design=design,factor_set=factor_set)
+  dummy=lapply(1:nrow(cx_table),FUN=write_json_file, cx_table=cx_table,design=design,factor_set=factor_set,model=m)
 
   #run model
 

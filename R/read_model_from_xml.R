@@ -42,6 +42,7 @@ load_model_from_xml=function(xmlfile, ecosim_scenario=NA, ecospace_scenario=NA)
 
   seq_envres=1
   seq_med=1
+  unknowns=character(0)
   for(i in 1:length(m$ecosim$shapes)) {
     if(m$ecosim$shapes[[i]]$id %in% m$ecosim$mediation_table$ShapeID) {
         m$ecosim$shapes[[i]]$type="mediation"
@@ -53,7 +54,13 @@ load_model_from_xml=function(xmlfile, ecosim_scenario=NA, ecospace_scenario=NA)
           seq_envres=seq_envres+1
       } else {
           m$ecosim$shapes[[i]]$type="unknown"
-          }
+          unknowns=c(unknowns,m$ecosim$shapes[[i]]$name)
+      }
+  }
+  #remove unknown shapes
+  if(length(unknowns)>0) {
+    warning(paste("Ignoring shapes with unsupported types. They will still be used when executing the model but cannot be changed:",paste(unknowns,collapse=", ")))
+    for(shapename in unknowns) {m$ecosim$shapes[[shapename]]=NULL}
   }
 
   #load Ecospace base maps

@@ -4,7 +4,7 @@
 \alias{create_json_vector}
 \title{Create a json vector from a row in a cx_table}
 \usage{
-create_json_vector(x, cx_table, design, factor_set)
+create_json_vector(x, cx_table, design, factor_set, model)
 }
 \arguments{
 \item{x}{Row number in the provided \code{cx_table}.}
@@ -14,6 +14,8 @@ create_json_vector(x, cx_table, design, factor_set)
 \item{design}{Data frame describing the experiment, e.g., created with an \code{ecocx::sampler_*} method.}
 
 \item{factor_set}{The factor set for the experiment.}
+
+\item{model}{The model (as object of class \code{ecocx_model}).}
 }
 \value{
 A character vector where each element is a line of the .json file.
