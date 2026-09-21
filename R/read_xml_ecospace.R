@@ -132,14 +132,17 @@ get_ecospace_envmaps=function(xmldoc,scenario_name)
 
   #create list of drivers, then parse values for each driver
   l_drivers=list()
-  for(i in 1:nrow(df))
+  if(!is.null(df))
   {
-    driver=list()
-    driver$name=df$LayerName[i]
-    driver$id=df$LayerID[i]
-    driver$values=extract_map_data(df$LayerMAP[i],basemap)
-    class(driver)="EcospaceMap"
-    l_drivers[[driver$name]]=driver
+    for(i in 1:nrow(df))
+    {
+      driver=list()
+      driver$name=df$LayerName[i]
+      driver$id=df$LayerID[i]
+      driver$values=extract_map_data(df$LayerMAP[i],basemap)
+      class(driver)="EcospaceMap"
+      l_drivers[[driver$name]]=driver
+    }
   }
   l_drivers
 }
@@ -204,16 +207,19 @@ get_ecospace_mpamaps=function(xmldoc,scenario_name)
 
   #create list of MPAs, then parse spatial data for each
   l_maps=list()
-  for(i in 1:nrow(df))
+  if(!is.null(df))
   {
-    map=list()
-    map$name=df$MPAname[i]
-    map$id=df$MPAID[i]
-    map$months=df$MPAmonth[i]
-    map$values=extract_map_data(df$MPAMap[i],basemap,mpa=T)
-    if(is.null(map$values)) {map$values=basemap}
-    class(map)="EcospaceMap"
-    l_maps[[map$name]]=map
+    for(i in 1:nrow(df))
+    {
+      map=list()
+      map$name=df$MPAname[i]
+      map$id=df$MPAID[i]
+      map$months=df$MPAmonth[i]
+      map$values=extract_map_data(df$MPAMap[i],basemap,mpa=T)
+      if(is.null(map$values)) {map$values=basemap}
+      class(map)="EcospaceMap"
+      l_maps[[map$name]]=map
+    }
   }
   l_maps
 }

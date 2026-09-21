@@ -130,9 +130,18 @@ get_seq_ids=function(m,names)
 #' @export
 get_run_console_link=function()
 {
-  return("https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.35")
+  return("https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.40")
 }
 
+#' Get a factor from a factor set by name
+#'
+#' @param factor_set A factor set.
+#' @param name Name of the factor.
+#'
+#' @returns Object representing the factor.
+#' @export
+#'
+#' @examples
 get_factor_by_name=function(factor_set,name)
 {
   h=get_factor_scalar_values(factor_set)

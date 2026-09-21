@@ -8,6 +8,7 @@ run_ecosim_experiment(
   design,
   xml_model_path,
   factor_set,
+  model,
   ewe_link,
   out_folder,
   parallel = F

@@ -1,69 +1,76 @@
-ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.35/EwERunConsole.exe")
+ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.40/EwERunConsole.exe")
 
 xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
+#xml_model="C:\\Users\\ANC\\OneDrive - NIVA\\Projects\\2025\\2025CLIMAX\\WP1\\Test_psfj_model\\final_model_sustainability.eiixml"
 m=load_model_from_xml(xml_model)
 factor_set=new_ecosim_factor_set(m)
 summary(factor_set)
 
-#Temperature +/- 1 degree
-factor_set=add_option_ecosim_forcing(factor_set,"Tbottom","warmer_1deg",ecocx::change_values_add(factor_set$forcing_functions$Tbottom$default$values,1,150,350))
-factor_set=add_option_ecosim_forcing(factor_set,"Tbottom","colder_1deg",ecocx::change_values_add(factor_set$forcing_functions$Tbottom$default$values,-1,150,350))
-plot(factor_set$forcing_functions$Tbottom$default$values,type="l", ylim=c(15,21))
-lines(factor_set$forcing_functions$Tbottom$warmer_1deg$values,col="orange")
-lines(factor_set$forcing_functions$Tbottom$colder_1deg$values,col="blue")
+# #Temperature +/- 1 degree
+# factor_set=add_level_ecosim_forcing(factor_set,"Tbottom","warmer_1deg",ecocx::change_values_add(factor_set$forcing_functions$Tbottom$default$values,1,150,350))
+# factor_set=add_level_ecosim_forcing(factor_set,"Tbottom","colder_1deg",ecocx::change_values_add(factor_set$forcing_functions$Tbottom$default$values,-1,150,350))
+# plot(factor_set$forcing_functions$Tbottom$default$values,type="l", ylim=c(15,21))
+# lines(factor_set$forcing_functions$Tbottom$warmer_1deg$values,col="orange")
+# lines(factor_set$forcing_functions$Tbottom$colder_1deg$values,col="blue")
+#
+# #Switch primary production anomaly on or off
+# factor_set=add_level_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,get_ecosim_forcing_length(factor_set,"PPanomaly")))
+# plot(factor_set$forcing_functions$PPanomaly$default$values,type="l")
+# lines(factor_set$forcing_functions$PPanomaly$none$values,col="orange")
+#
+# #Fishing fleets
+# #Sealers
+# factor_set$fishing_effort$Sealers$default$values=rep(1,length(factor_set$fishing_effort$Sealers$default$values))
+# factor_set=add_level_ecosim_effort(factor_set,"Sealers","higher20p",change_values_mult(factor_set$fishing_effort$Sealers$default$values,1.2,150,350))
+# factor_set=add_level_ecosim_effort(factor_set,"Sealers","lower20p",change_values_mult(factor_set$fishing_effort$Sealers$default$values,0.8,150,350))
+# plot(factor_set$fishing_effort$Sealers$default$values,type="l", ylim=c(0.7,1.3))
+# lines(factor_set$fishing_effort$Sealers$higher20p$values,col="red")
+# lines(factor_set$fishing_effort$Sealers$lower20p$values,col="blue")
+#
+# #Trawlers
+# factor_set$fishing_effort$Trawlers$default$values=rep(1,length(factor_set$fishing_effort$Trawlers$default$values))
+# factor_set=add_level_ecosim_effort(factor_set,"Trawlers","higher20p",change_values_mult(factor_set$fishing_effort$Trawlers$default$values,1.2,150,350))
+# factor_set=add_level_ecosim_effort(factor_set,"Trawlers","lower20p",change_values_mult(factor_set$fishing_effort$Trawlers$default$values,0.8,150,350))
+#
+# #Seiners
+# factor_set$fishing_effort$Seiners$default$values=rep(1,length(factor_set$fishing_effort$Seiners$default$values))
+# factor_set=add_level_ecosim_effort(factor_set,"Seiners","higher20p",change_values_mult(factor_set$fishing_effort$Seiners$default$values,1.2,150,350))
+# factor_set=add_level_ecosim_effort(factor_set,"Seiners","lower20p",change_values_mult(factor_set$fishing_effort$Seiners$default$values,0.8,150,350))
+#
+# #Baitboats
+# factor_set$fishing_effort$Baitboats$default$values=rep(1,length(factor_set$fishing_effort$Baitboats$default$values))
+# factor_set=add_level_ecosim_effort(factor_set,"Baitboats","higher20p",change_values_mult(factor_set$fishing_effort$Baitboats$default$values,1.2,150,350))
+# factor_set=add_level_ecosim_effort(factor_set,"Baitboats","lower20p",change_values_mult(factor_set$fishing_effort$Baitboats$default$values,0.8,150,350))
+#
+# #Shrimpers
+# factor_set$fishing_effort$Shrimpers$default$values=rep(1,length(factor_set$fishing_effort$Shrimpers$default$values))
+# factor_set=add_level_ecosim_effort(factor_set,"Shrimpers","higher20p",change_values_mult(factor_set$fishing_effort$Shrimpers$default$values,1.2,150,350))
+# factor_set=add_level_ecosim_effort(factor_set,"Shrimpers","lower20p",change_values_mult(factor_set$fishing_effort$Shrimpers$default$values,0.8,150,350))
 
-#Switch primary production anomaly on or off
-factor_set=add_option_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,get_ecosim_forcing_length(factor_set,"PPanomaly")))
-plot(factor_set$forcing_functions$PPanomaly$default$values,type="l")
-lines(factor_set$forcing_functions$PPanomaly$none$values,col="orange")
+#change vulnerabilities
 
-#Fishing fleets
-#Sealers
-factor_set$fishing_effort$Sealers$default$values=rep(1,length(factor_set$fishing_effort$Sealers$default$values))
-factor_set=add_option_ecosim_effort(factor_set,"Sealers","higher20p",change_values_mult(factor_set$fishing_effort$Sealers$default$values,1.2,150,350))
-factor_set=add_option_ecosim_effort(factor_set,"Sealers","lower20p",change_values_mult(factor_set$fishing_effort$Sealers$default$values,0.8,150,350))
-plot(factor_set$fishing_effort$Sealers$default$values,type="l", ylim=c(0.7,1.3))
-lines(factor_set$fishing_effort$Sealers$higher20p$values,col="red")
-lines(factor_set$fishing_effort$Sealers$lower20p$values,col="blue")
-
-#Trawlers
-factor_set$fishing_effort$Trawlers$default$values=rep(1,length(factor_set$fishing_effort$Trawlers$default$values))
-factor_set=add_option_ecosim_effort(factor_set,"Trawlers","higher20p",change_values_mult(factor_set$fishing_effort$Trawlers$default$values,1.2,150,350))
-factor_set=add_option_ecosim_effort(factor_set,"Trawlers","lower20p",change_values_mult(factor_set$fishing_effort$Trawlers$default$values,0.8,150,350))
-
-#Seiners
-factor_set$fishing_effort$Seiners$default$values=rep(1,length(factor_set$fishing_effort$Seiners$default$values))
-factor_set=add_option_ecosim_effort(factor_set,"Seiners","higher20p",change_values_mult(factor_set$fishing_effort$Seiners$default$values,1.2,150,350))
-factor_set=add_option_ecosim_effort(factor_set,"Seiners","lower20p",change_values_mult(factor_set$fishing_effort$Seiners$default$values,0.8,150,350))
-
-#Baitboats
-factor_set$fishing_effort$Baitboats$default$values=rep(1,length(factor_set$fishing_effort$Baitboats$default$values))
-factor_set=add_option_ecosim_effort(factor_set,"Baitboats","higher20p",change_values_mult(factor_set$fishing_effort$Baitboats$default$values,1.2,150,350))
-factor_set=add_option_ecosim_effort(factor_set,"Baitboats","lower20p",change_values_mult(factor_set$fishing_effort$Baitboats$default$values,0.8,150,350))
-
-#Shrimpers
-factor_set$fishing_effort$Shrimpers$default$values=rep(1,length(factor_set$fishing_effort$Shrimpers$default$values))
-factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","higher20p",change_values_mult(factor_set$fishing_effort$Shrimpers$default$values,1.2,150,350))
-factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","lower20p",change_values_mult(factor_set$fishing_effort$Shrimpers$default$values,0.8,150,350))
+mv=m$ecosim$vulnerabilities
+mv[!is.na(mv)]=2
+factor_set=add_level_ecosim_vulnerability(factor_set,"twos",mv)
 
 summary(factor_set)
 
 #set up simple Monte Carlo
 out_folder=paste0(tempdir(),"/mctest")
 
-design_mc=sampler_random(factor_set, 50)
+design_mc=sampler_random(factor_set, 10)
 View(design_mc)
 
 library(future.apply)
 plan(multisession)
 
-cx_table_mc=run_ecosim_experiment(design_mc,xml_model,factor_set,ewe_link,out_folder,parallel=T)
+cx_table_mc=run_ecosim_experiment(design_mc,xml_model,factor_set,m,ewe_link,out_folder,parallel=T)
 View(cx_table_mc)
 
 df_cx_mc=get_ecosim_cx_biomass(cx_table_mc, m,relative=T)
 View(df_cx_mc)
 
-plot_all_runs(df_cx_mc,alpha=0.2)
+plot_all_runs(df_cx_mc)
 
 #set up full factorial
 design_ff=sampler_full_factorial(factor_set)
