@@ -70,7 +70,7 @@ Run Console. To find out which:
 
 ``` r
 ecocx::get_run_console_link()
-#> [1] "https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.35"
+#> [1] "https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.40"
 ```
 
 ## Example
@@ -143,13 +143,13 @@ library(future.apply)
 plan(multisession)
 
 ##execute the model repeatedly according to the design!
-cx_table=run_ecosim_experiment(design_mc,xml_model,factor_set,ewe_link,paste0(tempdir(),"/mctest"),parallel=T)
+cx_table=run_ecosim_experiment(design_mc,xml_model,factor_set,m,ewe_link,paste0(tempdir(),"/mctest"),parallel=T)
 
 ##obtain biomasses
 df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
 
 ##plot the 50 runs. One line for each run and species group, and colors are species groups.
-plot_all_runs(df_cx,alpha=0.1)
+plot_ecosim_all_runs(df_cx)
 ```
 
 <img src="man/figures/README-example-1.png" alt="" width="50%" />

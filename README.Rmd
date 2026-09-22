@@ -100,13 +100,13 @@ library(future.apply)
 plan(multisession)
 
 ##execute the model repeatedly according to the design!
-cx_table=run_ecosim_experiment(design_mc,xml_model,factor_set,ewe_link,paste0(tempdir(),"/mctest"),parallel=T)
+cx_table=run_ecosim_experiment(design_mc,xml_model,factor_set,m,ewe_link,paste0(tempdir(),"/mctest"),parallel=T)
 
 ##obtain biomasses
 df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
 
 ##plot the 50 runs. One line for each run and species group, and colors are species groups.
-plot_all_runs(df_cx,alpha=0.1)
+plot_ecosim_all_runs(df_cx)
 ```
 
 
