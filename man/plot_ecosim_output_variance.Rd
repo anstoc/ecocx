@@ -7,7 +7,14 @@
 plot_ecosim_output_variance(df_cx, timestep = NA, outputs = NA)
 }
 \arguments{
-\item{df_cx}{Data frame with the outputs}
+\item{df_cx}{Data frame with columns \code{run_name}, \code{timestep}, followed by one or more columns with outputs. Can, for example, be created with\code{get_ecosim_cx_biomass}.}
+
+\item{timestep}{The timestep at which to calculate variances. If \code{NA}, variances are calculated at the last timestep.}
+
+\item{outputs}{Names of output columns to include in plot. If \code{NA}, all output columns are plotted.}
+}
+\value{
+Nothing.
 }
 \description{
 Plot the variance of Ecosim outputs

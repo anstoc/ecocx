@@ -59,16 +59,16 @@ summary(factor_set)
 out_folder=paste0(tempdir(),"/mctest")
 
 design_mc=sampler_random(factor_set, 10)
-View(design_mc)
+#View(design_mc)
 
 library(future.apply)
 plan(multisession)
 
 cx_table_mc=run_ecosim_experiment(design_mc,xml_model,factor_set,m,ewe_link,out_folder,parallel=T)
-View(cx_table_mc)
+#View(cx_table_mc)
 
 df_cx_mc=get_ecosim_cx_biomass(cx_table_mc, m,relative=T)
-View(df_cx_mc)
+#View(df_cx_mc)
 
 plot_all_ecosim_runs(df_cx_mc)
 

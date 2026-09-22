@@ -86,7 +86,7 @@ plot_ecosim_factor_levels=function(factor_set,name)
 #'
 #' @returns NULL
 #' @export
-plot_all_runs=function(df_cx,run_names=NA,timesteps=NA, outputs=NA)
+plot_ecosim_all_runs=function(df_cx,run_names=NA,timesteps=NA, outputs=NA)
 {
   if(!is.na(run_names)) {df_cx=df_cx[df_cx$run_name %in% run_names,]}
   if(!is.na(timesteps[1])) {df_cx=df_cx[df_cx$timestep %in% timesteps,]}
@@ -116,6 +116,31 @@ plot_all_runs=function(df_cx,run_names=NA,timesteps=NA, outputs=NA)
   NULL
 }
 
+
+#' Plot the variance of Ecosim outputs
+#'
+#' @param df_cx Data frame with columns \code{run_name}, \code{timestep}, followed by one or more columns with outputs. Can, for example, be created with\code{get_ecosim_cx_biomass}.
+#' @param timestep The timestep at which to calculate variances. If \code{NA}, variances are calculated at the last timestep.
+#' @param outputs Names of output columns to include in plot. If \code{NA}, all output columns are plotted.
+#'
+#' @returns Nothing.
+#' @export
+plot_ecosim_output_variance=function(df_cx,timestep=NA, outputs=NA)
+{
+  old_par=par(mar = c(10, 4, 4, 2))
+  on.exit(par(old_par))
+
+  if(is.na(timestep)) {timestep=max(df_cx$timestep)}
+  col_ix=3:ncol(df_cx)
+  if(!is.na(outputs[1])) {col_ix=which(colnames(df_cx) %in% outputs) }
+
+  df_cx=df_cx[df_cx$timestep==timestep,]
+  out_vars=apply(df_cx[,col_ix],MARGIN = 2,FUN=var)
+  names(out_vars)=colnames(df_cx[col_ix])
+
+  barplot(out_vars, las=3, main="Variance of Ecosim output",col="#882255")
+
+}
 
 #' Plot an Ecospace map
 #'

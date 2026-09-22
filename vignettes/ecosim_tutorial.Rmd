@@ -7,6 +7,18 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  dpi = 300,          # High resolution
+  fig.retina = 2,     # Doubles pixel density for crisp HTML rendering
+  fig.width = 4,      # Physical width in inches (prevents the "zoomed-in" text look)
+  fig.height = 3,     # Physical height in inches
+  out.width = "50%",  # HTML display width (scales the image nicely on the page)
+  fig.align = "center"
+)
+```
+
 EcoCX is an R package for computational experiments with Ecopath with Ecosim and Ecospace (EwE) models. In essence, it runs an Ecosim or Ecospace model repeatedly with systematic changes to inputs to quantify the effects of these inputs. This approach allows, e.g., uncertainty and sensitivity analyses or identifying the most important drivers of simulated ecosystem changes.
 
 This tutorial shows a typical workflow for sensitivity analyses with an Ecosim model:
@@ -37,13 +49,13 @@ remotes::install_github("anstoc/ecocx")
 library(ecocx)
 ```
 
-In addition, you need the EwE Run Console, a command line interface to EwE. It is available on Github. Each release of EcoCX is tested against a specific release of the run console. To obtain a link to this recommended version:
+In addition, you need the EwE Run Console, a command line interface to EwE. It is available on Github. EcoCX and the run console are developed parallely, and to ensure compatibility, each release of EcoCX is tested against a specific release of the run console. To obtain a link to this recommended version:
 
 ``` {r}
 ewe_link=get_run_console_link()
 ```
 
-You can use a newer version if available, but be aware that we cannot guarantee compatibility.
+You can use a newer version if available, but be aware that we cannot guarantee compatibility as the newer run consolke version might have made changes that EcoCX has yet to catch up with.
 
 ## The example model
 
@@ -159,7 +171,7 @@ To run EwE models from EcoCX, first connect to the Run Console, providing a path
 
 ``` {r}
 #replace path with your own
-ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.35/EwERunConsole.exe")
+ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.40/EwERunConsole.exe")
 ```
 
 If you have the `future.apply` package, you can speed up executing your computations by executing the runs in your design in parallel: 
@@ -175,7 +187,7 @@ Let's finally execute the runs and store the outputs in a temporary folder:
 
 ``` {r}
 out_folder=paste0(tempdir(),"/mctest")
-cx_table_mc=run_ecosim_experiment(design_mc,xml_model,factor_set,ewe_link,out_folder,parallel=T)
+cx_table_mc=run_ecosim_experiment(design_mc,xml_model,factor_set,m,ewe_link,out_folder,parallel=T)
 colnames(cx_table_mc)
 ```
 
@@ -219,7 +231,7 @@ The data frame returned by `run_ecosim_experiment` (here, `cx_table_mc`) points 
 
 ## Reading and analyzing the outputs
 
-As just described, calling `run_ecosim_experiment` causes EwE to write various outputs for each run. You can easily read biomasses and catches with built-in functions:
+As just described, calling `run_ecosim_experiment` causes EwE to write various outputs for each run. You can easily compile biomasses and catches with built-in functions (setting `relative=T` gives you relative changes):
 
 ``` {r}
 #Read (relative) Biomasses
@@ -233,10 +245,16 @@ head(catch_mc)
 To plot the outputs of all runs:
 
 ``` {r}
-plot_all_runs(biomass_mc,timesteps=seq(3,max(biomass_mc$timestep),by=12))
+plot_ecosim_all_runs(biomass_mc,timesteps=seq(3,max(biomass_mc$timestep),by=12))
 ```
 
 Note that this function can be slow for many runs, so use it only to explore small output data sets.
+
+Let's check which biomasses vary most by the end of the runs:
+
+``` {r,fig.width=6,fig.height=6}
+plot_ecosim_output_variance(biomass_mc)
+```
 
 ## Full factorial experiments
 
