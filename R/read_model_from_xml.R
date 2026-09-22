@@ -39,23 +39,30 @@ load_model_from_xml=function(xmlfile, ecosim_scenario=NA, ecospace_scenario=NA)
   m$ecosim$forcing_functions=get_forcing_functions(xmldoc)
   m$ecosim$foraging_response_table=get_foraging_response_table(xmldoc)
   m$ecosim$mediation_table=get_mediation_table(xmldoc)
+  m$ecosim$shapetypes=get_shape_table(xmldoc)
 
-  seq_envres=1
-  seq_med=1
+  #keep only mediation and env. response shapes
   unknowns=character(0)
+
+  # OLD: for(i in 1:length(m$ecosim$shapes)) {
+  #   if(m$ecosim$shapes[[i]]$id %in% m$ecosim$mediation_table$ShapeID) {
+  #       m$ecosim$shapes[[i]]$type="mediation"
+  #       m$ecosim$shapes[[i]]$seq=seq_med
+  #       seq_med=seq_med+1
+  #     } else if(m$ecosim$shapes[[i]]$id %in% m$ecosim$foraging_response_table$ResponseID) {
+  #         m$ecosim$shapes[[i]]$type="envresponse"
+  #         m$ecosim$shapes[[i]]$seq=seq_envres
+  #         seq_envres=seq_envres+1
+  #     } else {
+  #         m$ecosim$shapes[[i]]$type="unknown"
+  #         unknowns=c(unknowns,m$ecosim$shapes[[i]]$name)
+  #     }
+  # }
+
   for(i in 1:length(m$ecosim$shapes)) {
-    if(m$ecosim$shapes[[i]]$id %in% m$ecosim$mediation_table$ShapeID) {
-        m$ecosim$shapes[[i]]$type="mediation"
-        m$ecosim$shapes[[i]]$seq=seq_med
-        seq_med=seq_med+1
-      } else if(m$ecosim$shapes[[i]]$id %in% m$ecosim$foraging_response_table$ResponseID) {
-          m$ecosim$shapes[[i]]$type="envresponse"
-          m$ecosim$shapes[[i]]$seq=seq_envres
-          seq_envres=seq_envres+1
-      } else {
-          m$ecosim$shapes[[i]]$type="unknown"
-          unknowns=c(unknowns,m$ecosim$shapes[[i]]$name)
-      }
+        m$ecosim$shapes[[i]]$type=m$ecosim$shapetypes$ShapeTypeName[m$ecosim$shapetypes$ShapeID==m$ecosim$shapes[[i]]$id]
+        if(!(m$ecosim$shapes[[i]]$type %in% c("envresponse","mediation"))) {
+          unknowns=c(unknowns,m$ecosim$shapes[[i]]$name)}
   }
   #remove unknown shapes
   if(length(unknowns)>0) {
@@ -82,6 +89,7 @@ load_model_from_xml=function(xmlfile, ecosim_scenario=NA, ecospace_scenario=NA)
     m$ecospace$depthmap=get_ecospace_depthmap(xmldoc,ecospace_scenario)
     m$ecospace$envmaps=get_ecospace_envmaps(xmldoc,ecospace_scenario)
     m$ecospace$habmaps=get_ecospace_habmaps(xmldoc,ecospace_scenario)
+    if("All" %in% names(m$ecospace$habmaps)) {m$ecospace$habmaps[["All"]]=NULL}
     m$ecospace$mpamaps=get_ecospace_mpamaps(xmldoc,ecospace_scenario)
   }
 

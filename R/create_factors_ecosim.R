@@ -1,5 +1,3 @@
-#TODO: Don't call them factors and factor levels due to confusion with R names?
-
 #' Create a set of factors that vary between Ecosim model runs
 #'
 #' The factor set contain lists of alternative fishing effort, environmental response shapes, and other potential factors that might vary between model runs.

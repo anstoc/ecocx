@@ -1,82 +1,156 @@
-test_that("Creating change vector for .json file works", {
-  xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
-  m=load_model_from_xml(xml_model)
-  factor_set=new_ecosim_factor_set(m)
-  design=sampler_random(factor_set,size=1)
-  out_folder=paste0(tempdir(),"/jsontest")
-
-  #create vulnerability matrix CSVs in base folder
-  if(!file.exists(paste0(out_folder,"/data"))) {dir.create(paste0(out_folder,"/data"))}
-  for(v_name in names(factor_set$tables$vulnerability)) {write_vulnerability_csv(m,factor_set$tables$vulnerability[[v_name]],
-                                                                                 path=paste0(out_folder,"/data/",v_name,".csv")) }
-  #replace option for vulnerability with path to CSV
-  design$vulnerability=paste0(out_folder,"/data/",design$vulnerability,".csv")
-
-  v_json=create_json_changes_ecosim(1,design,factor_set)
-
-  expect_length(v_json,19)
-  expect_true(startsWith(trimws(v_json[5]),"\"ecosim.effort[1].set\": [ 1"))
-
-})
-
-test_that("Creating Ecosim run vector for .json file works", {
-  xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
-  m=load_model_from_xml(xml_model)
-  factor_set=new_ecosim_factor_set(m)
-  design=sampler_random(factor_set,size=1)
-  out_folder=paste0(tempdir(),"/jsontest")
-  cx_table=data.frame("run_name"=design$run_name,"model"=xml_model,"folder"=paste0(out_folder,"/",design$run_name),"json"=paste0(paste0(out_folder,"/",design$run_name),"/",design$run_name,".json"))
-
-  #create vulnerability matrix CSVs in base folder
-  if(!file.exists(paste0(out_folder,"/data"))) {dir.create(paste0(out_folder,"/data"))}
-  for(v_name in names(factor_set$tables$vulnerability)) {write_vulnerability_csv(m,factor_set$tables$vulnerability[[v_name]],
-                                                                                 path=paste0(out_folder,"/data/",v_name,".csv")) }
-  #replace option for vulnerability with path to CSV
-  design$vulnerability=paste0(out_folder,"/data/",design$vulnerability,".csv")
-
-  v_json=create_json_ecosim_run(1,cx_table, design,factor_set)
 
 
-  expect_length(v_json,23)
-  expect_true(endsWith(v_json[length(v_json)],"}"))
-  expect_true(startsWith(trimws(v_json[10]),"\"ecosim.effort[3].set\": [ 1"))
+#' Create and write the Run Console json file from a vector
+#'
+#' @param i Row of the \code{cx_table} for which to create the file
+#' @param cx_table A data frame  with columns 'run_name' (matching the names in the \code{design}), 'model' (path to the EIIXML file), 'folder' (base folder of the run), 'json' (path of the .json file to be created)
+#' @param design Data frame describing the experiment, e.g., created with an \code{ecocx::sampler_*} method.
+#' @param factor_set The factor set for the experiment.
+#' @param model The model (as object of class \code{ecocx_model}).
+#' @returns A list of NULLs. Ignore the output.
+#' @export
+#'
+write_json_file=function(i,cx_table,design,factor_set,model)
+{
+  file_conn=file(cx_table$json[i])
+  on.exit(close(file_conn))
+  v=create_json_vector(i,cx_table,design,factor_set,model)
+  v=v[nchar(v)>0]
+  writeLines(v, file_conn)
+  return()
+}
 
-})
-
-test_that("Creating the .json configuration vector works", {
-  xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
-
-  v_json=create_json_configuration(xml_model)
-
-  expect_true(startsWith(trimws(v_json[2]),"\"Configuration\""))
-  expect_true(endsWith(trimws(v_json[length(v_json)]),"},"))
-
-})
-
-test_that("Writing the .json vector to a file works", {
-  xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
-  m=load_model_from_xml(xml_model)
-  factor_set=new_ecosim_factor_set(m)
-  design=sampler_random(factor_set,size=1)
-  out_folder=paste0(tempdir(),"/jsontest")
-  cx_table=data.frame("run_name"=design$run_name,"model"=xml_model,"folder"=paste0(out_folder,"/",design$run_name),"json"=paste0(paste0(out_folder,"/",design$run_name),"/",design$run_name,".json"))
-
-  #create vulnerability matrix CSVs in base folder
-  if(!file.exists(paste0(out_folder,"/data"))) {dir.create(paste0(out_folder,"/data"))}
-  for(v_name in names(factor_set$tables$vulnerability)) {write_vulnerability_csv(m,factor_set$tables$vulnerability[[v_name]],
-                                                                                 path=paste0(out_folder,"/data/",v_name,".csv")) }
-  #replace option for vulnerability with path to CSV
-  design$vulnerability=paste0(out_folder,"/data/",design$vulnerability,".csv")
-
-  if(!file.exists(out_folder)) {dir.create(out_folder)}
-  if(!file.exists(cx_table$folder[1])) {dir.create(cx_table$folder[1])}
-
-  write_json_file(1,cx_table,design,factor_set)
-
-  expect_true(file.exists(cx_table$json))
-
-})
+#' Create a json vector from a row in a cx_table
+#'
+#' @param x Row number in the provided \code{cx_table}.
+#' @param cx_table A data frame  with columns 'run_name' (matching the names in the \code{design}), 'model' (path to the EIIXML file), 'folder' (base folder of the run), 'json' (path of the .json file to be created)
+#' @param design Data frame describing the experiment, e.g., created with an \code{ecocx::sampler_*} method.
+#' @param factor_set The factor set for the experiment.
+#' @param model The model (as object of class \code{ecocx_model}).
+#' @returns A character vector where each element is a line of the .json file.
+#' @export
+create_json_vector=function(x,cx_table,design,factor_set,model)
+{
+  v_json=create_json_configuration(cx_table$model[x])
+  v_json=c(v_json,create_json_ecosim_run(x,cx_table,design,factor_set),"}")
+  v_json
+}
 
 
+#TODO: Per default uses absolute paths. Switch to relative paths.
 
-create_json_configuration
+#' Create a the configuration element of the run console json vector
+#'
+#' This currently works only for Ecosim models.
+#'
+#' @param xmlfile Path to the .eiixml file describing the model
+#' @param model The model created with \code{create_model_from_xml}. If NA, the model is loaded from the provided XML file.
+#'
+#' @returns Character vector where each element corresponds to a line in the .json file to be generated.
+create_json_configuration=function(xmlfile,model=NA)
+{
+  if(is.na(model)) {model=load_model_from_xml(xmlfile)}
+
+  v_configuration=character(10)
+  v_configuration[1]="{"
+  v_configuration[2]=" \"Configuration\": {"
+  v_configuration[3]=paste0("    \"ModelFile\": \"",normalizePath(xmlfile,winslash="/"),"\",")
+  v_configuration[4]=paste0("    \"EcosimScenario\": 1,") #unique(model$ecosim$scenarios$ScenarioID),",")
+  v_configuration[5]=paste0("    \"EcosimTimeseries\": 0,")
+  v_configuration[6]=paste0("    \"EcospaceScenario\": 0,")
+  v_configuration[7]=paste0("    \"SaveWithHeader\": true,")
+  v_configuration[8]=paste0("    \"ExtDataConfigFile\": \"\",")
+  v_configuration[9]=paste0("    \"RunYears\": ",length(model$ecosim$fishing_effort[[1]]$values)/12)
+  v_configuration[10]=paste0("  },")
+
+  v_configuration
+
+}
+
+#' Create the "EcosimRun" element of the run console .json file
+#'
+#' @returns Character vector where each element corresponds to a line in the .json file to be generated.
+#'
+create_json_ecosim_run=function(x,cx_table,design,factor_set)
+{
+  v_ecosim=character(3)
+  v_ecosim[1]="  \"EcosimRun\": {"
+  v_ecosim[2]="    \"SaveContentCSV\": [ \"biomass\", \"catch\", \"effort\" ],"
+  v_ecosim[3]="  \"SaveAnnual\": true,"
+  v_changes=create_json_changes_ecosim(x,design,factor_set)
+  c(v_ecosim,v_changes,"  }")
+
+}
+
+
+#' Create vector with .json file lines for changes.
+#'
+#'Currently only works for fishing effort.
+#'
+#' @param x Row number of the design
+#' @param design Data frame describing the experiment, e.g., created with an \code{ecocx::sampler_*} method.
+#' @param factor_set The factor set for the experiment
+#'
+#' @returns Character vector where each element corresponds to a line "Changes" section of the .json file to be generated.
+#' @export
+
+create_json_changes_ecosim=function(x,design,factor_set)
+{
+  v_changes=character(ncol(design)+3)
+  v_changes[1]='  "Changes": ['
+  v_changes[2]='  {'
+  v_changes[3]='    "Date": "start",'
+  v_changes[4]='    "Modifications": {'
+  #add effort modification
+  for(i in 1:length(factor_set$fishing_effort))
+  {
+    fleet=names(factor_set$fishing_effort)[[i]]
+    choice=design[x,][[fleet]]
+    #ecosim_id=i #TODO reference by name once implemented
+    fleetname=factor_set$fishing_effort[[i]][[1]]$name
+    values=factor_set$fishing_effort[[i]][[choice]]$values
+    v_changes[4+i]=paste0('      "ecosim.effort[',fleetname,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
+    if(i<length(factor_set$fishing_effort)) {v_changes[4+i]=paste0(v_changes[4+i],",")}
+  }
+  if(length(factor_set$forcing_functions)>0) {v_changes[4+length(factor_set$fishing_effort)]=paste0(v_changes[4+length(factor_set$fishing_effort)],",")}
+  #add forcing function (driver) modification
+  for(i in 1:length(factor_set$forcing_functions))
+  {
+    func=names(factor_set$forcing_functions)[[i]]
+    choice=design[x,][[func]]
+    #ecosim_id=i #TODO reference by name once implemented
+    ffname=factor_set$forcing_functions[[i]][[1]]$name
+    values=factor_set$forcing_functions[[i]][[choice]]$values
+    v_changes[4+length(factor_set$fishing_effort)+i]=paste0('      "ecosim.forcingfunction[',ffname,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
+    if(i<length(factor_set$forcing_functions)) {v_changes[4+length(factor_set$fishing_effort)+i]=paste0(v_changes[4+length(factor_set$fishing_effort)+i],",")}
+  }
+  ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)
+  if(length(factor_set$shapes)>0) {v_changes[ix]=paste0(v_changes[ix],",")}
+  #add shapes
+  for(i in 1:length(factor_set$shapes))
+  {
+    shape=names(factor_set$shapes)[[i]]
+    choice=design[x,][[shape]]
+    #ecosim_id=i #TODO reference by name once implemented
+    values=factor_set$shapes[[i]][[choice]]$y
+    #seq_id=factor_set$shapes[[i]][[choice]]$seq
+    shape_name=factor_set$shapes[[i]][[1]]$name
+    if(factor_set$shapes[[i]][[choice]]$type=="envresponse") {
+      str_start='      "ecosim.envresponse['} else if(factor_set$shapes[[i]][[choice]]$type=="mediation") {
+        str_start='      "ecosim.mediation['} else {
+          stop(paste("Unkown shape type:",factor_set$shapes[[i]][[choice]]$type))}
+
+    ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)+i
+    v_changes[ix]=paste0(str_start,shape_name,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
+    if(i<length(factor_set$shapes)) {v_changes[ix]=paste0(v_changes[ix],",")}
+  }
+  ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)+length(factor_set$shapes)
+  v_changes[ix]=paste0(v_changes[ix],",")
+  v_changes[ix+1]=paste0('      "ecosim.vulnerabilities.load": "',normalizePath(design$vulnerability[x],winslash='/'),'"')
+  #v_changes[ix+1]=paste0('      "ecosim.vulnerabilities.load": "',normalizePath(paste0(tempdir(),"/data/anchbay.csv"),winslash='/'),'"')
+  #v_changes[ix+1]='      "ecosim.vulnerabilities.fill": 2'
+  v_changes[ix+2]='      }'
+  v_changes[ix+3]='    }'
+  v_changes[ix+4]='  ]'
+  v_changes
+}

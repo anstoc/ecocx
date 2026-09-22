@@ -50,10 +50,3 @@ for(i in 1:ncol(results_ee$mustar_matrix))
 
 
 #full factorial
-
-
-#TODO
-#Release
-#Tutorial
-#Porsangerfjord case study
-#Draft paper

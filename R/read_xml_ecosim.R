@@ -221,3 +221,62 @@ get_fishing_effort=function(xmldoc)
   }
   effort_list
 }
+
+#' Read mediation table from XML
+#' @param xmldoc XML2 document
+#' @returns Data frame with predator, prey, and mediation shape IDs
+#' @noRd
+get_mediation_table=function(xmldoc)
+{
+  tab=get_tables_from_name(xmldoc,"EcosimScenarioPredPreyShape")[[1]]
+  df=table_to_df(tab)
+  colnames(df)[colnames(df)=="PredID"]="PredEcosimID"
+  colnames(df)[colnames(df)=="PreyID"]="PreyEcosimID"
+  df
+}
+
+#' Read fishing effort time series from XML
+#' @param xmldoc XML2 document
+#' @returns List of objects of class 'EcosimEffortTS'. Each object contains an effort time series' values and auxiliary information like name and IDs.
+#' @noRd
+get_fishing_effort=function(xmldoc)
+{
+  tabs=get_tables_from_name(xmldoc,c("EcosimShapeFishRate","EcosimScenarioFleet","EcopathFleet"))
+  df_shapes=table_to_df(tabs$EcosimShapeFishRate)
+  df_fleets=table_to_df(tabs$EcosimScenarioFleet)
+  df_ecopath=table_to_df(tabs$EcopathFleet)
+  effort_list=list()
+  if(!is.null(df_shapes)) {
+    #create object
+    for(i in 1:nrow(df_shapes)) {
+      eff=list()
+      class(eff)="EcosimEffortTS"
+      eff$id=df_shapes$ShapeID[i]
+      eff$name=df_shapes$Title[i]
+      ix=which(df_fleets$FishRateShapeID==eff$id)
+      eff$ecopathfleetid=df_fleets$EcopathFleetID[ix]
+      eff$ecosimfleetid=df_fleets$FleetID[ix]
+      eff$fleetname=df_ecopath$FleetName[df_ecopath$FleetID==eff$ecopathfleetid]
+      eff$values=as.numeric(unlist(strsplit(df_shapes$zScale[i],split=" ")))
+      effort_list[[gsub(" ", "",eff$name)]] <- eff
+    }
+  }
+  effort_list
+}
+
+#' Read shape types from XML
+#' @param xmldoc XML2 document
+#' @returns Data frame with shape ID and type.
+#' @noRd
+get_shape_table=function(xmldoc)
+{
+  tab=get_tables_from_name(xmldoc,"EcosimShape")[[1]]
+  df=table_to_df(tab)
+  df$ShapeTypeName="other"
+  df$ShapeTypeName[df$ShapeType==12]="fishmort"
+  df$ShapeTypeName[df$ShapeType==11]="fisheffort"
+  df$ShapeTypeName[df$ShapeType==8]="forcing"
+  df$ShapeTypeName[df$ShapeType==10]="mediation"
+  df$ShapeTypeName[df$ShapeType==99]="envresponse"
+  df
+}

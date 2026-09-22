@@ -140,8 +140,6 @@ get_run_console_link=function()
 #'
 #' @returns Object representing the factor.
 #' @export
-#'
-#' @examples
 get_factor_by_name=function(factor_set,name)
 {
   h=get_factor_scalar_values(factor_set)

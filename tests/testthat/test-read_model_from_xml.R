@@ -23,7 +23,7 @@ test_that("Reading example Ecospace model from XML works", {
   m=load_model_from_xml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecospace_ex.eiixml"),ecospace_scenario="BayOfAnchovies")
   expect_length(m$ecospace$mpamaps,2)
   expect_equal(dim(m$ecospace$mpamaps[[2]]$values),c(20,20))
-  expect_length(m$ecospace$habmaps,5)
+  expect_length(m$ecospace$habmaps,4)
   expect_equal(dim(m$ecospace$habmaps[[3]]$values),c(20,20))
   expect_length(m$ecospace$envmaps,2)
   expect_equal(dim(m$ecospace$envmaps[[1]]$values),c(20,20))
