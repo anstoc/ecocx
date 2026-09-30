@@ -1,4 +1,4 @@
-ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.40/EwERunConsole.exe")
+ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.44/EwERunConsole.exe")
 
 xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
 #xml_model="C:\\Users\\ANC\\OneDrive - NIVA\\Projects\\2025\\2025CLIMAX\\WP1\\Test_psfj_model\\final_model_sustainability.eiixml"

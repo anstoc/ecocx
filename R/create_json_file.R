@@ -136,8 +136,8 @@ create_json_changes_ecosim=function(x,design,factor_set)
     #seq_id=factor_set$shapes[[i]][[choice]]$seq
     shape_name=factor_set$shapes[[i]][[1]]$name
     if(factor_set$shapes[[i]][[choice]]$type=="envresponse") {
-      str_start='      "ecosim.envresponse['} else if(factor_set$shapes[[i]][[choice]]$type=="mediation") {
-      str_start='      "ecosim.mediation['} else {
+      str_start='      "ecosim.envresponsefunction['} else if(factor_set$shapes[[i]][[choice]]$type=="mediation") {
+      str_start='      "ecosim.mediationfunction['} else {
         stop(paste("Unkown shape type:",factor_set$shapes[[i]][[choice]]$type))}
 
     ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)+i

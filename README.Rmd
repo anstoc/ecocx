@@ -40,7 +40,7 @@ Supported experimental designs include:
 * Elementary effects, aka the Morris method, for identifying the inputs that have the largest effect on selected outputs with few model runs
 * Full factorial experiments, for decomposing the variance of one or more model outputs into direct and interaction effects of each input 
 
-At present, EcoCX allows changing fishing effort time series and environmental drivers in Ecosim. Supported model outputs are species/group biomasses and fishery landings, but users can add own functions to calculate ecological indicators based on them. Functions to change other inputs like mediation functions and Ecospace input maps are in the test phase and are scheduled for release in late 2026. Additional experimental designs are planned for 2027. Meanwhile, users are free to create their own experimental designs, output indicators, etc.
+At present, EcoCX allows changing fishing effort time series, environmental drivers, mediation functions, and vulnerabilities in Ecosim. Supported model outputs are species/group biomasses and fishery landings, but users can add own functions to calculate ecological indicators based on them. Functions to change Ecospace input maps are in the test phase and are scheduled for release in autumn 2026. Additional experimental designs are planned for 2027. Meanwhile, users are free to create their own experimental designs, output indicators, etc.
 
 
 ## Installation
@@ -63,7 +63,7 @@ ecocx::get_run_console_link()
 
 This is a basic example running Monte Carlo simulations modifying fishing effort in an example model. The built-in example model comes from the free EwE textbook, which we highly recommend (get yours at https://pressbooks.bccampus.ca/ewemodel/).
 
-```{r example, out.width="50%"}
+```{r example, out.width="80%"}
 library(ecocx)
 ## load example Ecosim model
 xml_model=paste0(get_path_to_exampledata(),"anchovy_bay_ecosim_ex.eiixml")
@@ -93,9 +93,9 @@ set.seed(125)
 design_mc=sampler_random(factor_set,size=50)
 
 ##connect to EwE Run Console (must be downloaded separately from https://github.com/Official-EwE/Eii.Ecopath.Runner). Replace path to the downloaded executable with your own.
-ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.32/EwERunConsole.exe")
+ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.44/EwERunConsole.exe")
 
-##levelal: use futures for parallel processing
+##use futures for parallel processing
 library(future.apply)
 plan(multisession)
 

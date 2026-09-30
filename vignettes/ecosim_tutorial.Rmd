@@ -9,7 +9,7 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  echo = FALSE,
+  echo = TRUE,
   dpi = 300,          # High resolution
   fig.retina = 2,     # Doubles pixel density for crisp HTML rendering
   fig.width = 4,      # Physical width in inches (prevents the "zoomed-in" text look)
@@ -242,6 +242,8 @@ catch_mc=get_ecosim_cx_catch(cx_table_mc, m,relative=T)
 head(catch_mc)
 ```
 
+Whales, benthos, and various other groups are not caught, so their relative catches are \code{NaN}.
+
 To plot the outputs of all runs:
 
 ``` {r}
@@ -255,8 +257,47 @@ Let's check which biomasses vary most by the end of the runs:
 ``` {r,fig.width=6,fig.height=6}
 plot_ecosim_output_variance(biomass_mc)
 ```
+The biomass of shrimp varies most as a consequence of choosing different levels for each factor. Wouldn't it be nice to know which factor - or combination of factors - drives this large variability of shrimp biomass at the end of the simulation period? 
 
 ## Full factorial experiments
+
+Full factorial experiments allow decomposing the variance of a model output into direct and total contributions to each factor. A full factorial design runs the model for all possible combinations of factor levels - in our case, `2*2*2*3*3=72` combinations. To create a full factorial design:
+
+``` {r}
+design_ff=sampler_full_factorial(factor_set)
+head(design_ff)
+```
+
+The design table has the same format as its counterpart we created for the Monte Carlo simulations, but rather than randomly choosing the factor levels in each row, its rows together contain all possible combinations of levels.
+
+Next, we execute the design; 72 runs of this simple example model are rather quick.
+
+``` {r}
+out_folder=paste0(tempdir(),"/fftest")
+cx_table_ff=run_ecosim_experiment(design_ff,xml_model,factor_set,m,ewe_link,out_folder,parallel=T)
+colnames(cx_table_ff)
+```
+
+The returned `cx_table` and the outputs of the run console have the same format as for the Monte Carlo simulations, so we can use the same function to collect the outputs from all runs:  
+
+``` {r}
+biomass_ff=get_ecosim_cx_biomass(cx_table_ff, m,relative=T)
+```
+
+The function decomposes the variance of one output into direct and total contributions of each factor.
+
+``` {r}
+#get outputs for last timestep only
+y_ff=biomass_ff[biomass_ff$timestep==max(biomass_ff$timestep),]
+
+#merge output and input table (ordering each by run name to make sure the order matches)
+df_ff=cbind(design_ff[order(design_ff$run_name),],y_ff[order(y_ff$run_name),])
+
+#decompose variance for output "Shrimp"
+sensitivity_results=calculate_effects_ff("Shrimp",colnames(design_ff[,-(1:4)]),df_ff)
+```
+
+
 
 ## Factor screening with the elementary effects method
 
@@ -267,5 +308,4 @@ EcoCX is designed to allow users to add their own methods. Typical entry points 
 - The experimental design. You can write a function returning a design table like the built-in functions and then use EcoCX to execute the model runs it describes.
 - Harvesting model outputs. EcoCX has built-in functions to obtain Ecosim biomasses and fishery catches, but you're free to explore the generated model outputs and write functions that read others or calculate new ecological indicators from them. Those can then be fed into the design-specific analysis functions.
 - Analyzing model outputs. Depending on the question you're trying to answer, you can use EcoCX to run your model many times and obtain the outputs for each run, then use your own methods to analyze the big pile of data you just created.
-
 

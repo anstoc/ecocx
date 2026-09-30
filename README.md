@@ -43,12 +43,12 @@ Supported experimental designs include:
 - Full factorial experiments, for decomposing the variance of one or
   more model outputs into direct and interaction effects of each input
 
-At present, EcoCX allows changing fishing effort time series and
-environmental drivers in Ecosim. Supported model outputs are
-species/group biomasses and fishery landings, but users can add own
-functions to calculate ecological indicators based on them. Functions to
-change other inputs like mediation functions and Ecospace input maps are
-in the test phase and are scheduled for release in late 2026. Additional
+At present, EcoCX allows changing fishing effort time series,
+environmental drivers, mediation functions, and vulnerabilities in
+Ecosim. Supported model outputs are species/group biomasses and fishery
+landings, but users can add own functions to calculate ecological
+indicators based on them. Functions to change Ecospace input maps are in
+the test phase and are scheduled for release in autumn 2026. Additional
 experimental designs are planned for 2027. Meanwhile, users are free to
 create their own experimental designs, output indicators, etc.
 
@@ -70,7 +70,7 @@ Run Console. To find out which:
 
 ``` r
 ecocx::get_run_console_link()
-#> [1] "https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.40"
+#> [1] "https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.44"
 ```
 
 ## Example
@@ -135,9 +135,9 @@ set.seed(125)
 design_mc=sampler_random(factor_set,size=50)
 
 ##connect to EwE Run Console (must be downloaded separately from https://github.com/Official-EwE/Eii.Ecopath.Runner). Replace path to the downloaded executable with your own.
-ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.32/EwERunConsole.exe")
+ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.44/EwERunConsole.exe")
 
-##levelal: use futures for parallel processing
+##use futures for parallel processing
 library(future.apply)
 #> Loading required package: future
 plan(multisession)
@@ -152,6 +152,6 @@ df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
 plot_ecosim_all_runs(df_cx)
 ```
 
-<img src="man/figures/README-example-1.png" alt="" width="50%" />
+<img src="man/figures/README-example-1.png" alt="" width="80%" />
 
     #> NULL

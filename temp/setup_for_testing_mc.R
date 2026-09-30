@@ -1,52 +1,54 @@
-ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.35/EwERunConsole.exe")
+ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.44/EwERunConsole.exe")
+
+# xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecospace_ex.eiixml")
+# > m=load_model_from_xml(xml_model,ecospace_scenario="BayOfAnchovies")
 
 xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml")
 m=load_model_from_xml(xml_model)
 factor_set=new_ecosim_factor_set(m)
 
-# factor_set=add_option_ecosim_forcing(factor_set,"Tbottom","warmer_2deg",factor_set$forcing_functions$Tbottom$default$values+2,factor_value=3)
+# factor_set=add_level_ecosim_forcing(factor_set,"Tbottom","warmer_2deg",factor_set$forcing_functions$Tbottom$default$values+2,factor_value=3)
 #
-# factor_set=add_option_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,get_ecosim_forcing_length(factor_set,"PPanomaly")))
+# factor_set=add_level_ecosim_forcing(factor_set,"PPanomaly","none",rep(1,get_ecosim_forcing_length(factor_set,"PPanomaly")))
+# #
+# factor_set=add_level_ecosim_effort(factor_set,"Sealers","one",rep(1,length(factor_set$fishing_effort$Sealers$default$values)),factor_value=1)
+# #
+# #
+# factor_set=add_level_ecosim_effort(factor_set,"Trawlers","one",rep(1,length(factor_set$fishing_effort$Sealers$default$values)),factor_value=1)
 #
-# factor_set=add_option_ecosim_effort(factor_set,"Sealers","higher20p",1.2*factor_set$fishing_effort$Sealers$default$values,factor_value=1.2)
-# factor_set=add_option_ecosim_effort(factor_set,"Sealers","lower20p",0.8*factor_set$fishing_effort$Sealers$default$values)
-#
-# factor_set=add_option_ecosim_effort(factor_set,"Trawlers","higher20p",1.2*factor_set$fishing_effort$Trawlers$default$values)
-# factor_set=add_option_ecosim_effort(factor_set,"Trawlers","lower20p",0.8*factor_set$fishing_effort$Trawlers$default$values)
-#
-# factor_set=add_option_ecosim_effort(factor_set,"Seiners","higher20p",1.2*factor_set$fishing_effort$Seiners$default$values)
-# factor_set=add_option_ecosim_effort(factor_set,"Seiners","lower20p",0.8*factor_set$fishing_effort$Seiners$default$values)
-#
-# factor_set=add_option_ecosim_effort(factor_set,"Baitboats","higher20p",1.2*factor_set$fishing_effort$Baitboats$default$values)
+# #
+# factor_set=add_level_ecosim_effort(factor_set,"Seiners","higher100p",2*factor_set$fishing_effort$Seiners$default$values)
+# # factor_set=add_option_ecosim_effort(factor_set,"Seiners","lower20p",0.8*factor_set$fishing_effort$Seiners$default$values)
+# #
+# factor_set=add_level_ecosim_effort(factor_set,"Baitboats","higher100p",2*factor_set$fishing_effort$Baitboats$default$values)
 # factor_set=add_option_ecosim_effort(factor_set,"Baitboats","lower20p",0.8*factor_set$fishing_effort$Baitboats$default$values)
 #
-# factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","higher20p",1.2*factor_set$fishing_effort$Shrimpers$default$values)
+# factor_set=add_level_ecosim_effort(factor_set,"Shrimpers","higher200p",2*factor_set$fishing_effort$Shrimpers$default$values)
 # factor_set=add_option_ecosim_effort(factor_set,"Shrimpers","lower20p",0.8*factor_set$fishing_effort$Shrimpers$default$values)
 
 # v_matrix=factor_set$tables$vulnerability$default
 # v_matrix=matrix(2,ncol=ncol(v_matrix),nrow=nrow(v_matrix))+0*factor_set$tables$vulnerability$default
-# factor_set=add_option_ecosim_vulnerability(factor_set,"two",v_matrix)
+# factor_set=add_level_ecosim_vulnerability(factor_set,"two",v_matrix)
 
 #factor_set=add_option_ecosim_shape(factor_set,"Seal-Mackerel-Anchovy","off",m$ecosim$shapes$`Seal-Mackerel-Anchovy`$x,rep(1,1200))
 
 #switch mediation on or off
-#factor_set=add_option_ecosim_shape(factor_set,"Seal-Mackerel-Anchovy","no_mediation",
-#                        m$ecosim$shapes$`Seal-Mackerel-Anchovy`$x,rep(1,1200))
+#factor_set=add_level_ecosim_shape(factor_set,"Seal-Mackerel-Anchovy","no_mediation",m$ecosim$shapes$`Seal-Mackerel-Anchovy`$x,rep(1,1200))
 
-factor_set=add_option_ecosim_shape(factor_set,"Tempcold","off",factor_set$shapes$Tempcold$default$x,rep(1,1200))
-#factor_set=add_option_ecosim_shape(factor_set,"Tempwarm","off",factor_set$shapes$Tempwarm$default$x,rep(1,1200))
-factor_set=add_option_ecosim_shape(factor_set,"Twhiting","off",factor_set$shapes$Twhiting$default$x,rep(1,1200))
+#factor_set=add_level_ecosim_shape(factor_set,"Tempcold","off",factor_set$shapes$Tempcold$default$x,rep(1,1200))
+#factor_set=add_level_ecosim_shape(factor_set,"Tempwarm","off",factor_set$shapes$Tempwarm$default$x,rep(1,1200))
+factor_set=add_level_ecosim_shape(factor_set,"Twhiting","off",factor_set$shapes$Twhiting$default$x,rep(1,1200))
 
 design=sampler_random(factor_set,size=20)
 
-out_folder=paste0(tempdir(),"/mctest6")
+out_folder=paste0(tempdir(),"/mctest8")
 
 
-cx_table=run_ecosim_experiment(design,xml_model,factor_set,ewe_link,out_folder,parallel=T)
+cx_table=run_ecosim_experiment(design,xml_model,factor_set,m,ewe_link,out_folder,parallel=T)
 
 df_cx=get_ecosim_cx_biomass(cx_table, m,relative=T)
 
-plot_all_runs(df_cx,alpha=1,output=c("Whiting"))
+plot_ecosim_all_runs(df_cx)
 
 out_folder=paste0(tempdir(),"/fftest")
 design_ff=sampler_full_factorial(factor_set)

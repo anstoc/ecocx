@@ -118,7 +118,7 @@ sampler_full_factorial=function(factor_set)
 create_ee_levels=function(factor_set,range_table, start_change, end_change)
 {
   fac_summary=summary(factor_set)
-  if(max(fac_summary$levels)>=3) {stop("Initial factor set must not contain factors with more than two levels. Factors with two level will be set to binary choices. Factors with one level will be expanded according to the range table (but factors with one level that are not listed in the range table are omitted).")}
+  if(max(fac_summary$levels)>=3) {stop("Initial factor set must not contain factors with more than two levels. Factors with two levels will be set to binary choices. Factors with one level will be expanded according to the range table (but factors with one level that are not listed in the range table are omitted).")}
   #for factors with two levels, set their scalar values to 0 and 1.
   for(ix in which(fac_summary$levels==2))
   {

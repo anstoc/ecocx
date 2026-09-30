@@ -61,7 +61,7 @@ plot_ecosim_factor_levels=function(factor_set,name)
     }
     #make plot
     cols=tol_colors("muted")
-    p=plot(l[[1]]$y~l[[1]]$x, ylim=c(min_y,max_y),
+    p=plot(l[[1]]$y~l[[1]]$x, ylim=c(min_y-(0.1*min_y),max_y+(0.1*max_y)),
          xlab="Timestep",ylab="value",main=name,
          type="l",col=cols[1])
     if(length(l)>1)

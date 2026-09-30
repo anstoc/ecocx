@@ -342,6 +342,5 @@ set_factor_scalar_values=function(factor_set, values_table)
   factor_set
 }
 
-#TODO
-#other factors/levels
+
 
