@@ -1,5 +1,5 @@
 ---
-title: "Tutorial: Typical workflow for computational experiments with Ecosim models and discrete factors"
+title: "Tutorial: Computational experiments with Ecosim models and discrete factors"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{ecosim_tutorial}
@@ -26,7 +26,7 @@ This tutorial shows a typical workflow for sensitivity analyses with an Ecosim m
 - Open and explore a model, typically built with the EwE software's graphical user interface (henceforth, the EwE GUI).
 - Define which inputs' effects on the outputs you want to explore. These inputs are called factors. Currently, factors can only take discrete levels; direct support for sampling factors from continuous distributions will eventually be implemented. 
 - Define alternative levels for these inputs - for example, an increase and a decrease of a fleet's fishing effort compared to the baseline, or temperature time series according to different climate scenarios.
-- Create an experimental design - here, that means a plan to run the model repeatedly with random or systematic changes to the inputs, using the levels above. 
+- Create an experimental design - here, that means a plan to run the model repeatedly with random or systematic changes to the inputs, choosing their values from the levels above. 
 - Run the Ecosim model repeatedly; each run's inputs are different, according to the design.
 - Read and analyze selected model outputs. 
 
@@ -49,17 +49,21 @@ remotes::install_github("anstoc/ecocx")
 library(ecocx)
 ```
 
-In addition, you need the EwE Run Console, a command line interface to EwE. It is available on Github. EcoCX and the run console are developed parallely, and to ensure compatibility, each release of EcoCX is tested against a specific release of the run console. To obtain a link to this recommended version:
+
+
+In addition, you need the EwE Run Console, a command line interface to EwE. It is available on Github. EcoCX and the run console are developed in parallel. To ensure compatibility, each release of EcoCX is tested against a specific release of the run console. To obtain a link to this recommended version:
 
 ``` {r}
-ewe_link=get_run_console_link()
+get_run_console_link()
 ```
 
-You can use a newer version if available, but be aware that we cannot guarantee compatibility as the newer run consolke version might have made changes that EcoCX has yet to catch up with.
+You can use a newer version if available, but be aware that we cannot guarantee compatibility as the newer run console version might have made changes that EcoCX has yet to catch up with.
+
+EcoCX is new software under active development; if you encounter bugs, please create an issue on GitHub or e-mail anc(at)niva(dot)no.
 
 ## The example model
 
-EcoCX reads Ecosim and Ecospace models in XML format, which can be exported via the EwE GUI. Here, we use an an example Ecosim model of Anchovy Bay included  with EcoCX. It is borrowed from the free EwE textbook (https://pressbooks.bccampus.ca/ewemodel/). The textbook is an excellent resource if you're unfamiliar with EwE modeling; this tutorial assumes at least superficial familiarity with how Ecosim works. 
+EcoCX reads Ecosim and Ecospace models in XML format, which can be exported via the EwE GUI. Here, we use an an example Ecosim model of Anchovy Bay included  with EcoCX. It is borrowed from the free EwE textbook (https://pressbooks.bccampus.ca/ewemodel/). The textbook is an excellent resource if you're unfamiliar with EwE modeling; this tutorial assumes at least superficial familiarity with Ecosim. 
 
 You can access the example model like so:
 
@@ -69,7 +73,7 @@ xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_
 
 When working with your own model, you can export it as an .eiixml from the EwE GUI.
 
-We now load the model and explore its contents, like the functional groups, fleets, and time series of environmental drivers. First, however, a caveat: the model was built for teaching purposes and some of its components, like a mediation function linking seals, mackerel, and anchovy, are unrealistic. 
+We now load the model and explore its contents, like functional groups, fleets, and time series of environmental drivers. But first, a caveat: the model was built for teaching purposes and some of its components, like a mediation function linking seals, mackerel, and anchovy, are unrealistic. 
 
 ``` {r}
 m=load_model_from_xml(xml_model)
@@ -87,13 +91,13 @@ plot(m$ecosim$forcing_functions$Tbottom$values, type="l", main="Bottom temperatu
 plot(m$ecosim$forcing_functions$PPanomaly$values, type="l", main="Prim. prod. anomaly", ylab="Production multiplier", xlab="Time step")
 ```
 
-The model runs for 41 years (with 12 months each, so 492 time steps). Trawling effort more than triples over this period, sealing is phased out, and the annual mean bottom temperature increases from around 17°C to about 19°C. Furthermore, the model includes a primary production anomaly estimated to make it fit historical data better. Note that all of these are inputs to the model; we need some further setup before running it.
+The model runs for 41 years (with 12 months each, so 492 time steps). Trawling effort more than triples over this period, sealing is phased out, and the annual mean bottom temperature increases from around 17°C to about 19°C. Furthermore, the model includes a primary production anomaly estimated for a better fit to historical data.  All this information is extracted from the model XML file. In EcoCX, we need a bit of additional setup to run the model.
 
 ## Defining factors and levels
 
-The model inputs whose effects we investigate are called factors. As we have seen above, in the Anchovy Bay model, there are drastic changes to sealing and trawl fisheries over time, major warming, and a large primary production anomaly. For the sake of this example, let's say there are also discussions about increasing or decreasing the fishing effort for Shrimpers by 50%. We will explore how much these five factors together affect functional group biomasses, and then attribute these changes exactly to the factors.
+The model inputs whose effects we investigate are called factors. As we have seen above, in the Anchovy Bay model, there are big changes to sealing and trawl fishing effort over time,  about 2°C of warming, and a large primary production anomaly. For the sake of this example, let's say there are also discussions about increasing or decreasing the fishing effort for Shrimpers by 25%. We will explore how much these five factors together affect functional group biomasses, and then calculate each factor's contribution to these changes.
 
-For this, we need to define plausible alternative levels for each factors - e.g., whether an intervention like phasing out sealing is implemented at all, or how much temperatures rise based on uncertainty about the future climate. Be aware that those levels affect each factor's effect size; a 0.1°C change in temperature will have a smaller effect than a 10°C change. 
+For this, we need to define plausible alternative levels for each factor - e.g., whether an intervention like phasing out sealing is implemented or not, or how much temperatures rise. Be aware that those levels affect each factor's effect size; a 0.1°C change in temperature will have a smaller effect than a 10°C change. 
 
 The first step is creating a 'factor set' - a collection of alternative levels for each factor. At present, EcoCX only supports discrete factor levels. To create a factor set from a model:
 
@@ -102,14 +106,12 @@ factor_set=new_ecosim_factor_set(m)
 summary(factor_set)
 ```
 
-The summary above lists all the factors that you might consider changing: The vulnerability table, fishing effort for the five fleets, the two environmental driver time series (in EwE, those are called 'forcing functions'), and the shapes of a mediation function and two environmental response functions. For each factor, one level is defined. We will add additional levels to ask: What if we don't phase out sealing? What if we keep trawling at its current level? What if there was no climate anomaly? And what if there were two degrees less or more of warming?  
+The summary above lists all the factors that you might consider changing: The vulnerability table, fishing effort for the five fleets, the two environmental driver time series (in EwE, these are 'forcing functions'), and the shapes of a mediation function and two environmental response functions. For each factor, one level is defined. We will add additional levels to ask: What if we don't phase out sealing? What if we keep trawling at its current level? What if there was no primary production anomaly? What if there was no warming? And what if we increased or decreased the shrimp fleet's effort by 25%? How do all these factors play out together?
 
 EcoCX provides functions to add and visualize additional levels for these four factors. 
 
 ``` {r}
-#Temperature add +/- 2 degrees, linearly changing
-factor_set=add_level_ecosim_forcing(factor_set,"Tbottom","warmer_2deg",
-      change_values_add(factor_set$forcing_functions$Tbottom$default$values,2,150,350))
+#Temperature: add alternative where temperature towards the end of the study period is kept two degrees lower
 factor_set=add_level_ecosim_forcing(factor_set,"Tbottom","colder_2deg",
       change_values_add(factor_set$forcing_functions$Tbottom$default$values,-2,150,350))
 plot_ecosim_factor_levels(factor_set,"Tbottom")
@@ -129,11 +131,12 @@ factor_set=add_level_ecosim_effort(factor_set,"Trawlers","keep",
       rep(1,length(factor_set$fishing_effort$Sealers$default$values)))
 plot_ecosim_factor_levels(factor_set,"Trawlers") 
 
-#Shrimpers: consider changing the current effort +/- 50%
+#Shrimpers: consider changing the current effort +/- 25%
 factor_set=add_level_ecosim_effort(factor_set,"Shrimpers","plus50p",
-      change_values_mult(factor_set$fishing_effort$Shrimpers$default$values,1.5,150,350))
+      change_values_mult(factor_set$fishing_effort$Shrimpers$default$values,1.25,150,350))
 factor_set=add_level_ecosim_effort(factor_set,"Shrimpers","minus50p",
-      change_values_mult(factor_set$fishing_effort$Shrimpers$default$values,0.5,150,350))
+      change_values_mult(factor_set$fishing_effort$Shrimpers$default$values,0.75,150,350))
+factor_set=remove_level_ecosim_effort(factor_set,"Shrimpers","default") #removes this intermediate, default level, only retaining the "extremes"
 plot_ecosim_factor_levels(factor_set,"Shrimpers") 
 
 summary(factor_set)
@@ -142,7 +145,7 @@ summary(factor_set)
 
 ## Creating an experimental design
 
-Now that we have created plausible alternative levels for each factor of interest, we need to make a plan (henceforth, a 'design') describing how often we will run the model with different factor levels, and what level should be used for each factor in each run. EcoCX currently contains functions to create three kinds of designs. The next subsection describes the simplest design, random Monte Carlo. The other two designs are the elementary effects method and full factorial experiments. They are described later in the tutorial, after explaining how to run a design and obtain the outputs of all runs. Furthermore, you're free to write your own designs, as long as they are described in a data frame resembling the output of the functions provided by EcoCX.
+Now that we have created plausible alternative levels for each factor of interest, we need to make a plan (henceforth, a 'design') describing how often we will run the model with different factor levels, and which levels the factors should have in each run. EcoCX currently contains functions to create three kinds of designs. The next subsection describes the simplest design, random Monte Carlo. The other two designs are full factorial experiments and the elementary effects method. They are described later in the tutorial, after explaining how to run a design and obtain the outputs of all runs. Furthermore, you're free to write your own designs, as long as they are described in a data frame resembling the output of the functions provided with EcoCX.
 
 ## Random Monte Carlo
 
@@ -158,7 +161,7 @@ head(design_mc)
 The function `sampler_random` returns a data frame with one row for each planned model run. It contains the following columns:
 
 - `run_id`: An ID for the run. For the Monte Carlo design, each run has a unique ID.
-- `sub_id`: A sub-id used in the elementary effects method (see below). Not used in the MC design.
+- `sub_id`: A sub-id used in the elementary effects method (see below). Not used in the Monte Carlo design.
 - `run_name`: Concatenated `run_id` and `sub_id`. This serves as the run's unique identifier in all designs.
 - `comment`: A description of the run. Can also be used to store additional information about the run (see, e.g., the elementary effects method below).
 - One column for each factor in the factor set, stating the name of the factor's level in the run.  Also factors with only one level are included as columns, but have the same value in each row.
@@ -171,17 +174,17 @@ To run EwE models from EcoCX, first connect to the Run Console, providing a path
 
 ``` {r}
 #replace path with your own
-ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.40/EwERunConsole.exe")
+ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.45/EwERunConsole.exe")
 ```
 
-If you have the `future.apply` package, you can speed up executing your computations by executing the runs in your design in parallel: 
+If you have the `future.apply` package installed, you can speed up your computations by executing the runs in parallel: 
 
 ``` {r}
 library(future.apply)
 plan(multisession)
 ```
 
-In this case, they will be executed according to the plan you chose. Otherwise, they will be executed sequentially. 
+In this case, they will be executed according to the plan you choose. Otherwise - or if `future.apply` is not installed or loaded -  they will be executed sequentially.  
 
 Let's finally execute the runs and store the outputs in a temporary folder:
 
@@ -201,9 +204,9 @@ The returned data frame `cx_table_mc` contains for each run:
 
 ## What's happening in the background?
 
-The EwE Run Console takes four inputs: (1) A model in EIIXML format; (2) a JSON file describing changes to be made to the model before running it - e.g., replacing initial fishing effort time series with new values; and (3) a set of options, e.g., whether annual or monthly outputs should be written to disk; (4) the path to the directory where the run's outyputs should be written. 
+The EwE Run Console requires four kinds of inputs: (1) A model in EIIXML format; (2) a set of options, e.g., whether annual or monthly outputs should be written to disk; (3) changes to be made to the model before running it - e.g., replacing initial fishing effort time series with new values; and (4) the path to the directory where the run's outputs should be written. The first three kinds of inputs are stored in a JSON file provided to the run console. 
 
-When calling `run_ecosim_experiment`, it first creates a folder structure for storing the outputs. One folder is created for each model run, named with the corresponding `run_name`. There is also a folder containing input data passed on to the Run Console. 
+When calling `run_ecosim_experiment`, it first creates a folder structure for storing the outputs. One folder is created for each model run, named with the corresponding `run_name`. There is also a folder containing input data that the simulations might require. 
 
 ``` {r}
 list.dirs(out_folder)
@@ -234,7 +237,7 @@ The data frame returned by `run_ecosim_experiment` (here, `cx_table_mc`) points 
 As just described, calling `run_ecosim_experiment` causes EwE to write various outputs for each run. You can easily compile biomasses and catches with built-in functions (setting `relative=T` gives you relative changes):
 
 ``` {r}
-#Read (relative) Biomasses
+#Read (relative) biomasses
 biomass_mc=get_ecosim_cx_biomass(cx_table_mc, m,relative=T)
 head(biomass_mc)
 #Read (relative) catches
@@ -242,7 +245,7 @@ catch_mc=get_ecosim_cx_catch(cx_table_mc, m,relative=T)
 head(catch_mc)
 ```
 
-Whales, benthos, and various other groups are not caught, so their relative catches are \code{NaN}.
+Whales, benthos, and various other groups are not caught, so their relative catches are 'not a number' (NaN).
 
 To plot the outputs of all runs:
 
@@ -261,7 +264,7 @@ The biomass of shrimp varies most as a consequence of choosing different levels 
 
 ## Full factorial experiments
 
-Full factorial experiments allow decomposing the variance of a model output into direct and total contributions to each factor. A full factorial design runs the model for all possible combinations of factor levels - in our case, `2*2*2*3*3=72` combinations. To create a full factorial design:
+Full factorial experiments allow decomposing the variance of a model output into each factor's main effect (direct contribution) and total effect (including interactions with other factors; here, interactions refer to interactions between factors, not trophic interactions between species). A full factorial design runs the model for all possible combinations of factor levels - in our case, `2*2*2*2*2=36` combinations. To create a full factorial design:
 
 ``` {r}
 design_ff=sampler_full_factorial(factor_set)
@@ -270,7 +273,7 @@ head(design_ff)
 
 The design table has the same format as its counterpart we created for the Monte Carlo simulations, but rather than randomly choosing the factor levels in each row, its rows together contain all possible combinations of levels.
 
-Next, we execute the design; 72 runs of this simple example model are rather quick.
+Next, we execute the design; 36 runs of this simple example model are quick.
 
 ``` {r}
 out_folder=paste0(tempdir(),"/fftest")
@@ -286,26 +289,154 @@ biomass_ff=get_ecosim_cx_biomass(cx_table_ff, m,relative=T)
 
 The function decomposes the variance of one output into direct and total contributions of each factor.
 
-``` {r}
+``` {r,  fig.width=8,fig.height=6, out.width="60%"}
 #get outputs for last timestep only
 y_ff=biomass_ff[biomass_ff$timestep==max(biomass_ff$timestep),]
 
 #merge output and input table (ordering each by run name to make sure the order matches)
 df_ff=cbind(design_ff[order(design_ff$run_name),],y_ff[order(y_ff$run_name),])
 
-#decompose variance for output "Shrimp"
-sensitivity_results=calculate_effects_ff("Shrimp",colnames(design_ff[,-(1:4)]),df_ff)
+#decompose variance for output "Shrimp" and plot results
+ff_effects=calculate_effects_ff("Shrimp",colnames(design_ff[,-(1:4)]),df_ff)
+plot_ff_effects(ff_effects)
 ```
+Shrimper effort explains about 58% of the shrimp biomass variance by the end of the simulation period, trawler effort about 34%, and the primary production anomaly and bottom temperature explain about 8% and 6%. Furthermore, most of these effects are direct, not due to interactions between the factors. Note that the sum of total effects exceeds 100% because interactions are counted for each factor involved - for example, variance due to an interaction between temperature and primary production anomaly would be included in the interaction effect of both factors. In contrast, the main  effects always add to <=100%. 
 
+Why does the trawler fleet have such a relatively large effect? One possible explanation is that it targets cod, a main predator of shrimp, and we assumed that the trawling effort will change much more than for shrimpers. Let's check the trajectory of shrimp and cod across all 36 runs:
 
+``` {r}
+plot_ecosim_all_runs(biomass_ff,outputs = c("Cod", "Shrimp"))
+```
+The trajectories of shrimp (green) are highly variable whereas the trajectories of cod (orange) follow two broad paths - a relatively stable biomass and a reduction to less than 50% of their initial biomass. Let's plot the cod and shrimp biomasses at the last time step against each other:
+``` {r, figh.widt=4,fig.height=4}
+max_time=max(biomass_ff$timestep)
+plot(biomass_ff$Shrimp[biomass_ff$timestep==max_time]~biomass_ff$Cod[biomass_ff$timestep==max_time], xlab="Relative cod biomass",ylab="Relative shrimp biomass")
+```
+This plot supports our hunch: Shrimp biomasses are higher in the ecosystem's "fewer cod" trajectory than in the system's "more cod" trajectory, although other factors cause most variability, and the relationship the plot shows is still correlational.
+
+Note again that in this tutorial, 'interactions' refers to interactions between factors - akin to interaction terms in a regression model - not trophic interactions. Accordingly, the main effect might still be due to species interactions, such as the trawler fleets' effect on shrimp through their main predator. 
+
+For a deterministic model like EwE, full factorial experiments yield an exact decomposition of the output variance - and with few factors and levels, we needed few model runs. But the number of runs grows exponentially with the number of factors. If we have one more factor with two levels, the number of possible combinations doubles; with another two-level factor, it doubles again. Ten two-level factors would require a manageable 1024 runs, but 20 two-level factors would require more than a million runs! In such situations, we have several options. One is to start with a "factor screening" step: using a less exact method to find the most important factors, then - if desired - run a full factorial experiment only with this smaller set of important factors. 
 
 ## Factor screening with the elementary effects method
+
+The elementary effects method, also known as Morris method, is a method for factor screening. This means it can rank many factors by their importance with relatively few model runs, so that we can choose the most important factors for further investigation. It's not as accurate and interpretable as the variance decomposition of full factorial experiments, but the required model runs grow much more slowly as the number of factors increases. For example, a model with 20 factors requires `r*(20+1)` model runs, with `r` typically between 10 and 50, depending on the complexity of the model and the available computing power. That's much less than the million runs or so that a full factorial experiment with 20 factors would require (at least)! Even though it's unnecessary in the example above (and for so few factors, it's even a bit slower), let's keep the same example and check how closely the two designs' results match.
+
+The elementary effects method treats factors as binary choices or continuous variables; the latter are set to specific, discrete levels that cover plausible ranges. We will treat the primary production anomaly as a binary choice and the other factors as continuous. For continuous factors, the elementary effects method does not start with predefined levels as above, but a plausible minimum and maximum that each factor can take, and then creates levels for each factor to optimize the number of runs that are needed. To create such a factor set, first create a data frame with the ranges for each factor:
+
+
+``` {r, fig.widt=4,fig.height=4}
+#start with a "fresh" factor set
+factor_set_ee=new_ecosim_factor_set(m)
+#Get data frame with all factors
+range_table=get_factor_scalar_values(factor_set_ee) 
+range_table
+#keep only factors we want to modify
+range_table=range_table[range_table$name %in% c("Sealers","Trawlers","Shrimpers","Tbottom"),]
+
+#value at start of simulations; for Tbottom, we're using the average of the first five years.
+start_T=mean(m$ecosim$forcing$Tbottom$values[1:60])
+range_table$start=c(1,1,1,start_T)  
+
+#mimimum plausible values
+range_table$min=c(0,1,0.75,start_T)
+
+#maximum plausible values
+max_trawler_eff=max(m$ecosim$fishing_effort$Trawlers$values)
+max_T=max(m$ecosim$forcing_functions$Tbottom$values)
+range_table$max=c(1,max_trawler_eff,1.25,max_T)
+
+#number of levels to create, see text below
+range_table$p=rep(4,nrow(range_table))
+
+range_table
+```
+We're going to ask how important each of these factors is, if sealing effort varies between 0 and 1, trawling effort between 1 and 3.65, shrimper effort between 0.75 and 1.25, and bottom temperature between the average of the first five years and the maximum of during the simulation period. The parameter `p` is the number of levels to create for each factor, and is typically set to 4, 8, or 16. The higher `p`, the better the method can pick up non-linear and interaction effects, but the more model runs are needed to obtain reliable results. 
+
+We also need to add the primary production anomaly as a binary factor:
+
+``` {r}
+factor_set_ee=add_level_ecosim_forcing(factor_set_ee,"PPanomaly","none",
+      rep(1,get_ecosim_forcing_length(factor_set,"PPanomaly")))
+```
+
+To add the discrete levels of the other factors from the range table:
+
+``` {r}
+#changes start at time step 200 and end at time step 350
+factor_set_ee=create_ee_levels(factor_set_ee,range_table,start_change=200, end_change=350)
+summary(factor_set_ee)
+```
+The primary production anomaly has the two levels that we defined, as before, whereas the factors in the range table each have `p` levels varying between the minima and maxima that we provided.
+
+``` {r}
+plot_ecosim_factor_levels(factor_set_ee,"PPanomaly")
+plot_ecosim_factor_levels(factor_set_ee,"Tbottom")
+plot_ecosim_factor_levels(factor_set_ee,"Sealers")
+plot_ecosim_factor_levels(factor_set_ee,"Trawlers")
+plot_ecosim_factor_levels(factor_set_ee,"Shrimpers")
+```
+
+We can now create the design, run the computational experiment, and collect the outputs. To create the design, we need to provide one more parameter, `r`. In essence, the elementary effects method starts at a random combination of factor levels, and then goes on a random walk changing one factor at a time until all have changed once. Each random walk is called a "trajectory", and `r` is the number of trajectories. In each trajectory, the model is evaluated at the starting point and after changing each of the factors. Hence, for our five factors, we'll need `r*(5+1)` runs. As you can see, the number of runs grows linearly with the number of factors, not exponentially like for full factorial experiments. In many cases, the most important factors can be identified with 10-20 trajectories, but if you can afford more, that's great. 
+
+``` {r}
+set.seed(12)
+design_ee=sampler_ee(factor_set_ee,r=10)
+head(design_ee)
+```
+
+The `run_id` is the number of the trajectory. The `sub_id` is the model evaluation within that trajectory. Together, they form a unique `run_name`. One and only one factor changes between subsequent runs within a trajectory; this factor is listed in `comment`.
+
+Let's execute the experiment, collect the outputs, and calculate which factors are most important: 
+
+``` {r}
+#execute design
+out_folder=paste0(tempdir(),"/eetest")
+plan(multisession)
+cx_table_ee=run_ecosim_experiment(design_ee,xml_model,factor_set_ee,m,ewe_link,out_folder,parallel=T)
+
+#collect output of interest at the last timestep
+df_cx_ee=get_ecosim_cx_biomass(cx_table_ee, m,relative=T)
+y_ee=df_cx_ee[df_cx_ee$timestep==max(df_cx_ee$timestep),]
+
+#bind inputs and output into one data frame
+df_ee=cbind(design_ee[order(design_ee$run_name),],y_ee[order(y_ee$run_name),])
+
+#calculate elementary effects on shrimp
+effects_ee=calculate_effects_ee("Shrimp",factor_set_ee,df_ee)
+
+effects_ee$mu_star
+effects_ee$sigma
+```
+The elementary effects method produces two main outputs: `mu_star`, a measure of each factor's importance, and `sigma`, a measure of how much each factor's effect is non-linear or interactive (dependent on other factors' values). If a factor's `sigma` is large compared to its `mu_star`, than that factor is involved in important interactions. Note that estimating `sigma` benefits from choosing a larger `p`.
+
+Together, these two measures allow us to identify the most important and interesting factors. They are often plotted against each other:
+``` {r, fig.widt=4,fig.height=4}
+plot_ee(effects_ee)
+```
+
+The elementary effects method yielded the same broad, qualitative conclusions as the full factorial experiment: shrimper effort has the largest effect on shrimp biomass, followed by trawling; the primary production anomaly and bottom temperature have a smaller effect, and the effect of sealer effort is negligible. Because the factors have mainly direct effects (in the statistical, not necessarily the ecological sense), `sigma` is small compared to `mu_star` in all cases. 
+
+Keep in mind that, in contrast to full factorial experiments, the elementary effects method method is computationally feasible for 100s of factors. The price of this efficiency is that we don't get exact and easily interpretable estimates of effect sizes, only measures that allow us to separate important factors from the rest and judge if interactions and nonlinearities are important. Here, the factor ranking turned out correctly.
+
+You might notice that the plot above isn't pretty; EcoCX' plotting functions use base R visualizations for a quick check. Feel free to write your own code for beautiful visualizations. 
+
+Finally, you can check if you ran enough trajectories to get stable effect estimates: 
+
+``` {r, fig.widt=4,fig.height=4}
+plot_ee_mustar(effects_ee)
+```
+
+The factor ranking became stable after just a few trajectories. Nice!
+
+You might already know of variance-based sensitivity analysis methods, like Sobol indices. They sit somewhere between full factorial experiments and the elementary effects method; they treat factors as truly continuous and yield an estimated variance decomposition via a Monte-Carlo design. Such methods are planned for a future release of EcoCX.
 
 ## Entry points for adding your own methods
 
 EcoCX is designed to allow users to add their own methods. Typical entry points to insert own functions include:
 
 - The experimental design. You can write a function returning a design table like the built-in functions and then use EcoCX to execute the model runs it describes.
-- Harvesting model outputs. EcoCX has built-in functions to obtain Ecosim biomasses and fishery catches, but you're free to explore the generated model outputs and write functions that read others or calculate new ecological indicators from them. Those can then be fed into the design-specific analysis functions.
+- Harvesting model outputs and calculating indicators. EcoCX has built-in functions to obtain Ecosim biomasses and fishery catches, but you're free to explore the generated model outputs and write functions that read others or calculate new ecological indicators from them. Those can then be fed into the design-specific analysis functions - for example, you can write a function that reads Ecosim outputs and calculates a custom ecological indicator, while relying on the factorial-experiment functions of EcoCX to generate these data and decompose your indicator's variance.
 - Analyzing model outputs. Depending on the question you're trying to answer, you can use EcoCX to run your model many times and obtain the outputs for each run, then use your own methods to analyze the big pile of data you just created.
+- Visualization. EcoCX has simple plotting functions using base R, but you can make much prettier plots, e.g., with `ggplot2`.
 

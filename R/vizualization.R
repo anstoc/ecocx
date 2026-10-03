@@ -156,3 +156,63 @@ plot_ecospace_map=function(map)
   } else {
     image(t(map$values[nrow(map$values):1,]))}
 }
+
+#' Plot direct and interaction effect sizes from a full factorial experiment.
+#'
+#' @param ff_results Results from a full factorial experiment, calculated with \code{calculate_effects_ff}.
+#' @param all Boolean. Shall all factors be plotted, even those with only one level?
+#'
+#' @returns Nothing.
+#' @export
+plot_ff_effects=function(ff_results, all=FALSE)
+{
+  old_par=par(mar = c(12, 4, 4, 2))
+  on.exit(par(old_par))
+
+  ff_results=as.data.frame(ff_results)
+  if(!all) {ff_results=ff_results[ff_results$total_effect>0,]}
+
+  effect_matrix=rbind(main_effect=ff_results$main_effect, interaction_effect=ff_results$total_effect - ff_results$main_effect)
+  colnames(effect_matrix) <- ff_results$factor
+
+  barplot(
+    effect_matrix, beside=F,col=c("#004488","#DDAA33"),legend.text=c("Main effect", "Interaction effect (total - main)"),
+    args.legend=list(x = "topright", bg = "white", box.col = "black"), ylab= "Proportion of variance explained",
+    main=paste("Total effects (main+interaction) on",ff_results$output[1]),las=2)
+}
+
+#' Plot results of the elementary effects method
+#'
+#' @param ee_results Object returned by \code{calculate_effects_ee}.
+#'
+#' @returns Nothing.
+#' @export
+plot_ee=function(ee_results)
+{
+
+  plot(ee_results$mu_star~ee_results$sigma,type="p",xlab="sigma",ylab="mu_star",
+       xlim=c(-0.05,max(c(ee_results$sigma,ee_results$mu_star)*1.1)),
+       ylim=c(-0.05,max(c(ee_results$mu_star,ee_results$sigma))*1.1))
+  lines(c(0,9999),c(0,9999),col="lightgray")
+  text(labels=names(ee_results$mu_star),x=ee_results$sigma,y=ee_results$mu_star-max(ee_results$mu_star/50))
+}
+
+#' Plot mu_star as a function of trajectories completed
+#'
+#'Use this to check if you evaluated enough trajectories to get a stable factor ranking.
+#'
+#' @param ee_results Object returned by \code{calculate_effects_ee}.
+#'
+#' @returns Nothing.
+#' @export
+plot_ee_mustar=function(ee_results)
+{
+  colors=tol_colors("muted")
+  for(i in 1:ncol(ee_results$mustar_matrix))
+  {
+    if(i==1) plot(ee_results$mustar_matrix[,i],col=colors[1], type="l",ylim=c(min(ee_results$mustar_matrix),max(ee_results$mustar_matrix)),
+                  xlab="Trajectories evaluated",ylab="mu_star") else {
+      lines(ee_results$mustar_matrix[,i],col=colors[(i-1)%% (length(colors))+1])
+    }
+  }
+}

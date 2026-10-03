@@ -6,7 +6,7 @@
 #' @param factor_set The factor set from which the elementary effects design was generated.
 #' @param df_ee A data frame containing the information from the design (run names, IDs, sub-IDs, and a comment stating which factor was changed) as well as the output value of each run.
 #'
-#' @returns A list containing (1) a matrix with the elemntary effect of each factor in each run, (2) mu\* for each factor, (3) sigma for each factor, and (4) a matrix where each row contains mu\* calculated from all trajectories to that point. The latter matrix serves to check if the number of trajectories was sufficient to produce a stable ranking of factors.
+#' @returns A list containing (1) a matrix with the elementary effect of each factor in each run, (2) mu\* for each factor, (3) sigma for each factor, and (4) a matrix where each row contains mu\* calculated from all trajectories to that point. The latter matrix serves to check if the number of trajectories was sufficient to produce a stable ranking of factors.
 #' @export
 calculate_effects_ee=function(output_name, factor_set, df_ee)
 {
@@ -25,7 +25,7 @@ calculate_effects_ee=function(output_name, factor_set, df_ee)
       end_level=df_ee[[factor_changed]][i]
       end_value=factor_levels$factor_value[factor_levels$name==factor_changed & factor_levels$level==end_level]
 
-      delta=abs(end_value-start_value)
+      delta=end_value-start_value
       dy=df_ee[[output_name]][i]-df_ee[[output_name]][i-1]
 
       ees[rownames(ees)==df_ee$run_id[i],colnames(ees)==factor_changed]=dy/delta

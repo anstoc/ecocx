@@ -1,4 +1,4 @@
-ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.44/EwERunConsole.exe")
+ewe_link=ecocx::connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.45/EwERunConsole.exe")
 
 # xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecospace_ex.eiixml")
 # > m=load_model_from_xml(xml_model,ecospace_scenario="BayOfAnchovies")

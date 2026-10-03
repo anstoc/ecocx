@@ -70,7 +70,7 @@ Run Console. To find out which:
 
 ``` r
 ecocx::get_run_console_link()
-#> [1] "https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.44"
+#> [1] "https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.45"
 ```
 
 ## Example
@@ -135,7 +135,7 @@ set.seed(125)
 design_mc=sampler_random(factor_set,size=50)
 
 ##connect to EwE Run Console (must be downloaded separately from https://github.com/Official-EwE/Eii.Ecopath.Runner). Replace path to the downloaded executable with your own.
-ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.44/EwERunConsole.exe")
+ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.45/EwERunConsole.exe")
 
 ##use futures for parallel processing
 library(future.apply)
