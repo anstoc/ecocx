@@ -130,7 +130,7 @@ get_seq_ids=function(m,names)
 #' @export
 get_run_console_link=function()
 {
-  return("https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.45")
+  return("https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.51")
 }
 
 #' Get a factor from a factor set by name

@@ -174,7 +174,7 @@ To run EwE models from EcoCX, first connect to the Run Console, providing a path
 
 ``` {r}
 #replace path with your own
-ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.45/EwERunConsole.exe")
+ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.51/EwERunConsole.exe")
 ```
 
 If you have the `future.apply` package installed, you can speed up your computations by executing the runs in parallel: 
@@ -351,7 +351,7 @@ range_table$p=rep(4,nrow(range_table))
 
 range_table
 ```
-We're going to ask how important each of these factors is, if sealing effort varies between 0 and 1, trawling effort between 1 and 3.65, shrimper effort between 0.75 and 1.25, and bottom temperature between the average of the first five years and the maximum of during the simulation period. The parameter `p` is the number of levels to create for each factor, and is typically set to 4, 8, or 16. The higher `p`, the better the method can pick up non-linear and interaction effects, but the more model runs are needed to obtain reliable results. 
+We're going to ask how important each of these factors is, if sealing effort varies between 0 and 1, trawling effort between 1 and 3.65, shrimper effort between 0.75 and 1.25, and bottom temperature between the average of the first five years and the maximum of the simulation period. The parameter `p` is the number of levels to create for each factor, and is typically set to 4, 8, or 16. The higher `p`, the better the method can pick up non-linear and interaction effects, but the more model runs are needed to obtain reliable results. 
 
 We also need to add the primary production anomaly as a binary factor:
 
@@ -417,9 +417,9 @@ plot_ee(effects_ee)
 
 The elementary effects method yielded the same broad, qualitative conclusions as the full factorial experiment: shrimper effort has the largest effect on shrimp biomass, followed by trawling; the primary production anomaly and bottom temperature have a smaller effect, and the effect of sealer effort is negligible. Because the factors have mainly direct effects (in the statistical, not necessarily the ecological sense), `sigma` is small compared to `mu_star` in all cases. 
 
-Keep in mind that, in contrast to full factorial experiments, the elementary effects method method is computationally feasible for 100s of factors. The price of this efficiency is that we don't get exact and easily interpretable estimates of effect sizes, only measures that allow us to separate important factors from the rest and judge if interactions and nonlinearities are important. Here, the factor ranking turned out correctly.
+Keep in mind that, in contrast to full factorial experiments, the elementary effects method is computationally feasible for 100s of factors. The price of this efficiency is that we don't get exact and easily interpretable estimates of effect sizes, only measures that allow us to separate important factors from the rest and judge if interactions and nonlinearities are important. Here, the factor ranking turned out correctly.
 
-You might notice that the plot above isn't pretty; EcoCX' plotting functions use base R visualizations for a quick check. Feel free to write your own code for beautiful visualizations. 
+You might notice that the plot above isn't pretty; EcoCX' plotting functions use base R visualizations for a quick check. Feel free to write your own code for beautiful plots. 
 
 Finally, you can check if you ran enough trajectories to get stable effect estimates: 
 
