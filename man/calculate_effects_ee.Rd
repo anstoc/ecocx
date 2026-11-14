@@ -14,7 +14,7 @@ calculate_effects_ee(output_name, factor_set, df_ee)
 \item{df_ee}{A data frame containing the information from the design (run names, IDs, sub-IDs, and a comment stating which factor was changed) as well as the output value of each run.}
 }
 \value{
-A list containing (1) a matrix with the elemntary effect of each factor in each run, (2) mu\* for each factor, (3) sigma for each factor, and (4) a matrix where each row contains mu\* calculated from all trajectories to that point. The latter matrix serves to check if the number of trajectories was sufficient to produce a stable ranking of factors.
+A list containing (1) a matrix with the elementary effect of each factor in each run, (2) mu\* for each factor, (3) sigma for each factor, and (4) a matrix where each row contains mu\* calculated from all trajectories to that point. The latter matrix serves to check if the number of trajectories was sufficient to produce a stable ranking of factors.
 }
 \description{
 Calculate elementary effects

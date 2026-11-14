@@ -27,7 +27,7 @@ connect_to_ewe=function(path_to_ewe)
   ewe_link$command_str=command_str
   ewe_link$test_arg_str=arg_str
   class(ewe_link)="ewe_link"
-  if( "biomass_annual.csv" %in% list.files(paste0(temp_out_folder,"/ecocx1_runinfo/ecosim_Scene 1"))) #did the test run create this expected output file?
+  if( "biomass_monthly.csv" %in% tolower(list.files(paste0(temp_out_folder,"/ecocx1_runinfo/ecosim_Scene 1")))) #did the test run create this expected output file?
   {
     ewe_link$test_passed=T
   } else

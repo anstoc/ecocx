@@ -11,7 +11,7 @@ test_that("Reading example Ecosim model from XML works", {
   expect_equal(as.numeric(m$ecosim$groupIDs[5,]),c(5,15,2))
   expect_length(m$ecosim$scenarios$ScenarioID,1)
   expect_equal(as.numeric(m$ecosim$foraging_response_table[3,]),c(33,17,24,2,115))
-  expect_equal(as.numeric(m$ecosim$mediation_table[1,]),c(1,16,17,2,18))
+  expect_equal(as.numeric(m$ecosim$mediation_table[1,]),c(4,16,17,2,18))
   expect_lt(abs(m$ecosim$vulnerabilities[rownames(m$ecosim$vulnerabilities)=="Anchovy",colnames(m$ecosim$vulnerabilities)=="Cod"]-1.5044353),0.0001)
   expect_equal(m$ecosim$timeseries$drivers$Trawlers$values[10],1.551)
   expect_equal(m$ecosim$fishing_effort$Trawlers$values[121],1.629)

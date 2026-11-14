@@ -9,7 +9,7 @@
     "RunYears": 20
   },
   "EcosimRun": {
-    "SaveContentCSV": [ "biomass", "catch", "effort" ],
-    "SaveAnnual": false
+    "SaveContentCSV": [ "Biomass", "Landings", "TotalCatch" ],
+    "SaveAnnual": true
    }
 }

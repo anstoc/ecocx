@@ -174,7 +174,7 @@ To run EwE models from EcoCX, first connect to the Run Console, providing a path
 
 ``` {r}
 #replace path with your own
-ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.51/EwERunConsole.exe")
+ewe_link=connect_to_ewe("C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/TestRunConsole/EwERunConsole-1.0.57/EwERunConsole.exe")
 ```
 
 If you have the `future.apply` package installed, you can speed up your computations by executing the runs in parallel: 

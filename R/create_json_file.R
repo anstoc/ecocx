@@ -7,10 +7,11 @@
 #' @param design Data frame describing the experiment, e.g., created with an \code{ecocx::sampler_*} method.
 #' @param factor_set The factor set for the experiment.
 #' @param model The model (as object of class \code{ecocx_model}).
+#' @param ecospace If \code{TRUE}, run Ecospace; otherwise, Ecosim.
 #' @returns A list of NULLs. Ignore the output.
 #' @export
 #'
-write_json_file=function(i,cx_table,design,factor_set,model)
+write_json_file=function(i,cx_table,design,factor_set,model,ecospace=F)
 {
   file_conn=file(cx_table$json[i])
   on.exit(close(file_conn))
@@ -75,7 +76,7 @@ create_json_ecosim_run=function(x,cx_table,design,factor_set)
 {
   v_ecosim=character(3)
   v_ecosim[1]="  \"EcosimRun\": {"
-  v_ecosim[2]="    \"SaveContentCSV\": [ \"biomass\", \"catch\", \"effort\" ],"
+  v_ecosim[2]="    \"SaveContentCSV\": [ \"Biomass\", \"Landings\", \"Catch\"],"
   v_ecosim[3]="  \"SaveAnnual\": true,"
   v_changes=create_json_changes_ecosim(x,design,factor_set)
   c(v_ecosim,v_changes,"  }")

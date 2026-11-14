@@ -1,4 +1,4 @@
-#' Run a computational experiment
+#' Run a computational experiment with an Ecosim or Ecospace model
 #'
 #' Takes a pre-generated description of the required runs and exceutes them. Stores results on disk in one folder per run, which also contains a generated Run Console .json file and the Run Console log. Finally, calculates outputs using the provided functions,
 #' which can be default functions from this package or user-generated.
@@ -9,12 +9,13 @@
 #' @param ewe_link Link to the EwE Run Console generated with \code{ecocx::connect_to_ewe}
 #' @param out_folder Outputs from each run will be stored in subfolders of this folder.
 #' @param output_fun A named list of functions to calculate output indicators. Names will be used in the generated output table.
+#' @param ecospace If \code{TRUE}, run Ecospace; otherwise, Ecosim.
 #' @param parallel Whether to use in case of parallel processing. If \code{true}, you need the \code{future} and \code{future.apply} package installed and call future::plan yourself.
 #'
 #'
 #' @returns A data frame with information about the runs, e.g., where outputs are stored.
 #' @export
-run_ecosim_experiment=function(design, xml_model_path, factor_set, model, ewe_link, out_folder,parallel=F)
+run_experiment=function(design, xml_model_path, factor_set, model, ewe_link, out_folder,ecospace=F,parallel=F)
 {
   #set up experiment data, matrix, and folder structure
   folder_names=paste0(out_folder,"/",design$run_name)
@@ -67,5 +68,25 @@ execute_run=function(i, cx_table, ewe_link)
 
 }
 
-
-
+#' Run a computational experiment with an Ecosim model.
+#'
+#'THIS FUNCTION IS DEPRECATED. Use \code{run_experiment} with \code{ecospace=F} instead.
+#'
+#' Takes a pre-generated description of the required runs and exceutes them. Stores results on disk in one folder per run, which also contains a generated Run Console .json file and the Run Console log. Finally, calculates outputs using the provided functions,
+#' which can be default functions from this package or user-generated.
+#'
+#' @param design Data frame describing the experiment, e.g., created with an \code{ecocx::sampler_*} method.
+#' @param xml_model_path Path to XML file describing the model.
+#' @param factor_set The factor set for the experiment
+#' @param ewe_link Link to the EwE Run Console generated with \code{ecocx::connect_to_ewe}
+#' @param out_folder Outputs from each run will be stored in subfolders of this folder.
+#' @param output_fun A named list of functions to calculate output indicators. Names will be used in the generated output table.
+#' @param parallel Whether to use in case of parallel processing. If \code{true}, you need the \code{future} and \code{future.apply} package installed and call future::plan yourself.
+#'
+#'
+#' @returns A data frame with information about the runs, e.g., where outputs are stored.
+#' @export
+run_ecosim_experiment=function(design, xml_model_path, factor_set, model, ewe_link, out_folder,ecospace=F,parallel=F)
+{
+  run_experiment(design, xml_model_path, factor_set, model, ewe_link, out_folder,F,parallel)
+}

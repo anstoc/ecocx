@@ -1,6 +1,6 @@
 #TODO Try parallel reading from SSD
 
-#' Obtain time series of biomasses or catch from a single Ecosim run
+#' Obtain monthly time series of biomasses or catch from a single Ecosim run
 #'
 #' @param folder Path to folder containing the model outputs. If the outputs are not found, the function searches subfolders and uses the first fitting output file found.
 #' @param model The model that generated the outputs to be read. Must have been created with \code{create_model_from_xml}.
@@ -14,17 +14,19 @@ get_ecosim_run_biomass=function(folder, model, groups=NA, relative=F)
 {
   df=NULL
   files=list.files(folder)
-  if(!("biomass_monthly.csv" %in% files)) {
+  if(!("biomass_monthly.csv" %in% tolower(files))) {
     ix=which(dir.exists(paste0(folder,"/",files)))
     for(sub_folder in files[ix]) {
       if(is.null(df)) {df=get_ecosim_run_biomass(paste0(folder,"/",sub_folder), model, groups)}
     }} else {
-      df=read.csv(paste0(folder,"/","biomass_monthly.csv"),skip=14)
+      df=read.csv(paste0(folder,"/",files[tolower(files)=="biomass_monthly.csv"]),skip=14)
       colnames(df)=c("timestep",model$ecopath$basic_estimates$GroupName[model$ecopath$basic_estimates$Sequence])
       if(sum(is.na(groups))==0) {df=df[,colnames(df) %in% c("timestep",groups)]}
     }
 
-    if(relative) {for(i in 2:ncol(df)) {df[,i]=df[,i]/df[1,i]}}
+    if(relative) {for(i in 2:ncol(df)) {
+      df[,i]=df[,i]/df[1,i]}
+    }
 
     df
 
@@ -35,12 +37,12 @@ get_ecosim_run_catch=function(folder, model, groups=NA, relative=F)
 {
   df=NULL
   files=list.files(folder)
-  if(!("catch_monthly.csv" %in% files)) {
+  if(!("catch_monthly.csv" %in% tolower(files))) {
     ix=which(dir.exists(paste0(folder,"/",files)))
     for(sub_folder in files[ix]) {
       if(is.null(df)) {df=get_ecosim_run_catch(paste0(folder,"/",sub_folder), model, groups)}
     }} else {
-      df=read.csv(paste0(folder,"/","catch_monthly.csv"),skip=14)
+      df=read.csv(paste0(folder,"/",files[tolower(files)=="catch_monthly.csv"]),skip=14)
       colnames(df)=c("timestep",model$ecopath$basic_estimates$GroupName[model$ecopath$basic_estimates$Sequence])
       if(sum(is.na(groups))==0) {df=df[,colnames(df) %in% c("timestep",groups)]}
     }

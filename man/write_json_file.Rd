@@ -4,7 +4,7 @@
 \alias{write_json_file}
 \title{Create and write the Run Console json file from a vector}
 \usage{
-write_json_file(i, cx_table, design, factor_set, model)
+write_json_file(i, cx_table, design, factor_set, model, ecospace = F)
 }
 \arguments{
 \item{i}{Row of the \code{cx_table} for which to create the file}
@@ -16,6 +16,8 @@ write_json_file(i, cx_table, design, factor_set, model)
 \item{factor_set}{The factor set for the experiment.}
 
 \item{model}{The model (as object of class \code{ecocx_model}).}
+
+\item{ecospace}{If \code{TRUE}, run Ecospace; otherwise, Ecosim.}
 }
 \value{
 A list of NULLs. Ignore the output.

@@ -68,7 +68,7 @@ test_that("Reading the Ecosim mediation table works", {
   m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))
   d=get_mediation_table(m)
   expect_equal(dim(d),c(2,5))
-  expect_equal(as.numeric(d[1,]),c(1,16,17,2,18))
+  expect_equal(as.numeric(d[1,]),c(4,16,17,2,18))
 })
 test_that("Reading Ecosim effort time series works", {
   m=read_eiixml(paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecosim_ex.eiixml"))

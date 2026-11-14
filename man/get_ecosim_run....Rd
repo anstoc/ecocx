@@ -4,7 +4,7 @@
 \alias{get_ecosim_run...}
 \alias{get_ecosim_run_biomass}
 \alias{get_ecosim_run_catch}
-\title{Obtain time series of biomasses or catch from a single Ecosim run}
+\title{Obtain monthly time series of biomasses or catch from a single Ecosim run}
 \usage{
 get_ecosim_run_biomass(folder, model, groups = NA, relative = F)
 
@@ -23,5 +23,5 @@ get_ecosim_run_catch(folder, model, groups = NA, relative = F)
 Data frame with a timestep column and one column for each group listed in \code{biomass}.
 }
 \description{
-Obtain time series of biomasses or catch from a single Ecosim run
+Obtain monthly time series of biomasses or catch from a single Ecosim run
 }

@@ -19,6 +19,8 @@ load_model_from_xml=function(xmlfile, ecosim_scenario=NA, ecospace_scenario=NA)
   m$ecopath=list()
   m$ecosim=list()
 
+  m$ecosim$scenario=ecosim_scenario
+
   #load basic Ecopath inputs
   m$ecopath$basic_estimates=get_basic_estimates(xmldoc)
   m$ecopath$dietmatrix=get_diet_matrix(xmldoc, m$ecopath$basic_estimates)
@@ -44,21 +46,6 @@ load_model_from_xml=function(xmlfile, ecosim_scenario=NA, ecospace_scenario=NA)
   #keep only mediation and env. response shapes
   unknowns=character(0)
 
-  # OLD: for(i in 1:length(m$ecosim$shapes)) {
-  #   if(m$ecosim$shapes[[i]]$id %in% m$ecosim$mediation_table$ShapeID) {
-  #       m$ecosim$shapes[[i]]$type="mediation"
-  #       m$ecosim$shapes[[i]]$seq=seq_med
-  #       seq_med=seq_med+1
-  #     } else if(m$ecosim$shapes[[i]]$id %in% m$ecosim$foraging_response_table$ResponseID) {
-  #         m$ecosim$shapes[[i]]$type="envresponse"
-  #         m$ecosim$shapes[[i]]$seq=seq_envres
-  #         seq_envres=seq_envres+1
-  #     } else {
-  #         m$ecosim$shapes[[i]]$type="unknown"
-  #         unknowns=c(unknowns,m$ecosim$shapes[[i]]$name)
-  #     }
-  # }
-
   for(i in 1:length(m$ecosim$shapes)) {
         m$ecosim$shapes[[i]]$type=m$ecosim$shapetypes$ShapeTypeName[m$ecosim$shapetypes$ShapeID==m$ecosim$shapes[[i]]$id]
         if(!(m$ecosim$shapes[[i]]$type %in% c("envresponse","mediation"))) {
@@ -74,6 +61,7 @@ load_model_from_xml=function(xmlfile, ecosim_scenario=NA, ecospace_scenario=NA)
 
   m$ecospace=list()
   m$ecospace$scenarios=get_ecospace_scenarios(xmldoc)
+  m$ecospace$scenario=ecospace_scenario
   #handle multiple scenarios
   if(nrow(m$ecospace$scenarios)>0) {
     if(nrow(m$ecospace$scenarios)>1 & is.na(ecospace_scenario)) {

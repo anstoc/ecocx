@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_experiment.R
 \name{run_ecosim_experiment}
 \alias{run_ecosim_experiment}
-\title{Run a computational experiment}
+\title{Run a computational experiment with an Ecosim model.}
 \usage{
 run_ecosim_experiment(
   design,
@@ -11,6 +11,7 @@ run_ecosim_experiment(
   model,
   ewe_link,
   out_folder,
+  ecospace = F,
   parallel = F
 )
 }
@@ -33,6 +34,9 @@ run_ecosim_experiment(
 A data frame with information about the runs, e.g., where outputs are stored.
 }
 \description{
+THIS FUNCTION IS DEPRECATED. Use \code{run_experiment} with \code{ecospace=F} instead.
+}
+\details{
 Takes a pre-generated description of the required runs and exceutes them. Stores results on disk in one folder per run, which also contains a generated Run Console .json file and the Run Console log. Finally, calculates outputs using the provided functions,
 which can be default functions from this package or user-generated.
 }
