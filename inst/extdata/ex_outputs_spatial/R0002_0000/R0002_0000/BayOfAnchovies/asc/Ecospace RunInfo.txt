@@ -1,0 +1,24 @@
+EcoSpace .asc map output
+"<HEADER software/>"
+EwEVersion,"6.7.0.0 (compiled 16.11.2026)"
+Date,"19.11.2026 09:19"
+"<HEADER ecopath/>"
+ModelName,"Anchovy Bay"
+ModelSource,"C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/RPackage/ecocx/inst/extdata/anchovy_bay_ecospace_ex.eiixml"
+"<HEADER ecosim/>"
+EcosimScenario,"New Ecosim scenario"
+TimeSeries,-
+StartYear,0
+"<HEADER ecospace/>"
+EcospaceScenario,BayOfAnchovies
+MapRows,20
+MapCols,20
+MapCellLength,20
+MapCellSize,0.17996463
+MapTopLeftLat,0
+MapTopLeftLon,0
+NoActiveCells,313
+EcoSpaceTimeStepLength,0.08333300054073334
+CoordinateSystemWKT,"GEOGCS[WGS 84, DATUM[WGS_1984, SPHEROID[WGS 84,6378137,298.257223563, AUTHORITY[EPSG,7030]], AUTHORITY[EPSG,6326]], PRIMEM[Greenwich,0, AUTHORITY[EPSG,8901]], UNIT[degree,0.01745329251994328, AUTHORITY[EPSG,9122]], AUTHORITY[EPSG,4326]]"
+ExternalDataConfigFile,C:\Users\ANC\AppData\Roaming\EwERunConsole\ewe_datasets.xml
+"<HEADER end/>"

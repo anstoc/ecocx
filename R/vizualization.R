@@ -157,6 +157,18 @@ plot_ecospace_map=function(map)
     image(t(map$values[nrow(map$values):1,]))}
 }
 
+#' Plot an Ecospace ASC file.
+#'
+#' @param filename The file (as character string).
+#'
+#' @returns Nothing.
+#' @export
+plot_ecospace_asc=function(filename)
+{
+  m=load_ecospace_asc(filename)
+  image(t(m[nrow(m):1,]))
+}
+
 #' Plot direct and interaction effect sizes from a full factorial experiment.
 #'
 #' @param ff_results Results from a full factorial experiment, calculated with \code{calculate_effects_ff}.

@@ -32,3 +32,11 @@ test_that("Reading Ecosim output, biomasses and catch, from a computational expe
   expect_lte(abs(df_catch$Cod[df_catch$timestep==490 & df_catch$run_name=="R0001_0000"]-0.13524292),0.000001)
 
 })
+
+test_that("Reading a single Ecospace ASC file works", {
+  filename=paste0(system.file('extdata', package = 'ecocx'),"/ex_outputs_spatial/R0001_0000/R0001_0000/BayOfAnchovies/asc/EcospaceMapBiomass-Whales-00457.asc")
+  m=load_ecospace_asc(filename)
+  expect_equal(dim(m),c(20,20))
+  expect_lt(abs(m[15,10]-0.10133541),0.00001)
+
+})

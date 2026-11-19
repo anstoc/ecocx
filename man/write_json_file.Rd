@@ -15,7 +15,7 @@ write_json_file(i, cx_table, design, factor_set, model, ecospace = F)
 
 \item{factor_set}{The factor set for the experiment.}
 
-\item{model}{The model (as object of class \code{ecocx_model}).}
+\item{model}{The model (object of class \code{ecocx_model}).}
 
 \item{ecospace}{If \code{TRUE}, run Ecospace; otherwise, Ecosim.}
 }

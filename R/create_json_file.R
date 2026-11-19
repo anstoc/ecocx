@@ -6,16 +6,16 @@
 #' @param cx_table A data frame  with columns 'run_name' (matching the names in the \code{design}), 'model' (path to the EIIXML file), 'folder' (base folder of the run), 'json' (path of the .json file to be created)
 #' @param design Data frame describing the experiment, e.g., created with an \code{ecocx::sampler_*} method.
 #' @param factor_set The factor set for the experiment.
-#' @param model The model (as object of class \code{ecocx_model}).
+#' @param model The model (object of class \code{ecocx_model}).
 #' @param ecospace If \code{TRUE}, run Ecospace; otherwise, Ecosim.
 #' @returns A list of NULLs. Ignore the output.
 #' @export
 #'
-write_json_file=function(i,cx_table,design,factor_set,model,ecospace=F)
+write_json_file=function(i,cx_table,design,factor_set,model,ecospace)
 {
   file_conn=file(cx_table$json[i])
   on.exit(close(file_conn))
-  v=create_json_vector(i,cx_table,design,factor_set,model)
+  v=create_json_vector(i,cx_table,design,factor_set,model,ecospace)
   v=v[nchar(v)>0]
   writeLines(v, file_conn)
   return()
@@ -28,12 +28,15 @@ write_json_file=function(i,cx_table,design,factor_set,model,ecospace=F)
 #' @param design Data frame describing the experiment, e.g., created with an \code{ecocx::sampler_*} method.
 #' @param factor_set The factor set for the experiment.
 #' @param model The model (as object of class \code{ecocx_model}).
+#' @param ecospace If \code{TRUE}, run Ecospace; otherwise, Ecosim.
 #' @returns A character vector where each element is a line of the .json file.
 #' @export
-create_json_vector=function(x,cx_table,design,factor_set,model)
+create_json_vector=function(x,cx_table,design,factor_set,model,ecospace)
 {
-  v_json=create_json_configuration(cx_table$model[x])
-  v_json=c(v_json,create_json_ecosim_run(x,cx_table,design,factor_set),"}")
+  v_json=create_json_configuration(cx_table$model[x],model,ecospace)
+  if(!ecospace) {v_json=c(v_json,create_json_ecosim_run(x,cx_table,design,factor_set),"}")} else {
+    v_json=c(v_json,create_json_ecospace_run(x,cx_table,design,factor_set),"}")
+  }
   v_json
 }
 
@@ -42,23 +45,36 @@ create_json_vector=function(x,cx_table,design,factor_set,model)
 
 #' Create a the configuration element of the run console json vector
 #'
-#' This currently works only for Ecosim models.
 #'
 #' @param xmlfile Path to the .eiixml file describing the model
 #' @param model The model created with \code{create_model_from_xml}. If NA, the model is loaded from the provided XML file.
 #'
 #' @returns Character vector where each element corresponds to a line in the .json file to be generated.
-create_json_configuration=function(xmlfile,model=NA)
+create_json_configuration=function(xmlfile,model,ecospace)
 {
-  if(is.na(model)) {model=load_model_from_xml(xmlfile)}
+  #if(is.na(model)) {model=load_model_from_xml(xmlfile)}
 
+  if(ecospace) {
+    ecosim_scen=model$ecosim$scenarios$ScenarioName[1] #TODO - reading Ecosim scenarios is needed
+    if(is.na(model$ecospace$scenario)) {stop("Trying to run Ecospace model, but the Ecospace scenario is invalid.")
+      } else {
+      ecospace_scen=model$ecospace$scenario
+    }
+  } else {   #Run Ecosim
+    ecospace_scen="0"
+    if(is.na(model$ecosim$scenario)) {
+        ecosim_scen=model$ecosim$scenarios$ScenarioName[1]} else {
+        #warning("Trying to run Ecosim model, but the Ecosim scenario is invalid. Using first scenario.")} else {
+      ecosim_scen=model$ecosim$scenarios$ScenarioID[model$ecosim$scenarios$ScenarioName==model$ecosim$scenario]
+    }
+  }
   v_configuration=character(10)
   v_configuration[1]="{"
   v_configuration[2]=" \"Configuration\": {"
   v_configuration[3]=paste0("    \"ModelFile\": \"",normalizePath(xmlfile,winslash="/"),"\",")
-  v_configuration[4]=paste0("    \"EcosimScenario\": 1,") #unique(model$ecosim$scenarios$ScenarioID),",")
-  v_configuration[5]=paste0("    \"EcosimTimeseries\": 0,")
-  v_configuration[6]=paste0("    \"EcospaceScenario\": 0,")
+  v_configuration[4]=paste0("    \"EcosimScenario\": \"",ecosim_scen,"\",")
+  v_configuration[5]=paste0("    \"EcosimTimeseries\": 0,")   #TODO
+  v_configuration[6]=paste0("    \"EcospaceScenario\": \"",ecospace_scen,"\",")
   v_configuration[7]=paste0("    \"SaveWithHeader\": true,")
   v_configuration[8]=paste0("    \"ExtDataConfigFile\": \"\",")
   v_configuration[9]=paste0("    \"RunYears\": ",length(model$ecosim$fishing_effort[[1]]$values)/12)
@@ -80,13 +96,107 @@ create_json_ecosim_run=function(x,cx_table,design,factor_set)
   v_ecosim[3]="  \"SaveAnnual\": true,"
   v_changes=create_json_changes_ecosim(x,design,factor_set)
   c(v_ecosim,v_changes,"  }")
+}
+
+#' Create the "EcospaceRun" element of the run console .json file
+#'
+#' @returns Character vector where each element corresponds to a line in the .json file to be generated.
+#'
+create_json_ecospace_run=function(x,cx_table,design,factor_set)
+{
+  v_ecospace=character(6)
+  v_ecospace[1]="  \"EcospaceRun\": {"
+  v_ecospace[2]="  \"RunSpinupYears\": 10,"
+  v_ecospace[3]="  \"UseIBM\": true,"
+  v_ecospace[4]="  \"SaveFirstYear\": 1,"   #TODO
+  v_ecospace[5]="  \"SaveAnnual\": true,"
+  v_ecospace[6]="  \"SaveContentAsc\": [ \"biomass\", \"catch\"],"
+  v_changes=create_json_changes_ecospace(x,design,factor_set)
+  c(v_ecospace,v_changes,"  }")
+}
+
+
+#' Create vector with .json file lines for Ecospace changes.
+#'
+#' @param x Row number of the design
+#' @param design Data frame describing the experiment, e.g., created with an \code{ecocx::sampler_*} method.
+#' @param factor_set The factor set for the experiment
+#'
+#' @returns Character vector where each element corresponds to a line "Changes" section of the .json file to be generated.
+#' @export
+
+create_json_changes_ecospace=function(x,design,factor_set)
+{
+
+  v_changes=character(ncol(design)+3)
+  v_changes[1]='  "Changes": ['
+  v_changes[2]='  {'
+  v_changes[3]='    "Date": "start",'
+  v_changes[4]='    "Modifications": {'
+
+
+  v_changes[5]='    }'
+  v_changes[6]='  }'
+  v_changes[7]='  ]'
+
+  # #add effort modification
+  # for(i in 1:length(factor_set$fishing_effort))
+  # {
+  #   fleet=names(factor_set$fishing_effort)[[i]]
+  #   choice=design[x,][[fleet]]
+  #   #ecosim_id=i #TODO reference by name once implemented
+  #   fleetname=factor_set$fishing_effort[[i]][[1]]$name
+  #   values=factor_set$fishing_effort[[i]][[choice]]$values
+  #   v_changes[4+i]=paste0('      "ecosim.effort[',fleetname,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
+  #   if(i<length(factor_set$fishing_effort)) {v_changes[4+i]=paste0(v_changes[4+i],",")}
+  # }
+  # if(length(factor_set$forcing_functions)>0) {v_changes[4+length(factor_set$fishing_effort)]=paste0(v_changes[4+length(factor_set$fishing_effort)],",")}
+  # #add forcing function (driver) modification
+  # for(i in 1:length(factor_set$forcing_functions))
+  # {
+  #   func=names(factor_set$forcing_functions)[[i]]
+  #   choice=design[x,][[func]]
+  #   #ecosim_id=i #TODO reference by name once implemented
+  #   ffname=factor_set$forcing_functions[[i]][[1]]$name
+  #   values=factor_set$forcing_functions[[i]][[choice]]$values
+  #   v_changes[4+length(factor_set$fishing_effort)+i]=paste0('      "ecosim.forcingfunction[',ffname,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
+  #   if(i<length(factor_set$forcing_functions)) {v_changes[4+length(factor_set$fishing_effort)+i]=paste0(v_changes[4+length(factor_set$fishing_effort)+i],",")}
+  # }
+  # ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)
+  # if(length(factor_set$shapes)>0) {v_changes[ix]=paste0(v_changes[ix],",")}
+  # #add shapes
+  # for(i in 1:length(factor_set$shapes))
+  # {
+  #   shape=names(factor_set$shapes)[[i]]
+  #   choice=design[x,][[shape]]
+  #   #ecosim_id=i #TODO reference by name once implemented
+  #   values=factor_set$shapes[[i]][[choice]]$y
+  #   #seq_id=factor_set$shapes[[i]][[choice]]$seq
+  #   shape_name=factor_set$shapes[[i]][[1]]$name
+  #   if(factor_set$shapes[[i]][[choice]]$type=="envresponse") {
+  #     str_start='      "ecosim.envresponsefunction['} else if(factor_set$shapes[[i]][[choice]]$type=="mediation") {
+  #     str_start='      "ecosim.mediationfunction['} else {
+  #       stop(paste("Unkown shape type:",factor_set$shapes[[i]][[choice]]$type))}
+  #
+  #   ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)+i
+  #   v_changes[ix]=paste0(str_start,shape_name,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
+  #   if(i<length(factor_set$shapes)) {v_changes[ix]=paste0(v_changes[ix],",")}
+  # }
+  # ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)+length(factor_set$shapes)
+  # v_changes[ix]=paste0(v_changes[ix],",")
+  # v_changes[ix+1]=paste0('      "ecosim.vulnerabilities.load": "',normalizePath(design$vulnerability[x],winslash='/'),'"')
+  # #v_changes[ix+1]=paste0('      "ecosim.vulnerabilities.load": "',normalizePath(paste0(tempdir(),"/data/anchbay.csv"),winslash='/'),'"')
+  # #v_changes[ix+1]='      "ecosim.vulnerabilities.fill": 2'
+  # v_changes[ix+2]='      }'
+  # v_changes[ix+3]='    }'
+  # v_changes[ix+4]='  ]'
+
+  v_changes
 
 }
 
 
-#' Create vector with .json file lines for changes.
-#'
-#'Currently only works for fishing effort.
+#' Create vector with .json file lines for Ecosim changes.
 #'
 #' @param x Row number of the design
 #' @param design Data frame describing the experiment, e.g., created with an \code{ecocx::sampler_*} method.
@@ -138,8 +248,8 @@ create_json_changes_ecosim=function(x,design,factor_set)
     shape_name=factor_set$shapes[[i]][[1]]$name
     if(factor_set$shapes[[i]][[choice]]$type=="envresponse") {
       str_start='      "ecosim.envresponsefunction['} else if(factor_set$shapes[[i]][[choice]]$type=="mediation") {
-      str_start='      "ecosim.mediationfunction['} else {
-        stop(paste("Unkown shape type:",factor_set$shapes[[i]][[choice]]$type))}
+        str_start='      "ecosim.mediationfunction['} else {
+          stop(paste("Unkown shape type:",factor_set$shapes[[i]][[choice]]$type))}
 
     ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)+i
     v_changes[ix]=paste0(str_start,shape_name,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
@@ -155,5 +265,6 @@ create_json_changes_ecosim=function(x,design,factor_set)
   v_changes[ix+4]='  ]'
   v_changes
 }
+
 
 

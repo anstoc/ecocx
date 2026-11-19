@@ -1,0 +1,25 @@
+{
+ "Configuration": {
+    "ModelFile": "C:/Users/ANC/OneDrive - NIVA/Projects/2025/2025CLIMAX/WP1/RPackage/ecocx/inst/extdata/anchovy_bay_ecospace_ex.eiixml",
+    "EcosimScenario": "New Ecosim scenario",
+    "EcosimTimeseries": 0,
+    "EcospaceScenario": "BayOfAnchovies",
+    "SaveWithHeader": true,
+    "ExtDataConfigFile": "",
+    "RunYears": 41
+  },
+  "EcospaceRun": {
+  "RunSpinupYears": 10,
+  "UseIBM": true,
+  "SaveFirstYear": 1,
+  "SaveAnnual": true,
+  "SaveContentAsc": [ "biomass", "catch"],
+  "Changes": [
+  {
+    "Date": "start",
+    "Modifications": {
+    }
+  }
+  ]
+  }
+}

@@ -2,7 +2,8 @@
 % Please edit documentation in R/run_experiment.R
 \name{run_ecosim_experiment}
 \alias{run_ecosim_experiment}
-\title{Run a computational experiment with an Ecosim model.}
+\alias{run_ecospace_experiment}
+\title{Run a computational experiment with an Ecosim or Ecospace model.}
 \usage{
 run_ecosim_experiment(
   design,
@@ -11,7 +12,16 @@ run_ecosim_experiment(
   model,
   ewe_link,
   out_folder,
-  ecospace = F,
+  parallel = F
+)
+
+run_ecospace_experiment(
+  design,
+  xml_model_path,
+  factor_set,
+  model,
+  ewe_link,
+  out_folder,
   parallel = F
 )
 }
@@ -22,21 +32,20 @@ run_ecosim_experiment(
 
 \item{factor_set}{The factor set for the experiment}
 
+\item{model}{The model read from the provided EIIXML.}
+
 \item{ewe_link}{Link to the EwE Run Console generated with \code{ecocx::connect_to_ewe}}
 
 \item{out_folder}{Outputs from each run will be stored in subfolders of this folder.}
 
 \item{parallel}{Whether to use in case of parallel processing. If \code{true}, you need the \code{future} and \code{future.apply} package installed and call future::plan yourself.}
 
-\item{output_fun}{A named list of functions to calculate output indicators. Names will be used in the generated output table.}
+\item{m}{Model object read from EIIXML and underlying the factor set.}
 }
 \value{
 A data frame with information about the runs, e.g., where outputs are stored.
 }
 \description{
-THIS FUNCTION IS DEPRECATED. Use \code{run_experiment} with \code{ecospace=F} instead.
-}
-\details{
 Takes a pre-generated description of the required runs and exceutes them. Stores results on disk in one folder per run, which also contains a generated Run Console .json file and the Run Console log. Finally, calculates outputs using the provided functions,
 which can be default functions from this package or user-generated.
 }

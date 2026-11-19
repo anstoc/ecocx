@@ -4,7 +4,7 @@
 \alias{create_json_configuration}
 \title{Create a the configuration element of the run console json vector}
 \usage{
-create_json_configuration(xmlfile, model = NA)
+create_json_configuration(xmlfile, model, ecospace)
 }
 \arguments{
 \item{xmlfile}{Path to the .eiixml file describing the model}
@@ -15,5 +15,5 @@ create_json_configuration(xmlfile, model = NA)
 Character vector where each element corresponds to a line in the .json file to be generated.
 }
 \description{
-This currently works only for Ecosim models.
+Create a the configuration element of the run console json vector
 }

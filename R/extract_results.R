@@ -92,3 +92,28 @@ get_ecosim_cx_catch=function(cx_table,model,groups=NA,relative=F)
   }
   df_cx
 }
+
+
+#' Read an Ecospace asc file.
+#'
+#' @param filename The file (as character string).
+#'
+#' @returns A matrix with the regular grid.
+#' @export
+load_ecospace_asc=function(filename)
+{
+  on.exit(close(file_con))
+  file_con=file(filename)
+  v=readLines(file_con)
+  ncols=as.numeric((substr(v[1],6,nchar(v[1]))))
+  nrows=as.numeric((substr(v[2],6,nchar(v[2]))))
+  ndval=as.numeric((substr(v[6],13,nchar(v[6]))))
+
+  values=as.numeric(unlist(strsplit(trimws(v[7:length(v)]), "\\s+")))
+
+  values[values==ndval]=NA
+
+  matrix(values,ncol = ncols, nrow=nrows)
+
+}
+
