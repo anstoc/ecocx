@@ -122,17 +122,6 @@ get_seq_ids=function(m,names)
   m$ecopath$basic_estimates$Sequence[m$ecopath$basic_estimates$GroupName %in% names]
 }
 
-#' Obtain a link for downloading the EwE Run Console
-#'
-#' Each version of EcoCX is tested against a specific release of the EwE Run Console. This function returns a link to that release.
-#'
-#' @returns Link to a release of the Run Console that the package was tested with.
-#' @export
-get_run_console_link=function()
-{
-  return("https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.61")
-}
-
 #' Get a factor from a factor set by name
 #'
 #' @param factor_set A factor set.
@@ -145,4 +134,52 @@ get_factor_by_name=function(factor_set,name)
   h=get_factor_scalar_values(factor_set)
   ix=which(name == h$name)[1]
   factor_set[[h$type[ix]]][[h$name[[ix]]]]
+}
+
+
+#' Obtain header for writing an ASC file for Ecospace
+#'
+#' TODO: Currently sets corner coordinates to zero and cell size to one.
+#' @param model The model loaded from EIIXML.
+#' @param nodata_value Value for "no data". Must be numeric.
+#' @returns Header for writing an ASC file for this model with 6 lines. Currently, only number of columns are set correctly
+get_asc_header=function(model, nodata_value=-9999)
+{
+  v=character(6)
+  v[1]=paste0("ncols ",model$ecospace$basemap$ncol)
+  v[2]=paste0("nrows ",model$ecospace$basemap$nrow)
+  v[3]=paste0("xllcorner ", 0)
+  v[4]=paste0("yllcorner ", 0)
+  v[5]=paste0("cellsize ", 1)
+  v[6]=paste0("NODATA_value ", nodata_value)
+  v
+}
+
+
+
+#' Write ASC file for Ecospace to disk.
+#'
+#' @param header Character vector with six elements containing the six lines of the header. Can be obtained with \code{get_asc_header}.
+#' @param mat Matrix with regular grid of values.
+#' @param filename Path to the file to write.
+#'
+#' @returns Nothing.
+#' @export
+write_asc=function(header,mat,filename)
+{
+  ndv=as.numeric(substr(header[6],14,nchar(header[6])))
+  mat[is.na(mat)]=ndv
+  v=c(header,apply(mat, 1, paste, collapse = " "))
+  writeLines(v, con=filename)
+}
+
+#' Obtain a link for downloading the EwE Run Console
+#'
+#' Each version of EcoCX is tested against a specific release of the EwE Run Console. This function returns a link to that release.
+#'
+#' @returns Link to a release of the Run Console that the package was tested with.
+#' @export
+get_run_console_link=function()
+{
+  return("https://github.com/Official-EwE/Eii.Ecopath.Runner/releases/tag/v1.0.61")
 }

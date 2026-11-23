@@ -31,6 +31,41 @@ run_experiment=function(design, xml_model_path, factor_set, model, ewe_link, out
   design$vulnerability=as.character(design$vulnerability)
   for(i in 1:nrow(design)) {design$vulnerability[i]=paste0(out_folder,"/data/",design$vulnerability[i],".csv")}
 
+  if(ecospace) {
+    if(!file.exists(paste0(out_folder,"/data/asc"))) {dir.create(paste0(out_folder,"/data/asc"))}
+    asc_header=get_asc_header(model)
+
+    #Write MPA ASC files and replace level name with path in design table
+    for(mpa_name in names(factor_set$mpas)) {
+      for(mpa_level in names(factor_set$mpas[[mpa_name]])) {
+          filename=paste0(out_folder,"/data/asc/",mpa_name,"_",mpa_level,".asc")
+          mpa_values=factor_set$mpas[[mpa_name]][[mpa_level]]$values
+          write_asc(asc_header,mpa_values,filename)
+          design[[mpa_name]][design[[mpa_name]]==mpa_level] = filename
+      }
+    }
+
+    #Write environmental ASC files and replace level name with path in design table
+    for(env_name in names(factor_set$env_maps)) {
+      for(env_level in names(factor_set$env_maps[[env_name]])) {
+        filename=paste0(out_folder,"/data/asc/",env_name,"_",env_level,".asc")
+        env_values=factor_set$env_maps[[env_name]][[env_level]]$values
+        write_asc(asc_header,env_values,filename)
+        design[[env_name]][design[[env_name]]==env_level] = filename
+      }
+    }
+
+    #Write habitat ASC files and replace level name with path in design table
+    for(hab_name in names(factor_set$habitats)) {
+      for(hab_level in names(factor_set$habitats[[hab_name]])) {
+        filename=paste0(out_folder,"/data/asc/",hab_name,"_",hab_level,".asc")
+        hab_values=factor_set$habitats[[hab_name]][[hab_level]]$values
+        write_asc(asc_header,hab_values,filename)
+        design[[hab_name]][design[[hab_name]]==hab_level] = filename
+      }
+    }
+  }
+
   #create .json files
   dummy=lapply(1:nrow(cx_table),FUN=write_json_file, cx_table=cx_table,design=design,factor_set=factor_set,model=model,ecospace=ecospace)
 

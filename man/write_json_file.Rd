@@ -4,7 +4,7 @@
 \alias{write_json_file}
 \title{Create and write the Run Console json file from a vector}
 \usage{
-write_json_file(i, cx_table, design, factor_set, model, ecospace = F)
+write_json_file(i, cx_table, design, factor_set, model, ecospace)
 }
 \arguments{
 \item{i}{Row of the \code{cx_table} for which to create the file}

@@ -106,7 +106,7 @@ create_json_ecospace_run=function(x,cx_table,design,factor_set)
 {
   v_ecospace=character(6)
   v_ecospace[1]="  \"EcospaceRun\": {"
-  v_ecospace[2]="  \"RunSpinupYears\": 10,"
+  v_ecospace[2]="  \"RunSpinupYears\": 10," #TODO
   v_ecospace[3]="  \"UseIBM\": true,"
   v_ecospace[4]="  \"SaveFirstYear\": 1,"   #TODO
   v_ecospace[5]="  \"SaveAnnual\": true,"
@@ -128,68 +128,60 @@ create_json_ecospace_run=function(x,cx_table,design,factor_set)
 create_json_changes_ecospace=function(x,design,factor_set)
 {
 
-  v_changes=character(ncol(design)+3)
+  v_changes=character(ncol(design)+7)
   v_changes[1]='  "Changes": ['
   v_changes[2]='  {'
   v_changes[3]='    "Date": "start",'
   v_changes[4]='    "Modifications": {'
 
+  #add effort modification
+  for(i in 1:length(factor_set$fishing_effort))
+  {
+    fleet=names(factor_set$fishing_effort)[[i]]
+    choice=design[x,][[fleet]]
+    #ecosim_id=i #TODO reference by name once implemented
+    fleetname=factor_set$fishing_effort[[i]][[1]]$name
+    values=factor_set$fishing_effort[[i]][[choice]]$values
+    v_changes[4+i]=paste0('      "ecosim.effort[',fleetname,'].set": [ ',paste(as.character(values),collapse=", "),' ],')
+    #if(i<length(factor_set$fishing_effort)) {v_changes[4+i]=paste0(v_changes[4+i],",")}
+  }
 
-  v_changes[5]='    }'
-  v_changes[6]='  }'
-  v_changes[7]='  ]'
+  #Vulnerabilities
+  vix=length(v_changes)
+  v_changes[vix+1]=paste0('      "ecosim.vulnerabilities.load": "',normalizePath(design$vulnerability[x],winslash='/'),'",')
 
-  # #add effort modification
-  # for(i in 1:length(factor_set$fishing_effort))
-  # {
-  #   fleet=names(factor_set$fishing_effort)[[i]]
-  #   choice=design[x,][[fleet]]
-  #   #ecosim_id=i #TODO reference by name once implemented
-  #   fleetname=factor_set$fishing_effort[[i]][[1]]$name
-  #   values=factor_set$fishing_effort[[i]][[choice]]$values
-  #   v_changes[4+i]=paste0('      "ecosim.effort[',fleetname,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
-  #   if(i<length(factor_set$fishing_effort)) {v_changes[4+i]=paste0(v_changes[4+i],",")}
-  # }
-  # if(length(factor_set$forcing_functions)>0) {v_changes[4+length(factor_set$fishing_effort)]=paste0(v_changes[4+length(factor_set$fishing_effort)],",")}
-  # #add forcing function (driver) modification
-  # for(i in 1:length(factor_set$forcing_functions))
-  # {
-  #   func=names(factor_set$forcing_functions)[[i]]
-  #   choice=design[x,][[func]]
-  #   #ecosim_id=i #TODO reference by name once implemented
-  #   ffname=factor_set$forcing_functions[[i]][[1]]$name
-  #   values=factor_set$forcing_functions[[i]][[choice]]$values
-  #   v_changes[4+length(factor_set$fishing_effort)+i]=paste0('      "ecosim.forcingfunction[',ffname,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
-  #   if(i<length(factor_set$forcing_functions)) {v_changes[4+length(factor_set$fishing_effort)+i]=paste0(v_changes[4+length(factor_set$fishing_effort)+i],",")}
-  # }
-  # ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)
-  # if(length(factor_set$shapes)>0) {v_changes[ix]=paste0(v_changes[ix],",")}
-  # #add shapes
-  # for(i in 1:length(factor_set$shapes))
-  # {
-  #   shape=names(factor_set$shapes)[[i]]
-  #   choice=design[x,][[shape]]
-  #   #ecosim_id=i #TODO reference by name once implemented
-  #   values=factor_set$shapes[[i]][[choice]]$y
-  #   #seq_id=factor_set$shapes[[i]][[choice]]$seq
-  #   shape_name=factor_set$shapes[[i]][[1]]$name
-  #   if(factor_set$shapes[[i]][[choice]]$type=="envresponse") {
-  #     str_start='      "ecosim.envresponsefunction['} else if(factor_set$shapes[[i]][[choice]]$type=="mediation") {
-  #     str_start='      "ecosim.mediationfunction['} else {
-  #       stop(paste("Unkown shape type:",factor_set$shapes[[i]][[choice]]$type))}
-  #
-  #   ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)+i
-  #   v_changes[ix]=paste0(str_start,shape_name,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
-  #   if(i<length(factor_set$shapes)) {v_changes[ix]=paste0(v_changes[ix],",")}
-  # }
-  # ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)+length(factor_set$shapes)
-  # v_changes[ix]=paste0(v_changes[ix],",")
-  # v_changes[ix+1]=paste0('      "ecosim.vulnerabilities.load": "',normalizePath(design$vulnerability[x],winslash='/'),'"')
-  # #v_changes[ix+1]=paste0('      "ecosim.vulnerabilities.load": "',normalizePath(paste0(tempdir(),"/data/anchbay.csv"),winslash='/'),'"')
-  # #v_changes[ix+1]='      "ecosim.vulnerabilities.fill": 2'
-  # v_changes[ix+2]='      }'
-  # v_changes[ix+3]='    }'
-  # v_changes[ix+4]='  ]'
+  # #MPAs
+  vix=length(v_changes)
+  for(i in 1:length(factor_set$mpas))
+  {
+    mpa_name=names(factor_set$mpas)[i]
+    choice=normalizePath(design[[mpa_name]][x],winslash='/')
+    v_changes[vix+i]=paste0('      "ecospace.mpa[',mpa_name,'].map.load": "',choice,'",')
+  }
+
+  # ENV MAPS
+  vix=length(v_changes)
+  for(i in 1:length(factor_set$env_maps))
+  {
+    env_name=names(factor_set$env_maps)[i]
+    choice=normalizePath(design[[env_name]][x],winslash='/')
+    v_changes[vix+i]=paste0('      "ecospace.envdriver[',env_name,'].map.load": "',choice,'",')
+  }
+
+  # HAB MAPS
+  vix=length(v_changes)
+  for(i in 1:length(factor_set$habitats))
+  {
+    hab_name=names(factor_set$habitats)[i]
+    choice=normalizePath(design[[hab_name]][x],winslash='/')
+    v_changes[vix+i]=paste0('      "ecospace.habitat[',hab_name,'].map.load": "',choice,'",')
+  }
+
+  vix=length(v_changes)
+  v_changes[vix]=substr(v_changes[vix],1,nchar(v_changes[vix])-1)  #remove trailing comma at end of change lines
+  v_changes[vix+1]='    }'
+  v_changes[vix+2]='  }'
+  v_changes[vix+3]='  ]'
 
   v_changes
 
@@ -229,7 +221,6 @@ create_json_changes_ecosim=function(x,design,factor_set)
   {
     func=names(factor_set$forcing_functions)[[i]]
     choice=design[x,][[func]]
-    #ecosim_id=i #TODO reference by name once implemented
     ffname=factor_set$forcing_functions[[i]][[1]]$name
     values=factor_set$forcing_functions[[i]][[choice]]$values
     v_changes[4+length(factor_set$fishing_effort)+i]=paste0('      "ecosim.forcingfunction[',ffname,'].set": [ ',paste(as.character(values),collapse=", "),' ]')
@@ -242,9 +233,7 @@ create_json_changes_ecosim=function(x,design,factor_set)
   {
     shape=names(factor_set$shapes)[[i]]
     choice=design[x,][[shape]]
-    #ecosim_id=i #TODO reference by name once implemented
     values=factor_set$shapes[[i]][[choice]]$y
-    #seq_id=factor_set$shapes[[i]][[choice]]$seq
     shape_name=factor_set$shapes[[i]][[1]]$name
     if(factor_set$shapes[[i]][[choice]]$type=="envresponse") {
       str_start='      "ecosim.envresponsefunction['} else if(factor_set$shapes[[i]][[choice]]$type=="mediation") {
@@ -258,8 +247,6 @@ create_json_changes_ecosim=function(x,design,factor_set)
   ix=4+length(factor_set$fishing_effort)+length(factor_set$forcing_functions)+length(factor_set$shapes)
   v_changes[ix]=paste0(v_changes[ix],",")
   v_changes[ix+1]=paste0('      "ecosim.vulnerabilities.load": "',normalizePath(design$vulnerability[x],winslash='/'),'"')
-  #v_changes[ix+1]=paste0('      "ecosim.vulnerabilities.load": "',normalizePath(paste0(tempdir(),"/data/anchbay.csv"),winslash='/'),'"')
-  #v_changes[ix+1]='      "ecosim.vulnerabilities.fill": 2'
   v_changes[ix+2]='      }'
   v_changes[ix+3]='    }'
   v_changes[ix+4]='  ]'

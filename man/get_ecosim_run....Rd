@@ -4,11 +4,14 @@
 \alias{get_ecosim_run...}
 \alias{get_ecosim_run_biomass}
 \alias{get_ecosim_run_catch}
+\alias{get_ecospace_run_biomass}
 \title{Obtain monthly time series of biomasses or catch from a single Ecosim run}
 \usage{
 get_ecosim_run_biomass(folder, model, groups = NA, relative = F)
 
 get_ecosim_run_catch(folder, model, groups = NA, relative = F)
+
+get_ecospace_run_biomass(folder, model, groups = NA, relative = F)
 }
 \arguments{
 \item{folder}{Path to folder containing the model outputs. If the outputs are not found, the function searches subfolders and uses the first fitting output file found.}
@@ -17,11 +20,15 @@ get_ecosim_run_catch(folder, model, groups = NA, relative = F)
 
 \item{groups}{Character vector with names of the groups for which biomasses should be extracted. If NA (the default), biomasses for all groups are returned.}
 
-\item{relative}{Should returned biomasses or cTCHES be relative to the first timestep?}
+\item{relative}{Should returned biomasses be relative to the first timestep?}
 }
 \value{
 Data frame with a timestep column and one column for each group listed in \code{biomass}.
+
+Data frame with a timestep column and one column for each group listed in \code{groups}.
 }
 \description{
 Obtain monthly time series of biomasses or catch from a single Ecosim run
+
+Obtain (non-spatial) time series of biomasses from a single Ecospace run.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_json_file.R
 \name{create_json_changes_ecosim}
 \alias{create_json_changes_ecosim}
-\title{Create vector with .json file lines for changes.}
+\title{Create vector with .json file lines for Ecosim changes.}
 \usage{
 create_json_changes_ecosim(x, design, factor_set)
 }
@@ -17,5 +17,5 @@ create_json_changes_ecosim(x, design, factor_set)
 Character vector where each element corresponds to a line "Changes" section of the .json file to be generated.
 }
 \description{
-Currently only works for fishing effort.
+Create vector with .json file lines for Ecosim changes.
 }

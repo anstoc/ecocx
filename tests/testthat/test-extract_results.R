@@ -40,3 +40,29 @@ test_that("Reading a single Ecospace ASC file works", {
   expect_lt(abs(m[15,10]-0.10133541),0.00001)
 
 })
+
+test_that("Reading biomass time series from a single Ecospace run works", {
+  xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecospace_ex.eiixml")
+  m=load_model_from_xml(xml_model,ecospace_scenario = "BayOfAnchovies")
+
+ folder=paste0(system.file('extdata', package = 'ecocx'),"/ex_outputs_spatial/R0001_0000/R0001_0000/BayOfAnchovies/asc/")
+ ts=get_ecospace_run_biomass(folder,model=m)
+ expect_equal(dim(ts),c(41,11))
+ expect_lt(abs(ts$Whiting[ts$timestep==397]-1.810140),0.0001)
+
+})
+
+test_that("Reading biomass time series from multiple Ecospace runs works", {
+  xml_model=paste0(system.file('extdata', package = 'ecocx'),"/anchovy_bay_ecospace_ex.eiixml")
+  m=load_model_from_xml(xml_model,ecospace_scenario = "BayOfAnchovies")
+
+  folder1=paste0(system.file('extdata', package = 'ecocx'),"/ex_outputs_spatial/R0001_0000")
+  folder2=paste0(system.file('extdata', package = 'ecocx'),"/ex_outputs_spatial/R0002_0000")
+  cx_table=data.frame("run_name"=c("R0001_0000","R0002_0000"),"folder"=c(folder1,folder2))
+
+  df_bio=get_ecospace_cx_biomass(cx_table,m)
+
+  expect_equal(dim(df_bio),c(82,12))
+  expect_lt(abs(df_bio$Shrimp[df_bio$timestep==409 & df_bio$run_name=="R0002_0000"])-1.8085093 ,0.0001)
+
+})

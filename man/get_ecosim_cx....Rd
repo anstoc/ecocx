@@ -4,11 +4,14 @@
 \alias{get_ecosim_cx...}
 \alias{get_ecosim_cx_biomass}
 \alias{get_ecosim_cx_catch}
+\alias{get_ecospace_cx_biomass}
 \title{Obtain time series of biomasses or catch from all Ecosim runs in a computational experiment.}
 \usage{
 get_ecosim_cx_biomass(cx_table, model, groups = NA, relative = F)
 
 get_ecosim_cx_catch(cx_table, model, groups = NA, relative = F)
+
+get_ecospace_cx_biomass(cx_table, model, groups = NA, relative = F)
 }
 \arguments{
 \item{cx_table}{Table describing all runs, as returned by \code{run_ecosim_experiment}.}
@@ -17,11 +20,15 @@ get_ecosim_cx_catch(cx_table, model, groups = NA, relative = F)
 
 \item{groups}{Character vector with names of the groups for which biomasses should be extracted. If NA (the default), biomasses for all groups are returned.}
 
-\item{relative}{Should returned biomasses or cTCHES be relative to the first timestep?}
+\item{relative}{Should returned biomasses be relative to the first timestep?}
 }
 \value{
+Data frame with a run name column, timestep column, and biomasses/catches of the groups.
+
 Data frame with a run name column, timestep column, and biomasses of the groups.
 }
 \description{
 Obtain time series of biomasses or catch from all Ecosim runs in a computational experiment.
+
+Obtain (non-spatial) time series of biomasses from all Ecospace runs in a computational experiment.
 }
